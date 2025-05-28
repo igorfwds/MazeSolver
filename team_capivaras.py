@@ -1,6 +1,6 @@
+from datetime import datetime
 import numpy as np
 import maze_solver_cy # Importa o módulo Cython compilado
-import time
 import traceback # Para imprimir a pilha de erros em exceções inesperadas
 
 # Mapeamento de caracteres para inteiros (consistente com .pyx e suas informações salvas)
@@ -13,7 +13,7 @@ CHAR_TO_INT = {
 PATH_CELL_INT = CHAR_TO_INT[' ']
 WALL_CELL_INT = CHAR_TO_INT['#']
 
-# --- Funções Auxiliares (mantidas da versão anterior) ---
+# --- Funções Auxiliares ---
 
 def parse_maze_for_cython(maze_str: str):
     """
@@ -80,7 +80,7 @@ def solve_maze(labyrinth: str) -> float:
     output_filename_fixed = "output_capivaras.txt" # Nome fixo conforme a interface
     
     # Inicia a contagem de tempo ANTES de qualquer processamento do labirinto
-    overall_start_time = time.perf_counter()
+    overall_start_time = datetime.now()
     execution_time_ms = 0.0 # Valor padrão para tempo em caso de erro muito inicial
 
     try:
@@ -95,8 +95,9 @@ def solve_maze(labyrinth: str) -> float:
         path = maze_solver_cy.find_shortest_path_cython_optimized(int_grid_np, start_coords, end_coords)
         
         # Finaliza a contagem de tempo APÓS a parte principal da resolução
-        overall_end_time = time.perf_counter()
-        execution_time_ms = (overall_end_time - overall_start_time) * 1000
+        overall_end_time = datetime.now()
+        execution_time_ms = (overall_end_time - overall_start_time).total_seconds() * 1000
+
         
         # 3. Prepare a string da solução para o arquivo de auditoria
         solution_str_for_file = ""
