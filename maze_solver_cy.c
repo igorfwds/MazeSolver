@@ -1140,8 +1140,8 @@ static CYTHON_INLINE float __PYX_NAN() {
 #include "numpy/ndarraytypes.h"
 #include "numpy/arrayscalars.h"
 #include "numpy/ufuncobject.h"
-#include "pythread.h"
 #include <stdlib.h>
+#include "pythread.h"
 #ifdef _OPENMP
 #include <omp.h>
 #endif /* _OPENMP */
@@ -1747,32 +1747,41 @@ typedef npy_double __pyx_t_5numpy_double_t;
 */
 typedef npy_longdouble __pyx_t_5numpy_longdouble_t;
 
-/* "maze_solver_cy.pyx":13
- * cimport numpy as cnp
+/* "maze_solver_cy.pyx":16
+ * from libc.string cimport memset
  * 
  * ctypedef cnp.int32_t grid_cell_type_t             # <<<<<<<<<<<<<<
  * ctypedef cnp.uint8_t visited_cell_type_t
- * ctypedef cnp.int32_t coord_type_t # Para os arrays de predecessores
+ * ctypedef cnp.int32_t coord_type_t
 */
 typedef __pyx_t_5numpy_int32_t __pyx_t_14maze_solver_cy_grid_cell_type_t;
 
-/* "maze_solver_cy.pyx":14
+/* "maze_solver_cy.pyx":17
  * 
  * ctypedef cnp.int32_t grid_cell_type_t
  * ctypedef cnp.uint8_t visited_cell_type_t             # <<<<<<<<<<<<<<
- * ctypedef cnp.int32_t coord_type_t # Para os arrays de predecessores
- * 
+ * ctypedef cnp.int32_t coord_type_t
+ * ctypedef cnp.uint32_t queue_index_t
 */
 typedef __pyx_t_5numpy_uint8_t __pyx_t_14maze_solver_cy_visited_cell_type_t;
 
-/* "maze_solver_cy.pyx":15
+/* "maze_solver_cy.pyx":18
  * ctypedef cnp.int32_t grid_cell_type_t
  * ctypedef cnp.uint8_t visited_cell_type_t
- * ctypedef cnp.int32_t coord_type_t # Para os arrays de predecessores             # <<<<<<<<<<<<<<
+ * ctypedef cnp.int32_t coord_type_t             # <<<<<<<<<<<<<<
+ * ctypedef cnp.uint32_t queue_index_t
+ * 
+*/
+typedef __pyx_t_5numpy_int32_t __pyx_t_14maze_solver_cy_coord_type_t;
+
+/* "maze_solver_cy.pyx":19
+ * ctypedef cnp.uint8_t visited_cell_type_t
+ * ctypedef cnp.int32_t coord_type_t
+ * ctypedef cnp.uint32_t queue_index_t             # <<<<<<<<<<<<<<
  * 
  * DEF PATH_CELL = 0
 */
-typedef __pyx_t_5numpy_int32_t __pyx_t_14maze_solver_cy_coord_type_t;
+typedef __pyx_t_5numpy_uint32_t __pyx_t_14maze_solver_cy_queue_index_t;
 /* #### Code section: complex_type_declarations ### */
 /* Declarations.proto */
 #if CYTHON_CCOMPLEX && (1) && (!0 || __cplusplus)
@@ -1813,6 +1822,7 @@ static CYTHON_INLINE __pyx_t_long_double_complex __pyx_t_long_double_complex_fro
 /* #### Code section: type_declarations ### */
 
 /*--- Type declarations ---*/
+struct __pyx_obj_14maze_solver_cy___pyx_scope_struct__genexpr;
 struct __pyx_array_obj;
 struct __pyx_MemviewEnum_obj;
 struct __pyx_memoryview_obj;
@@ -1835,6 +1845,37 @@ typedef int (*__pyx_t_5numpy_NpyIter_IterNextFunc)(NpyIter *);
  * cdef extern from "numpy/arrayobject.h":
 */
 typedef void (*__pyx_t_5numpy_NpyIter_GetMultiIndexFunc)(NpyIter *, npy_intp *);
+struct __pyx_t_14maze_solver_cy_CircularQueue;
+
+/* "maze_solver_cy.pyx":25
+ * 
+ * # Estrutura para queue circular otimizada
+ * cdef struct CircularQueue:             # <<<<<<<<<<<<<<
+ *     coord_type_t* data_r
+ *     coord_type_t* data_c
+*/
+struct __pyx_t_14maze_solver_cy_CircularQueue {
+  __pyx_t_14maze_solver_cy_coord_type_t *data_r;
+  __pyx_t_14maze_solver_cy_coord_type_t *data_c;
+  __pyx_t_14maze_solver_cy_queue_index_t head;
+  __pyx_t_14maze_solver_cy_queue_index_t tail;
+  __pyx_t_14maze_solver_cy_queue_index_t size;
+  __pyx_t_14maze_solver_cy_queue_index_t capacity;
+};
+
+/* "maze_solver_cy.pyx":293
+ *             result_lines[r][c] = ''
+ * 
+ *     return '\n'.join(''.join(line) for line in result_lines)             # <<<<<<<<<<<<<<
+ * 
+ * 
+*/
+struct __pyx_obj_14maze_solver_cy___pyx_scope_struct__genexpr {
+  PyObject_HEAD
+  PyObject *__pyx_genexpr_arg_0;
+  PyObject *__pyx_v_line;
+};
+
 
 /* "View.MemoryView":110
  * 
@@ -2597,6 +2638,27 @@ static PyObject* __Pyx_ImportFrom(PyObject* module, PyObject* name);
 static CYTHON_INLINE int __Pyx_HasAttr(PyObject *, PyObject *);
 #endif
 
+/* PyObjectVectorCallKwBuilder.proto */
+CYTHON_UNUSED static int __Pyx_VectorcallBuilder_AddArg_Check(PyObject *key, PyObject *value, PyObject *builder, PyObject **args, int n);
+#if CYTHON_VECTORCALL
+#if PY_VERSION_HEX >= 0x03090000
+#define __Pyx_Object_Vectorcall_CallFromBuilder PyObject_Vectorcall
+#else
+#define __Pyx_Object_Vectorcall_CallFromBuilder _PyObject_Vectorcall
+#endif
+#define __Pyx_MakeVectorcallBuilderKwds(n) PyTuple_New(n)
+static int __Pyx_VectorcallBuilder_AddArg(PyObject *key, PyObject *value, PyObject *builder, PyObject **args, int n);
+static int __Pyx_VectorcallBuilder_AddArgStr(const char *key, PyObject *value, PyObject *builder, PyObject **args, int n);
+#else
+#define __Pyx_Object_Vectorcall_CallFromBuilder __Pyx_PyObject_FastCallDict
+#define __Pyx_MakeVectorcallBuilderKwds(n) __Pyx_PyDict_NewPresized(n)
+#define __Pyx_VectorcallBuilder_AddArg(key, value, builder, args, n) PyDict_SetItem(builder, key, value)
+#define __Pyx_VectorcallBuilder_AddArgStr(key, value, builder, args, n) PyDict_SetItemString(builder, key, value)
+#endif
+
+/* ErrOccurredWithGIL.proto */
+static CYTHON_INLINE int __Pyx_ErrOccurredWithGIL(void);
+
 /* ListAppend.proto */
 #if CYTHON_USE_PYLIST_INTERNALS && CYTHON_ASSUME_SAFE_MACROS
 static CYTHON_INLINE int __Pyx_PyList_Append(PyObject* list, PyObject* x) {
@@ -2618,35 +2680,14 @@ static CYTHON_INLINE int __Pyx_PyList_Append(PyObject* list, PyObject* x) {
 #define __Pyx_PyList_Append(L,x) PyList_Append(L,x)
 #endif
 
-/* PyObjectCall2Args.proto */
-static CYTHON_INLINE PyObject* __Pyx_PyObject_Call2Args(PyObject* function, PyObject* arg1, PyObject* arg2);
+/* pep479.proto */
+static void __Pyx_Generator_Replace_StopIteration(int in_async_gen);
 
-/* PyObjectGetMethod.proto */
-static int __Pyx_PyObject_GetMethod(PyObject *obj, PyObject *name, PyObject **method);
+/* IterFinish.proto */
+static CYTHON_INLINE int __Pyx_IterFinish(void);
 
-/* PyObjectCallMethod1.proto */
-static PyObject* __Pyx_PyObject_CallMethod1(PyObject* obj, PyObject* method_name, PyObject* arg);
-
-/* append.proto */
-static CYTHON_INLINE int __Pyx_PyObject_Append(PyObject* L, PyObject* x);
-
-/* PyObjectVectorCallKwBuilder.proto */
-CYTHON_UNUSED static int __Pyx_VectorcallBuilder_AddArg_Check(PyObject *key, PyObject *value, PyObject *builder, PyObject **args, int n);
-#if CYTHON_VECTORCALL
-#if PY_VERSION_HEX >= 0x03090000
-#define __Pyx_Object_Vectorcall_CallFromBuilder PyObject_Vectorcall
-#else
-#define __Pyx_Object_Vectorcall_CallFromBuilder _PyObject_Vectorcall
-#endif
-#define __Pyx_MakeVectorcallBuilderKwds(n) PyTuple_New(n)
-static int __Pyx_VectorcallBuilder_AddArg(PyObject *key, PyObject *value, PyObject *builder, PyObject **args, int n);
-static int __Pyx_VectorcallBuilder_AddArgStr(const char *key, PyObject *value, PyObject *builder, PyObject **args, int n);
-#else
-#define __Pyx_Object_Vectorcall_CallFromBuilder __Pyx_PyObject_FastCallDict
-#define __Pyx_MakeVectorcallBuilderKwds(n) __Pyx_PyDict_NewPresized(n)
-#define __Pyx_VectorcallBuilder_AddArg(key, value, builder, args, n) PyDict_SetItem(builder, key, value)
-#define __Pyx_VectorcallBuilder_AddArgStr(key, value, builder, args, n) PyDict_SetItemString(builder, key, value)
-#endif
+/* UnpackItemEndCheck.proto */
+static int __Pyx_IternextUnpackEndCheck(PyObject *retval, Py_ssize_t expected);
 
 /* CallTypeTraverse.proto */
 #if !CYTHON_USE_TYPE_SPECS || (!CYTHON_COMPILING_IN_LIMITED_API && PY_VERSION_HEX < 0x03090000)
@@ -2660,6 +2701,9 @@ static CYTHON_INLINE int __Pyx_fix_up_extension_type_from_spec(PyType_Spec *spec
 
 /* PyObjectCallNoArg.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyObject_CallNoArg(PyObject *func);
+
+/* PyObjectGetMethod.proto */
+static int __Pyx_PyObject_GetMethod(PyObject *obj, PyObject *name, PyObject **method);
 
 /* PyObjectCallMethod0.proto */
 static PyObject* __Pyx_PyObject_CallMethod0(PyObject* obj, PyObject* method_name);
@@ -3123,6 +3167,105 @@ typedef const char *__Pyx_TypeName;
 #define __Pyx_DECREF_TypeName(obj)
 #endif
 
+/* IterNextPlain.proto */
+static CYTHON_INLINE PyObject *__Pyx_PyIter_Next_Plain(PyObject *iterator);
+#if CYTHON_COMPILING_IN_LIMITED_API && __PYX_LIMITED_VERSION_HEX < 0x030A0000
+static PyObject *__Pyx_GetBuiltinNext_LimitedAPI(void);
+#endif
+
+/* PyObjectCall2Args.proto */
+static CYTHON_INLINE PyObject* __Pyx_PyObject_Call2Args(PyObject* function, PyObject* arg1, PyObject* arg2);
+
+/* PyObjectCallMethod1.proto */
+static PyObject* __Pyx_PyObject_CallMethod1(PyObject* obj, PyObject* method_name, PyObject* arg);
+
+/* ReturnWithStopIteration.proto */
+static CYTHON_INLINE void __Pyx_ReturnWithStopIteration(PyObject* value, int async, int iternext);
+
+/* CoroutineBase.proto */
+struct __pyx_CoroutineObject;
+typedef PyObject *(*__pyx_coroutine_body_t)(struct __pyx_CoroutineObject *, PyThreadState *, PyObject *);
+#if CYTHON_USE_EXC_INFO_STACK
+#define __Pyx_ExcInfoStruct  _PyErr_StackItem
+#else
+typedef struct {
+    PyObject *exc_type;
+    PyObject *exc_value;
+    PyObject *exc_traceback;
+} __Pyx_ExcInfoStruct;
+#endif
+typedef struct __pyx_CoroutineObject {
+    PyObject_HEAD
+    __pyx_coroutine_body_t body;
+    PyObject *closure;
+    __Pyx_ExcInfoStruct gi_exc_state;
+    PyObject *gi_weakreflist;
+    PyObject *classobj;
+    PyObject *yieldfrom;
+    __Pyx_pyiter_sendfunc yieldfrom_am_send;
+    PyObject *gi_name;
+    PyObject *gi_qualname;
+    PyObject *gi_modulename;
+    PyObject *gi_code;
+    PyObject *gi_frame;
+#if CYTHON_USE_SYS_MONITORING && (CYTHON_PROFILE || CYTHON_TRACE)
+    PyMonitoringState __pyx_pymonitoring_state[__Pyx_MonitoringEventTypes_CyGen_count];
+    uint64_t __pyx_pymonitoring_version;
+#endif
+    int resume_label;
+    char is_running;
+} __pyx_CoroutineObject;
+static __pyx_CoroutineObject *__Pyx__Coroutine_New(
+    PyTypeObject *type, __pyx_coroutine_body_t body, PyObject *code, PyObject *closure,
+    PyObject *name, PyObject *qualname, PyObject *module_name);
+static __pyx_CoroutineObject *__Pyx__Coroutine_NewInit(
+            __pyx_CoroutineObject *gen, __pyx_coroutine_body_t body, PyObject *code, PyObject *closure,
+            PyObject *name, PyObject *qualname, PyObject *module_name);
+static CYTHON_INLINE void __Pyx_Coroutine_ExceptionClear(__Pyx_ExcInfoStruct *self);
+static int __Pyx_Coroutine_clear(PyObject *self);
+static __Pyx_PySendResult __Pyx_Coroutine_AmSend(PyObject *self, PyObject *value, PyObject **retval);
+static PyObject *__Pyx_Coroutine_Send(PyObject *self, PyObject *value);
+static __Pyx_PySendResult __Pyx_Coroutine_Close(PyObject *self, PyObject **retval);
+static PyObject *__Pyx_Coroutine_Throw(PyObject *gen, PyObject *args);
+#if CYTHON_USE_EXC_INFO_STACK
+#define __Pyx_Coroutine_SwapException(self)
+#define __Pyx_Coroutine_ResetAndClearException(self)  __Pyx_Coroutine_ExceptionClear(&(self)->gi_exc_state)
+#else
+#define __Pyx_Coroutine_SwapException(self) {\
+    __Pyx_ExceptionSwap(&(self)->gi_exc_state.exc_type, &(self)->gi_exc_state.exc_value, &(self)->gi_exc_state.exc_traceback);\
+    __Pyx_Coroutine_ResetFrameBackpointer(&(self)->gi_exc_state);\
+    }
+#define __Pyx_Coroutine_ResetAndClearException(self) {\
+    __Pyx_ExceptionReset((self)->gi_exc_state.exc_type, (self)->gi_exc_state.exc_value, (self)->gi_exc_state.exc_traceback);\
+    (self)->gi_exc_state.exc_type = (self)->gi_exc_state.exc_value = (self)->gi_exc_state.exc_traceback = NULL;\
+    }
+#endif
+#if CYTHON_FAST_THREAD_STATE
+#define __Pyx_PyGen_FetchStopIterationValue(pvalue)\
+    __Pyx_PyGen__FetchStopIterationValue(__pyx_tstate, pvalue)
+#else
+#define __Pyx_PyGen_FetchStopIterationValue(pvalue)\
+    __Pyx_PyGen__FetchStopIterationValue(__Pyx_PyThreadState_Current, pvalue)
+#endif
+static int __Pyx_PyGen__FetchStopIterationValue(PyThreadState *tstate, PyObject **pvalue);
+static CYTHON_INLINE void __Pyx_Coroutine_ResetFrameBackpointer(__Pyx_ExcInfoStruct *exc_state);
+static char __Pyx_Coroutine_test_and_set_is_running(__pyx_CoroutineObject *gen);
+static void __Pyx_Coroutine_unset_is_running(__pyx_CoroutineObject *gen);
+static char __Pyx_Coroutine_get_is_running(__pyx_CoroutineObject *gen);
+static PyObject *__Pyx_Coroutine_get_is_running_getter(PyObject *gen, void *closure);
+#if __PYX_HAS_PY_AM_SEND == 2
+static void __Pyx_SetBackportTypeAmSend(PyTypeObject *type, __Pyx_PyAsyncMethodsStruct *static_amsend_methods, __Pyx_pyiter_sendfunc am_send);
+#endif
+
+/* Generator.proto */
+#define __Pyx_Generator_USED
+#define __Pyx_Generator_CheckExact(obj) __Pyx_IS_TYPE(obj, __pyx_mstate_global->__pyx_GeneratorType)
+#define __Pyx_Generator_New(body, code, closure, name, qualname, module_name)\
+    __Pyx__Coroutine_New(__pyx_mstate_global->__pyx_GeneratorType, body, code, closure, name, qualname, module_name)
+static PyObject *__Pyx_Generator_Next(PyObject *self);
+static int __pyx_Generator_init(PyObject *module);
+static CYTHON_INLINE PyObject *__Pyx_Generator_GetInlinedResult(PyObject *self);
+
 /* GetRuntimeVersion.proto */
 static unsigned long __Pyx_get_runtime_version(void);
 
@@ -3226,6 +3369,8 @@ static CYTHON_INLINE char *__pyx_f_5numpy_7ndarray_4data_data(PyArrayObject *__p
 
 /* Module declarations from "numpy" */
 
+/* Module declarations from "libc.stdlib" */
+
 /* Module declarations from "maze_solver_cy" */
 static PyObject *__pyx_collections_abc_Sequence = 0;
 static PyObject *generic = 0;
@@ -3235,7 +3380,12 @@ static PyObject *contiguous = 0;
 static PyObject *indirect_contiguous = 0;
 static int __pyx_memoryview_thread_locks_used;
 static PyThread_type_lock __pyx_memoryview_thread_locks[8];
-static PyObject *__pyx_f_14maze_solver_cy_find_shortest_path_cython(__Pyx_memviewslice, PyObject *, PyObject *, int __pyx_skip_dispatch); /*proto*/
+static CYTHON_INLINE void __pyx_f_14maze_solver_cy_init_queue(struct __pyx_t_14maze_solver_cy_CircularQueue *, __pyx_t_14maze_solver_cy_queue_index_t); /*proto*/
+static CYTHON_INLINE void __pyx_f_14maze_solver_cy_free_queue(struct __pyx_t_14maze_solver_cy_CircularQueue *); /*proto*/
+static CYTHON_INLINE int __pyx_f_14maze_solver_cy_is_queue_empty(struct __pyx_t_14maze_solver_cy_CircularQueue *); /*proto*/
+static CYTHON_INLINE void __pyx_f_14maze_solver_cy_enqueue(struct __pyx_t_14maze_solver_cy_CircularQueue *, __pyx_t_14maze_solver_cy_coord_type_t, __pyx_t_14maze_solver_cy_coord_type_t); /*proto*/
+static CYTHON_INLINE void __pyx_f_14maze_solver_cy_dequeue(struct __pyx_t_14maze_solver_cy_CircularQueue *, __pyx_t_14maze_solver_cy_coord_type_t *, __pyx_t_14maze_solver_cy_coord_type_t *); /*proto*/
+static PyObject *__pyx_f_14maze_solver_cy_find_shortest_path_cython_optimized(__Pyx_memviewslice, PyObject *, PyObject *, int __pyx_skip_dispatch); /*proto*/
 static int __pyx_array_allocate_buffer(struct __pyx_array_obj *); /*proto*/
 static struct __pyx_array_obj *__pyx_array_new(PyObject *, Py_ssize_t, char *, char const *, char *); /*proto*/
 static PyObject *__pyx_memoryview_new(PyObject *, int, int, __Pyx_TypeInfo const *); /*proto*/
@@ -3294,17 +3444,29 @@ static PyObject *__pyx_builtin_IndexError;
 static PyObject *__pyx_builtin_ImportError;
 /* #### Code section: string_decls ### */
 static const char __pyx_k_[] = ": ";
+static const char __pyx_k_A[] = "\230A";
+static const char __pyx_k_E[] = "E";
 static const char __pyx_k_O[] = "O";
+static const char __pyx_k_S[] = "S";
 static const char __pyx_k_c[] = "c";
+static const char __pyx_k_r[] = "r";
 static const char __pyx_k_x[] = "x";
+static const char __pyx_k_0f[] = ".0f";
+static const char __pyx_k_6f[] = ".6f";
 static const char __pyx_k__2[] = ".";
 static const char __pyx_k__3[] = ">";
 static const char __pyx_k__4[] = "'";
 static const char __pyx_k__5[] = ")";
-static const char __pyx_k__6[] = "?";
+static const char __pyx_k__6[] = "\n";
+static const char __pyx_k__7[] = "#";
+static const char __pyx_k__8[] = " ";
+static const char __pyx_k__9[] = "\302\267";
 static const char __pyx_k_gc[] = "gc";
 static const char __pyx_k_id[] = "id";
 static const char __pyx_k_np[] = "np";
+static const char __pyx_k__10[] = "";
+static const char __pyx_k__11[] = "?";
+static const char __pyx_k__12[] = "_";
 static const char __pyx_k_abc[] = "abc";
 static const char __pyx_k_and[] = " and ";
 static const char __pyx_k_got[] = " (got ";
@@ -3312,36 +3474,48 @@ static const char __pyx_k_new[] = "__new__";
 static const char __pyx_k_obj[] = "obj";
 static const char __pyx_k_pop[] = "pop";
 static const char __pyx_k_base[] = "base";
+static const char __pyx_k_char[] = "char";
+static const char __pyx_k_cols[] = "cols";
 static const char __pyx_k_dict[] = "__dict__";
 static const char __pyx_k_full[] = "full";
 static const char __pyx_k_func[] = "__func__";
+static const char __pyx_k_line[] = "line";
 static const char __pyx_k_main[] = "__main__";
 static const char __pyx_k_mode[] = "mode";
 static const char __pyx_k_name[] = "name";
 static const char __pyx_k_ndim[] = "ndim";
+static const char __pyx_k_next[] = "next";
 static const char __pyx_k_pack[] = "pack";
+static const char __pyx_k_path[] = "path";
+static const char __pyx_k_rows[] = "rows";
+static const char __pyx_k_send[] = "send";
 static const char __pyx_k_size[] = "size";
 static const char __pyx_k_spec[] = "__spec__";
 static const char __pyx_k_step[] = "step";
 static const char __pyx_k_stop[] = "stop";
 static const char __pyx_k_test[] = "__test__";
+static const char __pyx_k_time[] = "time";
 static const char __pyx_k_ASCII[] = "ASCII";
 static const char __pyx_k_at_0x[] = " at 0x";
 static const char __pyx_k_class[] = "__class__";
+static const char __pyx_k_close[] = "close";
 static const char __pyx_k_count[] = "count";
-static const char __pyx_k_deque[] = "deque";
 static const char __pyx_k_dtype[] = "dtype";
 static const char __pyx_k_error[] = "error";
 static const char __pyx_k_flags[] = "flags";
 static const char __pyx_k_index[] = "index";
 static const char __pyx_k_int32[] = "int32";
+static const char __pyx_k_lines[] = "lines";
 static const char __pyx_k_numpy[] = "numpy";
 static const char __pyx_k_range[] = "range";
 static const char __pyx_k_shape[] = "shape";
+static const char __pyx_k_split[] = "split";
 static const char __pyx_k_start[] = "start";
+static const char __pyx_k_strip[] = "strip";
+static const char __pyx_k_throw[] = "throw";
 static const char __pyx_k_uint8[] = "uint8";
+static const char __pyx_k_value[] = "value";
 static const char __pyx_k_zeros[] = "zeros";
-static const char __pyx_k_append[] = "append";
 static const char __pyx_k_enable[] = "enable";
 static const char __pyx_k_encode[] = "encode";
 static const char __pyx_k_format[] = "format";
@@ -3351,16 +3525,18 @@ static const char __pyx_k_name_2[] = "__name__";
 static const char __pyx_k_object[] = " object>";
 static const char __pyx_k_pickle[] = "pickle";
 static const char __pyx_k_reduce[] = "__reduce__";
+static const char __pyx_k_result[] = "result";
 static const char __pyx_k_struct[] = "struct";
 static const char __pyx_k_unpack[] = "unpack";
 static const char __pyx_k_update[] = "update";
 static const char __pyx_k_disable[] = "disable";
 static const char __pyx_k_fortran[] = "fortran";
+static const char __pyx_k_genexpr[] = "genexpr";
 static const char __pyx_k_memview[] = "memview";
-static const char __pyx_k_popleft[] = "popleft";
 static const char __pyx_k_Ellipsis[] = "Ellipsis";
 static const char __pyx_k_Sequence[] = "Sequence";
 static const char __pyx_k_add_note[] = "add_note";
+static const char __pyx_k_end_time[] = "end_time";
 static const char __pyx_k_getstate[] = "__getstate__";
 static const char __pyx_k_int_grid[] = "int_grid";
 static const char __pyx_k_itemsize[] = "itemsize";
@@ -3372,49 +3548,67 @@ static const char __pyx_k_setstate[] = "__setstate__";
 static const char __pyx_k_TypeError[] = "TypeError";
 static const char __pyx_k_enumerate[] = "enumerate";
 static const char __pyx_k_isenabled[] = "isenabled";
+static const char __pyx_k_maze_text[] = "maze_text";
 static const char __pyx_k_pyx_state[] = "__pyx_state";
 static const char __pyx_k_reduce_ex[] = "__reduce_ex__";
 static const char __pyx_k_IndexError[] = "IndexError";
 static const char __pyx_k_ValueError[] = "ValueError";
-static const char __pyx_k_appendleft[] = "appendleft";
 static const char __pyx_k_end_coords[] = "end_coords";
+static const char __pyx_k_iterations[] = "iterations";
 static const char __pyx_k_pyx_vtable[] = "__pyx_vtable__";
+static const char __pyx_k_start_time[] = "start_time";
 static const char __pyx_k_ImportError[] = "ImportError";
 static const char __pyx_k_MemoryError[] = "MemoryError";
+static const char __pyx_k_Performance[] = "\n- Performance: ";
 static const char __pyx_k_PickleError[] = "PickleError";
-static const char __pyx_k_collections[] = "collections";
+static const char __pyx_k_path_length[] = "path_length";
 static const char __pyx_k_initializing[] = "_initializing";
 static const char __pyx_k_is_coroutine[] = "_is_coroutine";
 static const char __pyx_k_pyx_checksum[] = "__pyx_checksum";
+static const char __pyx_k_result_lines[] = "result_lines";
 static const char __pyx_k_start_coords[] = "start_coords";
 static const char __pyx_k_MemoryView_of[] = "<MemoryView of ";
 static const char __pyx_k_class_getitem[] = "__class_getitem__";
 static const char __pyx_k_reduce_cython[] = "__reduce_cython__";
 static const char __pyx_k_AssertionError[] = "AssertionError";
 static const char __pyx_k_maze_solver_cy[] = "maze_solver_cy";
+static const char __pyx_k_optimized_time[] = "optimized_time";
 static const char __pyx_k_View_MemoryView[] = "View.MemoryView";
 static const char __pyx_k_allocate_buffer[] = "allocate_buffer";
 static const char __pyx_k_collections_abc[] = "collections.abc";
 static const char __pyx_k_dtype_is_object[] = "dtype_is_object";
+static const char __pyx_k_execues_segundo[] = " execu\303\247\303\265es/segundo\n";
+static const char __pyx_k_parse_maze_text[] = "parse_maze_text";
 static const char __pyx_k_setstate_cython[] = "__setstate_cython__";
+static const char __pyx_k_benchmark_solver[] = "benchmark_solver";
+static const char __pyx_k_Benchmark_Results[] = "\nBenchmark Results (";
+static const char __pyx_k_Labirinto_invlido[] = "Labirinto inv\303\241lido";
 static const char __pyx_k_pyx_unpickle_Enum[] = "__pyx_unpickle_Enum";
 static const char __pyx_k_asyncio_coroutines[] = "asyncio.coroutines";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
 static const char __pyx_k_maze_solver_cy_pyx[] = "maze_solver_cy.pyx";
 static const char __pyx_k_strided_and_direct[] = "<strided and direct>";
+static const char __pyx_k_solve_maze_from_text[] = "solve_maze_from_text";
 static const char __pyx_k_strided_and_indirect[] = "<strided and indirect>";
 static const char __pyx_k_Invalid_shape_in_axis[] = "Invalid shape in axis ";
 static const char __pyx_k_contiguous_and_direct[] = "<contiguous and direct>";
 static const char __pyx_k_Cannot_index_with_type[] = "Cannot index with type '";
 static const char __pyx_k_contiguous_and_indirect[] = "<contiguous and indirect>";
+static const char __pyx_k_s_Tempo_mdio_por_execuo[] = "s\n- Tempo m\303\251dio por execu\303\247\303\243o: ";
+static const char __pyx_k_s_Comprimento_do_caminho[] = "s\n- Comprimento do caminho: ";
 static const char __pyx_k_Dimension_d_is_not_direct[] = "Dimension %d is not direct";
-static const char __pyx_k_find_shortest_path_cython[] = "find_shortest_path_cython";
 static const char __pyx_k_Index_out_of_bounds_axis_d[] = "Index out of bounds (axis %d)";
 static const char __pyx_k_Step_may_not_be_zero_axis_d[] = "Step may not be zero (axis %d)";
 static const char __pyx_k_itemsize_0_for_cython_array[] = "itemsize <= 0 for cython.array";
 static const char __pyx_k_unable_to_allocate_array_data[] = "unable to allocate array data.";
+static const char __pyx_k_AQ_wc_q_nM_U_U_1_2_1_t5_Yb_Qiz[] = "\320\000 \240\001\360\010\000\014\r\340\004\r\210_\230A\230Q\330\004\007\200w\210c\220\021\330\010\017\210q\340\004\016\210n\230M\250\021\360\006\000\005\022\220\024\220U\230!\330\004\010\210\005\210U\220!\2201\330\010\017\320\0172\260!\260:\270^\3101\330\004\017\210t\2205\230\001\340\004\025\220Y\230b\240\001\330\004\022\220#\220Q\220i\230z\250\021\340\004\013\2104\320\017'\320'[\360\000\000\\\001N\002\360\000\000N\002\\\002\360\000\000\\\002]\002\360\000\000]\002I\003\360\000\000I\003f\003\360\000\000f\003p\003\360\000\000p\003q\003\360\000\000q\003r\003";
+static const char __pyx_k_AQ_wc_q_nM_az_q_uCq_q_IV2V1A_1[] = "\200\001\360\024\000\005\016\210_\230A\230Q\330\004\007\200w\210c\220\021\330\010\017\210q\340\004\016\210n\230M\250\021\360\006\000\005\014\320\013.\250a\250z\270\036\300q\340\004\007\200u\210C\210q\330\010\017\210q\360\006\000\005\r\210I\220V\2302\230V\2401\240A\330\004\023\2201\220D\230\001\230\026\230t\2408\2501\360\006\000\005\t\210\003\2105\220\001\330\010\013\210<\220q\230\002\230!\2303\230h\240e\2501\330\014\030\230\001\230\022\2301\230E\240\021\340\004\013\2104\210u\220H\230A";
+static const char __pyx_k_Erro_Nenhum_caminho_encontrado[] = "Erro: Nenhum caminho encontrado";
+static const char __pyx_k_HF_1_HF_1_AQ_AQ_j_j_Cxs_s_Bc_E[] = "\200\001\360\026\000\005\025\220H\230F\240!\2401\330\004\024\220H\230F\240!\2401\340\004 \240\014\250A\250Q\330\004 \240\014\250A\250Q\330\004\036\230j\250\001\250\021\330\004\036\230j\250\001\250\021\360\006\000\005\t\210\010\220\002\220\"\220C\220x\230s\240%\240s\250(\260\"\260B\260c\270\030\300\023\300E\310\021\330\010\016\210b\220\002\220#\220V\2303\230e\2403\240f\250B\250b\260\003\2606\270\023\270A\330\010\017\210q\340\004\007\200x\210q\220\t\230\031\240#\240Z\250s\260(\270!\2707\300'\310\023\310A\330\010\017\210q\360\006\000\005\010\200x\210s\220&\230\004\230H\240C\240q\330\010\017\210r\220\031\230!\360\006\000\005)\250\005\250R\250q\340\004\016\210a\210q\220\007\220q\360\006\000\005\030\220r\230\026\230r\240\026\240w\250f\260B\260a\330\004/\250q\340\004\020\220\002\220%\220r\230\026\230x\240s\250&\260\002\260!\330\004\020\220\002\220%\220r\230\026\230x\240s\250&\260\002\260!\330\004'\240q\330\004'\240q\360\006\000\005\014\2101\210A\210W\220I\230Q\330\004\013\2101\210I\220[\240\001\360\006\000\005\034\2301\360\006\000\n\013\330\010\016\210d\220.\240\001\240\021\240!\330\014\023\2201\220A\220W\230A\230S\240\001\240\021\360\006\000\r\020\210r\220\023\220F\230$\230b\240\003\2401\330\020\035\230Q\330\020\021\360\010\000\r\022\220\022\2202\220Q\330\014\021\220\022\2202\220Q\330\014\020\220\003\2203\220b\230\004\230C\230r\240\025\240d\250#\250S\260\002\260$\260c\270\022\2705\300\001\330\020\030\230\001\230\024\230T\240\023\240J\250d\260$\260g\270Q\270d\300!\330\020\027\220q\230\004\230F\240!\330\020\026\220a\220t\2306\240\021\330\020\026\220a\220t\2306\240\021\330\020\027\220q\230\001\230\027\240\004\240A\360\006\000\r\022\220\022\2202\220Q\330\014\021\220\022\2202\220Q\330\014\020\220\003\2203\220b\230\004\230C\230r\240\025\240d\250#\250S\260\002\260$\260c\270\022\2705\300\001\330\020\030\230\001\230\024\230T\240\023\240J\250d\260$\260g\270Q\270d\300!\330\020\027\220q\230\004\230F\240!\330\020\026\220a\220t\2306\240\021\330\020\026\220a\220t\2306\240\021\330\020""\027\220q\230\001\230\027\240\004\240A\360\006\000\r\022\220\022\2202\220Q\330\014\021\220\022\2202\220Q\330\014\020\220\003\2203\220b\230\004\230C\230r\240\025\240d\250#\250S\260\002\260$\260c\270\022\2705\300\001\330\020\030\230\001\230\024\230T\240\023\240J\250d\260$\260g\270Q\270d\300!\330\020\027\220q\230\004\230F\240!\330\020\026\220a\220t\2306\240\021\330\020\026\220a\220t\2306\240\021\330\020\027\220q\230\001\230\027\240\004\240A\360\006\000\r\022\220\022\2202\220Q\330\014\021\220\022\2202\220Q\330\014\020\220\003\2203\220b\230\004\230C\230r\240\025\240d\250#\250S\260\002\260$\260c\270\022\2705\300\001\330\020\030\230\001\230\024\230T\240\023\240J\250d\260$\260g\270Q\270d\300!\330\020\027\220q\230\004\230F\240!\330\020\026\220a\220t\2306\240\021\330\020\026\220a\220t\2306\240\021\330\020\027\220q\230\001\230\027\240\004\240A\360\006\000\005\017\210a\210q\220\001\340\004\007\200t\2101\330\010\017\210q\360\006\000\005\026\220Q\330\004\037\230q\330\004\037\230q\360\010\000\005\006\330\010\014\210G\2202\220X\230Q\340\010\013\2107\220#\220X\230T\240\027\250\003\2501\330\014\r\340\010\021\220\026\220q\230\010\240\001\330\010\021\220\026\220q\230\010\240\001\340\010\013\2107\220$\220b\230\004\230G\2404\240q\330\014\023\2201\340\010\021\220\021\330\010\021\220\021\360\006\000\005\t\210\010\220\001\330\004\013\2101";
+static const char __pyx_k_IV2V1A_t1_q_3aq_3auAWKq_3avS_1[] = "\200\001\360\024\000\005\r\210I\220V\2302\230V\2401\240A\330\004\007\200t\2101\330\010\017\210q\340\004\013\2103\210a\210q\330\004\013\2103\210a\210u\220A\220W\230K\240q\360\006\000\005\t\210\010\220\001\330\010\013\2103\210a\210v\220S\230\001\330\014\023\2201\360\006\000\005\020\210r\220\026\220r\230\026\230w\240f\250B\250a\330\004\023\2201\330\004\021\220\021\340\004\010\210\005\210U\220!\2201\330\010\014\210E\220\025\220a\220q\330\014\023\2205\230\001\230\022\2301\230A\330\014\017\210u\220C\220q\330\020\030\230\001\230\023\230E\240\021\330\021\026\220c\230\024\230S\240\005\240S\250\001\330\020\030\230\001\230\023\230E\240\021\330\021\026\220c\230\021\330\020\030\230\001\230\023\230E\240\021\330\020 \240\003\2401\330\021\026\220c\230\021\330\020\030\230\001\230\023\230E\240\021\330\020\036\230c\240\021\340\020\030\230\001\230\023\230E\240\021\340\004\007\200}\220C\220u\230C\230{\250#\250Q\330\010\017\210q\340\004\013\210:\220^\2401";
 static const char __pyx_k_strided_and_direct_or_indirect[] = "<strided and direct or indirect>";
-static const char __pyx_k_HF_1_HF_1_AQ_AQ_j_j_KvQ_1_r_r_w[] = "\200\001\360\n\000\005\025\220H\230F\240!\2401\330\004\024\220H\230F\240!\2401\340\004 \240\014\250A\250Q\330\004 \240\014\250A\250Q\330\004\036\230j\250\001\250\021\330\004\036\230j\250\001\250\021\360\006\000\005\r\210K\220v\230Q\330\004\t\210\027\220\002\220)\2301\360\006\000\005\030\220r\230\026\230r\240\026\240w\250f\260B\260a\330\004\024\220A\220Y\230k\250\021\330\004/\250q\360\n\000\005\021\220\002\220%\220r\230\026\230x\240s\250&\260\002\260!\330\004\020\220\002\220%\220r\230\026\230x\240s\250&\260\002\260!\330\004'\240q\330\004'\240q\360\010\000\005\017\210a\210r\220\021\220&\230\003\230:\240Q\240b\250\001\250\025\250a\330\004\016\210a\210r\220\021\220%\220t\230:\240Q\240b\250\001\250\025\250a\330\004\016\210a\210r\220\021\220%\220t\230:\240Q\240b\250\001\250\026\250q\330\004\016\210a\210r\220\021\220%\220t\230:\240Q\240b\250\001\250\025\250a\360\n\000\005\034\2301\340\004\n\210!\330\010\034\230E\240\030\250\021\330\010\014\320\014\035\230Q\230a\330\010\014\320\014\035\230Q\230a\340\010\013\2102\210S\220\006\220d\230\"\230C\230q\330\014\031\230\021\330\014\r\340\010\014\210E\220\025\220a\220q\330\014\021\220\032\2301\230B\230a\230q\330\014\021\220\032\2301\230B\230a\230q\340\014\021\220\022\2202\220Q\330\014\021\220\022\2202\220Q\340\014\017\210r\220\023\220E\230\025\230d\240\"\240C\240u\250A\330\020\023\2208\2301\230D\240\004\240C\240z\260\024\260T\270\027\300\001\300\024\300Q\330\024\033\2301\230D\240\006\240a\330\024\032\230!\2304\230v\240Q\330\024\032\230!\2304\230v\240Q\330\024\031\230\027\240\002\240$\240a\340\004\007\200t\2101\330\010\017\210q\360\010\000\005\022\220\033\230F\240!\330\004\037\230q\330\004\037\230q\360\n\000\005\006\330\010\022\220+\230R\230x\240q\330\010\013\2107\220#\220X\230T\240\027\250\003\2501\330\014\r\340\010\021\220\026\220q\230\010\240\001\330\010\021\220\026\220q\230\010\240\001\340\010\013\2107\220$\220b\230\004\230G\2404\240q\360\n\000\r\024\2201\340\010\021\220\021\330\010\021\220\021\340\004\013\2104\210q\220\001";
+static const char __pyx_k_Erro_Labirinto_invlido_sem_S_ou[] = "Erro: Labirinto inv\303\241lido (sem S ou E)";
+static const char __pyx_k_iterations_Tempo_verso_otimizad[] = " iterations):\n- Tempo vers\303\243o otimizada: ";
 static const char __pyx_k_All_dimensions_preceding_dimensi[] = "All dimensions preceding dimension %d must be indexed and not sliced";
 static const char __pyx_k_Buffer_view_does_not_expose_stri[] = "Buffer view does not expose strides";
 static const char __pyx_k_Can_only_create_a_buffer_that_is[] = "Can only create a buffer that is contiguous in memory.";
@@ -3428,10 +3622,12 @@ static const char __pyx_k_Invalid_mode_expected_c_or_fortr[] = "Invalid mode, ex
 static const char __pyx_k_Note_that_Cython_is_deliberately[] = "Note that Cython is deliberately stricter than PEP-484 and rejects subclasses of builtin types. If you need to pass subclasses then set the 'annotation_typing' directive to False.";
 static const char __pyx_k_Out_of_bounds_on_buffer_access_a[] = "Out of bounds on buffer access (axis ";
 static const char __pyx_k_Unable_to_convert_item_to_object[] = "Unable to convert item to object";
+static const char __pyx_k_find_shortest_path_cython_optimi[] = "find_shortest_path_cython_optimized";
 static const char __pyx_k_got_differing_extents_in_dimensi[] = "got differing extents in dimension ";
 static const char __pyx_k_no_default___reduce___due_to_non[] = "no default __reduce__ due to non-trivial __cinit__";
 static const char __pyx_k_numpy__core_multiarray_failed_to[] = "numpy._core.multiarray failed to import";
 static const char __pyx_k_numpy__core_umath_failed_to_impo[] = "numpy._core.umath failed to import";
+static const char __pyx_k_solve_maze_from_text_locals_gene[] = "solve_maze_from_text.<locals>.genexpr";
 static const char __pyx_k_unable_to_allocate_shape_and_str[] = "unable to allocate shape and strides.";
 /* #### Code section: decls ### */
 static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __pyx_array_obj *__pyx_v_self, PyObject *__pyx_v_shape, Py_ssize_t __pyx_v_itemsize, PyObject *__pyx_v_format, PyObject *__pyx_v_mode, int __pyx_v_allocate_buffer); /* proto */
@@ -3475,7 +3671,12 @@ static void __pyx_memoryviewslice___pyx_pf_15View_dot_MemoryView_16_memoryviewsl
 static PyObject *__pyx_pf___pyx_memoryviewslice___reduce_cython__(CYTHON_UNUSED struct __pyx_memoryviewslice_obj *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf___pyx_memoryviewslice_2__setstate_cython__(CYTHON_UNUSED struct __pyx_memoryviewslice_obj *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
 static PyObject *__pyx_pf_15View_dot_MemoryView___pyx_unpickle_Enum(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v___pyx_type, long __pyx_v___pyx_checksum, PyObject *__pyx_v___pyx_state); /* proto */
-static PyObject *__pyx_pf_14maze_solver_cy_find_shortest_path_cython(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_int_grid, PyObject *__pyx_v_start_coords, PyObject *__pyx_v_end_coords); /* proto */
+static PyObject *__pyx_pf_14maze_solver_cy_find_shortest_path_cython_optimized(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_int_grid, PyObject *__pyx_v_start_coords, PyObject *__pyx_v_end_coords); /* proto */
+static PyObject *__pyx_pf_14maze_solver_cy_2parse_maze_text(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_maze_text); /* proto */
+static PyObject *__pyx_pf_14maze_solver_cy_20solve_maze_from_text_genexpr(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_genexpr_arg_0); /* proto */
+static PyObject *__pyx_pf_14maze_solver_cy_4solve_maze_from_text(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_maze_text); /* proto */
+static PyObject *__pyx_pf_14maze_solver_cy_6benchmark_solver(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_maze_text, PyObject *__pyx_v_iterations); /* proto */
+static PyObject *__pyx_tp_new_14maze_solver_cy___pyx_scope_struct__genexpr(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_array(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_Enum(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_memoryview(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
@@ -3534,26 +3735,34 @@ typedef struct {
   PyTypeObject *__pyx_ptype_5numpy_flexible;
   PyTypeObject *__pyx_ptype_5numpy_character;
   PyTypeObject *__pyx_ptype_5numpy_ufunc;
+  PyObject *__pyx_type_14maze_solver_cy___pyx_scope_struct__genexpr;
   PyObject *__pyx_type___pyx_array;
   PyObject *__pyx_type___pyx_MemviewEnum;
   PyObject *__pyx_type___pyx_memoryview;
   PyObject *__pyx_type___pyx_memoryviewslice;
+  PyTypeObject *__pyx_ptype_14maze_solver_cy___pyx_scope_struct__genexpr;
   PyTypeObject *__pyx_array_type;
   PyTypeObject *__pyx_MemviewEnum_type;
   PyTypeObject *__pyx_memoryview_type;
   PyTypeObject *__pyx_memoryviewslice_type;
   __Pyx_CachedCFunction __pyx_umethod_PyDict_Type_pop;
   PyObject *__pyx_slice[1];
-  PyObject *__pyx_tuple[2];
-  PyObject *__pyx_codeobj_tab[1];
-  PyObject *__pyx_string_tab[139];
+  PyObject *__pyx_tuple[3];
+  PyObject *__pyx_codeobj_tab[5];
+  PyObject *__pyx_string_tab[181];
   PyObject *__pyx_int_0;
   PyObject *__pyx_int_1;
+  PyObject *__pyx_int_1000;
   PyObject *__pyx_int_112105877;
   PyObject *__pyx_int_136983863;
   PyObject *__pyx_int_184977713;
   PyObject *__pyx_int_neg_1;
 /* #### Code section: module_state_contents ### */
+
+#if CYTHON_USE_FREELISTS
+struct __pyx_obj_14maze_solver_cy___pyx_scope_struct__genexpr *__pyx_freelist_14maze_solver_cy___pyx_scope_struct__genexpr[8];
+int __pyx_freecount_14maze_solver_cy___pyx_scope_struct__genexpr;
+#endif
 /* CachedMethodType.module_state_decls */
 #if CYTHON_COMPILING_IN_LIMITED_API
 PyObject *__Pyx_CachedMethodType;
@@ -3561,6 +3770,11 @@ PyObject *__Pyx_CachedMethodType;
 
 /* CodeObjectCache.module_state_decls */
 struct __Pyx_CodeObjectCache __pyx_code_cache;
+
+/* IterNextPlain.module_state_decls */
+#if CYTHON_COMPILING_IN_LIMITED_API && __PYX_LIMITED_VERSION_HEX < 0x030A0000
+PyObject *__Pyx_GetBuiltinNext_LimitedAPI_cache;
+#endif
 
 /* #### Code section: module_state_end ### */
 } __pyx_mstatetype;
@@ -3588,144 +3802,186 @@ static __pyx_mstatetype * const __pyx_mstate_global = &__pyx_mstate_global_stati
 #endif
 /* #### Code section: constant_name_defines ### */
 #define __pyx_kp_u_ __pyx_string_tab[0]
-#define __pyx_n_u_ASCII __pyx_string_tab[1]
-#define __pyx_kp_u_All_dimensions_preceding_dimensi __pyx_string_tab[2]
-#define __pyx_n_u_AssertionError __pyx_string_tab[3]
-#define __pyx_kp_u_Buffer_view_does_not_expose_stri __pyx_string_tab[4]
-#define __pyx_kp_u_Can_only_create_a_buffer_that_is __pyx_string_tab[5]
-#define __pyx_kp_u_Cannot_assign_to_read_only_memor __pyx_string_tab[6]
-#define __pyx_kp_u_Cannot_create_writable_memory_vi __pyx_string_tab[7]
-#define __pyx_kp_u_Cannot_index_with_type __pyx_string_tab[8]
-#define __pyx_kp_u_Cannot_transpose_memoryview_with __pyx_string_tab[9]
-#define __pyx_kp_u_Dimension_d_is_not_direct __pyx_string_tab[10]
-#define __pyx_n_u_Ellipsis __pyx_string_tab[11]
-#define __pyx_kp_u_Empty_shape_tuple_for_cython_arr __pyx_string_tab[12]
-#define __pyx_n_u_ImportError __pyx_string_tab[13]
-#define __pyx_kp_u_Incompatible_checksums_0x_x_vs_0 __pyx_string_tab[14]
-#define __pyx_n_u_IndexError __pyx_string_tab[15]
-#define __pyx_kp_u_Index_out_of_bounds_axis_d __pyx_string_tab[16]
-#define __pyx_kp_u_Indirect_dimensions_not_supporte __pyx_string_tab[17]
-#define __pyx_kp_u_Invalid_mode_expected_c_or_fortr __pyx_string_tab[18]
-#define __pyx_kp_u_Invalid_shape_in_axis __pyx_string_tab[19]
-#define __pyx_n_u_MemoryError __pyx_string_tab[20]
-#define __pyx_kp_u_MemoryView_of __pyx_string_tab[21]
-#define __pyx_kp_u_Note_that_Cython_is_deliberately __pyx_string_tab[22]
-#define __pyx_n_b_O __pyx_string_tab[23]
-#define __pyx_kp_u_Out_of_bounds_on_buffer_access_a __pyx_string_tab[24]
-#define __pyx_n_u_PickleError __pyx_string_tab[25]
-#define __pyx_n_u_Sequence __pyx_string_tab[26]
-#define __pyx_kp_u_Step_may_not_be_zero_axis_d __pyx_string_tab[27]
-#define __pyx_n_u_TypeError __pyx_string_tab[28]
-#define __pyx_kp_u_Unable_to_convert_item_to_object __pyx_string_tab[29]
-#define __pyx_n_u_ValueError __pyx_string_tab[30]
-#define __pyx_n_u_View_MemoryView __pyx_string_tab[31]
-#define __pyx_kp_u__2 __pyx_string_tab[32]
-#define __pyx_kp_u__3 __pyx_string_tab[33]
-#define __pyx_kp_u__4 __pyx_string_tab[34]
-#define __pyx_kp_u__5 __pyx_string_tab[35]
-#define __pyx_kp_u__6 __pyx_string_tab[36]
-#define __pyx_n_u_abc __pyx_string_tab[37]
-#define __pyx_kp_u_add_note __pyx_string_tab[38]
-#define __pyx_n_u_allocate_buffer __pyx_string_tab[39]
-#define __pyx_kp_u_and __pyx_string_tab[40]
-#define __pyx_n_u_append __pyx_string_tab[41]
-#define __pyx_n_u_appendleft __pyx_string_tab[42]
-#define __pyx_n_u_asyncio_coroutines __pyx_string_tab[43]
-#define __pyx_kp_u_at_0x __pyx_string_tab[44]
-#define __pyx_n_u_base __pyx_string_tab[45]
-#define __pyx_n_u_c __pyx_string_tab[46]
-#define __pyx_n_u_class __pyx_string_tab[47]
-#define __pyx_n_u_class_getitem __pyx_string_tab[48]
-#define __pyx_n_u_cline_in_traceback __pyx_string_tab[49]
-#define __pyx_n_u_collections __pyx_string_tab[50]
-#define __pyx_kp_u_collections_abc __pyx_string_tab[51]
-#define __pyx_kp_u_contiguous_and_direct __pyx_string_tab[52]
-#define __pyx_kp_u_contiguous_and_indirect __pyx_string_tab[53]
-#define __pyx_n_u_count __pyx_string_tab[54]
-#define __pyx_n_u_deque __pyx_string_tab[55]
-#define __pyx_n_u_dict __pyx_string_tab[56]
-#define __pyx_kp_u_disable __pyx_string_tab[57]
-#define __pyx_n_u_dtype __pyx_string_tab[58]
-#define __pyx_n_u_dtype_is_object __pyx_string_tab[59]
-#define __pyx_kp_u_enable __pyx_string_tab[60]
-#define __pyx_n_u_encode __pyx_string_tab[61]
-#define __pyx_n_u_end_coords __pyx_string_tab[62]
-#define __pyx_n_u_enumerate __pyx_string_tab[63]
-#define __pyx_n_u_error __pyx_string_tab[64]
-#define __pyx_n_u_find_shortest_path_cython __pyx_string_tab[65]
-#define __pyx_n_u_flags __pyx_string_tab[66]
-#define __pyx_n_u_format __pyx_string_tab[67]
-#define __pyx_n_u_fortran __pyx_string_tab[68]
-#define __pyx_n_u_full __pyx_string_tab[69]
-#define __pyx_n_u_func __pyx_string_tab[70]
-#define __pyx_kp_u_gc __pyx_string_tab[71]
-#define __pyx_n_u_getstate __pyx_string_tab[72]
-#define __pyx_kp_u_got __pyx_string_tab[73]
-#define __pyx_kp_u_got_differing_extents_in_dimensi __pyx_string_tab[74]
-#define __pyx_n_u_id __pyx_string_tab[75]
-#define __pyx_n_u_import __pyx_string_tab[76]
-#define __pyx_n_u_index __pyx_string_tab[77]
-#define __pyx_n_u_initializing __pyx_string_tab[78]
-#define __pyx_n_u_int32 __pyx_string_tab[79]
-#define __pyx_n_u_int_grid __pyx_string_tab[80]
-#define __pyx_n_u_is_coroutine __pyx_string_tab[81]
-#define __pyx_kp_u_isenabled __pyx_string_tab[82]
-#define __pyx_n_u_itemsize __pyx_string_tab[83]
-#define __pyx_kp_u_itemsize_0_for_cython_array __pyx_string_tab[84]
-#define __pyx_n_u_main __pyx_string_tab[85]
-#define __pyx_n_u_maze_solver_cy __pyx_string_tab[86]
-#define __pyx_kp_u_maze_solver_cy_pyx __pyx_string_tab[87]
-#define __pyx_n_u_memview __pyx_string_tab[88]
-#define __pyx_n_u_mode __pyx_string_tab[89]
-#define __pyx_n_u_module __pyx_string_tab[90]
-#define __pyx_n_u_name __pyx_string_tab[91]
-#define __pyx_n_u_name_2 __pyx_string_tab[92]
-#define __pyx_n_u_ndim __pyx_string_tab[93]
-#define __pyx_n_u_new __pyx_string_tab[94]
-#define __pyx_kp_u_no_default___reduce___due_to_non __pyx_string_tab[95]
-#define __pyx_n_u_np __pyx_string_tab[96]
-#define __pyx_n_u_numpy __pyx_string_tab[97]
-#define __pyx_kp_u_numpy__core_multiarray_failed_to __pyx_string_tab[98]
-#define __pyx_kp_u_numpy__core_umath_failed_to_impo __pyx_string_tab[99]
-#define __pyx_n_u_obj __pyx_string_tab[100]
-#define __pyx_kp_u_object __pyx_string_tab[101]
-#define __pyx_n_u_pack __pyx_string_tab[102]
-#define __pyx_n_u_pickle __pyx_string_tab[103]
-#define __pyx_n_u_pop __pyx_string_tab[104]
-#define __pyx_n_u_popleft __pyx_string_tab[105]
-#define __pyx_n_u_pyx_checksum __pyx_string_tab[106]
-#define __pyx_n_u_pyx_state __pyx_string_tab[107]
-#define __pyx_n_u_pyx_type __pyx_string_tab[108]
-#define __pyx_n_u_pyx_unpickle_Enum __pyx_string_tab[109]
-#define __pyx_n_u_pyx_vtable __pyx_string_tab[110]
-#define __pyx_n_u_qualname __pyx_string_tab[111]
-#define __pyx_n_u_range __pyx_string_tab[112]
-#define __pyx_n_u_reduce __pyx_string_tab[113]
-#define __pyx_n_u_reduce_cython __pyx_string_tab[114]
-#define __pyx_n_u_reduce_ex __pyx_string_tab[115]
-#define __pyx_n_u_register __pyx_string_tab[116]
-#define __pyx_n_u_set_name __pyx_string_tab[117]
-#define __pyx_n_u_setstate __pyx_string_tab[118]
-#define __pyx_n_u_setstate_cython __pyx_string_tab[119]
-#define __pyx_n_u_shape __pyx_string_tab[120]
-#define __pyx_n_u_size __pyx_string_tab[121]
-#define __pyx_n_u_spec __pyx_string_tab[122]
-#define __pyx_n_u_start __pyx_string_tab[123]
-#define __pyx_n_u_start_coords __pyx_string_tab[124]
-#define __pyx_n_u_step __pyx_string_tab[125]
-#define __pyx_n_u_stop __pyx_string_tab[126]
-#define __pyx_kp_u_strided_and_direct __pyx_string_tab[127]
-#define __pyx_kp_u_strided_and_direct_or_indirect __pyx_string_tab[128]
-#define __pyx_kp_u_strided_and_indirect __pyx_string_tab[129]
-#define __pyx_n_u_struct __pyx_string_tab[130]
-#define __pyx_n_u_test __pyx_string_tab[131]
-#define __pyx_n_u_uint8 __pyx_string_tab[132]
-#define __pyx_kp_u_unable_to_allocate_array_data __pyx_string_tab[133]
-#define __pyx_kp_u_unable_to_allocate_shape_and_str __pyx_string_tab[134]
-#define __pyx_n_u_unpack __pyx_string_tab[135]
-#define __pyx_n_u_update __pyx_string_tab[136]
-#define __pyx_n_u_x __pyx_string_tab[137]
-#define __pyx_n_u_zeros __pyx_string_tab[138]
+#define __pyx_kp_u_0f __pyx_string_tab[1]
+#define __pyx_kp_u_6f __pyx_string_tab[2]
+#define __pyx_n_u_ASCII __pyx_string_tab[3]
+#define __pyx_kp_u_All_dimensions_preceding_dimensi __pyx_string_tab[4]
+#define __pyx_n_u_AssertionError __pyx_string_tab[5]
+#define __pyx_kp_u_Benchmark_Results __pyx_string_tab[6]
+#define __pyx_kp_u_Buffer_view_does_not_expose_stri __pyx_string_tab[7]
+#define __pyx_kp_u_Can_only_create_a_buffer_that_is __pyx_string_tab[8]
+#define __pyx_kp_u_Cannot_assign_to_read_only_memor __pyx_string_tab[9]
+#define __pyx_kp_u_Cannot_create_writable_memory_vi __pyx_string_tab[10]
+#define __pyx_kp_u_Cannot_index_with_type __pyx_string_tab[11]
+#define __pyx_kp_u_Cannot_transpose_memoryview_with __pyx_string_tab[12]
+#define __pyx_kp_u_Dimension_d_is_not_direct __pyx_string_tab[13]
+#define __pyx_n_u_E __pyx_string_tab[14]
+#define __pyx_n_u_Ellipsis __pyx_string_tab[15]
+#define __pyx_kp_u_Empty_shape_tuple_for_cython_arr __pyx_string_tab[16]
+#define __pyx_kp_u_Erro_Labirinto_invlido_sem_S_ou __pyx_string_tab[17]
+#define __pyx_kp_u_Erro_Nenhum_caminho_encontrado __pyx_string_tab[18]
+#define __pyx_n_u_ImportError __pyx_string_tab[19]
+#define __pyx_kp_u_Incompatible_checksums_0x_x_vs_0 __pyx_string_tab[20]
+#define __pyx_n_u_IndexError __pyx_string_tab[21]
+#define __pyx_kp_u_Index_out_of_bounds_axis_d __pyx_string_tab[22]
+#define __pyx_kp_u_Indirect_dimensions_not_supporte __pyx_string_tab[23]
+#define __pyx_kp_u_Invalid_mode_expected_c_or_fortr __pyx_string_tab[24]
+#define __pyx_kp_u_Invalid_shape_in_axis __pyx_string_tab[25]
+#define __pyx_kp_u_Labirinto_invlido __pyx_string_tab[26]
+#define __pyx_n_u_MemoryError __pyx_string_tab[27]
+#define __pyx_kp_u_MemoryView_of __pyx_string_tab[28]
+#define __pyx_kp_u_Note_that_Cython_is_deliberately __pyx_string_tab[29]
+#define __pyx_n_b_O __pyx_string_tab[30]
+#define __pyx_kp_u_Out_of_bounds_on_buffer_access_a __pyx_string_tab[31]
+#define __pyx_kp_u_Performance __pyx_string_tab[32]
+#define __pyx_n_u_PickleError __pyx_string_tab[33]
+#define __pyx_n_u_S __pyx_string_tab[34]
+#define __pyx_n_u_Sequence __pyx_string_tab[35]
+#define __pyx_kp_u_Step_may_not_be_zero_axis_d __pyx_string_tab[36]
+#define __pyx_n_u_TypeError __pyx_string_tab[37]
+#define __pyx_kp_u_Unable_to_convert_item_to_object __pyx_string_tab[38]
+#define __pyx_n_u_ValueError __pyx_string_tab[39]
+#define __pyx_n_u_View_MemoryView __pyx_string_tab[40]
+#define __pyx_kp_u__10 __pyx_string_tab[41]
+#define __pyx_kp_u__11 __pyx_string_tab[42]
+#define __pyx_n_u__12 __pyx_string_tab[43]
+#define __pyx_kp_u__2 __pyx_string_tab[44]
+#define __pyx_kp_u__3 __pyx_string_tab[45]
+#define __pyx_kp_u__4 __pyx_string_tab[46]
+#define __pyx_kp_u__5 __pyx_string_tab[47]
+#define __pyx_kp_u__6 __pyx_string_tab[48]
+#define __pyx_kp_u__7 __pyx_string_tab[49]
+#define __pyx_kp_u__8 __pyx_string_tab[50]
+#define __pyx_kp_u__9 __pyx_string_tab[51]
+#define __pyx_n_u_abc __pyx_string_tab[52]
+#define __pyx_kp_u_add_note __pyx_string_tab[53]
+#define __pyx_n_u_allocate_buffer __pyx_string_tab[54]
+#define __pyx_kp_u_and __pyx_string_tab[55]
+#define __pyx_n_u_asyncio_coroutines __pyx_string_tab[56]
+#define __pyx_kp_u_at_0x __pyx_string_tab[57]
+#define __pyx_n_u_base __pyx_string_tab[58]
+#define __pyx_n_u_benchmark_solver __pyx_string_tab[59]
+#define __pyx_n_u_c __pyx_string_tab[60]
+#define __pyx_n_u_char __pyx_string_tab[61]
+#define __pyx_n_u_class __pyx_string_tab[62]
+#define __pyx_n_u_class_getitem __pyx_string_tab[63]
+#define __pyx_n_u_cline_in_traceback __pyx_string_tab[64]
+#define __pyx_n_u_close __pyx_string_tab[65]
+#define __pyx_kp_u_collections_abc __pyx_string_tab[66]
+#define __pyx_n_u_cols __pyx_string_tab[67]
+#define __pyx_kp_u_contiguous_and_direct __pyx_string_tab[68]
+#define __pyx_kp_u_contiguous_and_indirect __pyx_string_tab[69]
+#define __pyx_n_u_count __pyx_string_tab[70]
+#define __pyx_n_u_dict __pyx_string_tab[71]
+#define __pyx_kp_u_disable __pyx_string_tab[72]
+#define __pyx_n_u_dtype __pyx_string_tab[73]
+#define __pyx_n_u_dtype_is_object __pyx_string_tab[74]
+#define __pyx_kp_u_enable __pyx_string_tab[75]
+#define __pyx_n_u_encode __pyx_string_tab[76]
+#define __pyx_n_u_end_coords __pyx_string_tab[77]
+#define __pyx_n_u_end_time __pyx_string_tab[78]
+#define __pyx_n_u_enumerate __pyx_string_tab[79]
+#define __pyx_n_u_error __pyx_string_tab[80]
+#define __pyx_kp_u_execues_segundo __pyx_string_tab[81]
+#define __pyx_n_u_find_shortest_path_cython_optimi __pyx_string_tab[82]
+#define __pyx_n_u_flags __pyx_string_tab[83]
+#define __pyx_n_u_format __pyx_string_tab[84]
+#define __pyx_n_u_fortran __pyx_string_tab[85]
+#define __pyx_n_u_full __pyx_string_tab[86]
+#define __pyx_n_u_func __pyx_string_tab[87]
+#define __pyx_kp_u_gc __pyx_string_tab[88]
+#define __pyx_n_u_genexpr __pyx_string_tab[89]
+#define __pyx_n_u_getstate __pyx_string_tab[90]
+#define __pyx_kp_u_got __pyx_string_tab[91]
+#define __pyx_kp_u_got_differing_extents_in_dimensi __pyx_string_tab[92]
+#define __pyx_n_u_id __pyx_string_tab[93]
+#define __pyx_n_u_import __pyx_string_tab[94]
+#define __pyx_n_u_index __pyx_string_tab[95]
+#define __pyx_n_u_initializing __pyx_string_tab[96]
+#define __pyx_n_u_int32 __pyx_string_tab[97]
+#define __pyx_n_u_int_grid __pyx_string_tab[98]
+#define __pyx_n_u_is_coroutine __pyx_string_tab[99]
+#define __pyx_kp_u_isenabled __pyx_string_tab[100]
+#define __pyx_n_u_itemsize __pyx_string_tab[101]
+#define __pyx_kp_u_itemsize_0_for_cython_array __pyx_string_tab[102]
+#define __pyx_n_u_iterations __pyx_string_tab[103]
+#define __pyx_kp_u_iterations_Tempo_verso_otimizad __pyx_string_tab[104]
+#define __pyx_n_u_line __pyx_string_tab[105]
+#define __pyx_n_u_lines __pyx_string_tab[106]
+#define __pyx_n_u_main __pyx_string_tab[107]
+#define __pyx_n_u_maze_solver_cy __pyx_string_tab[108]
+#define __pyx_kp_u_maze_solver_cy_pyx __pyx_string_tab[109]
+#define __pyx_n_u_maze_text __pyx_string_tab[110]
+#define __pyx_n_u_memview __pyx_string_tab[111]
+#define __pyx_n_u_mode __pyx_string_tab[112]
+#define __pyx_n_u_module __pyx_string_tab[113]
+#define __pyx_n_u_name __pyx_string_tab[114]
+#define __pyx_n_u_name_2 __pyx_string_tab[115]
+#define __pyx_n_u_ndim __pyx_string_tab[116]
+#define __pyx_n_u_new __pyx_string_tab[117]
+#define __pyx_n_u_next __pyx_string_tab[118]
+#define __pyx_kp_u_no_default___reduce___due_to_non __pyx_string_tab[119]
+#define __pyx_n_u_np __pyx_string_tab[120]
+#define __pyx_n_u_numpy __pyx_string_tab[121]
+#define __pyx_kp_u_numpy__core_multiarray_failed_to __pyx_string_tab[122]
+#define __pyx_kp_u_numpy__core_umath_failed_to_impo __pyx_string_tab[123]
+#define __pyx_n_u_obj __pyx_string_tab[124]
+#define __pyx_kp_u_object __pyx_string_tab[125]
+#define __pyx_n_u_optimized_time __pyx_string_tab[126]
+#define __pyx_n_u_pack __pyx_string_tab[127]
+#define __pyx_n_u_parse_maze_text __pyx_string_tab[128]
+#define __pyx_n_u_path __pyx_string_tab[129]
+#define __pyx_n_u_path_length __pyx_string_tab[130]
+#define __pyx_n_u_pickle __pyx_string_tab[131]
+#define __pyx_n_u_pop __pyx_string_tab[132]
+#define __pyx_n_u_pyx_checksum __pyx_string_tab[133]
+#define __pyx_n_u_pyx_state __pyx_string_tab[134]
+#define __pyx_n_u_pyx_type __pyx_string_tab[135]
+#define __pyx_n_u_pyx_unpickle_Enum __pyx_string_tab[136]
+#define __pyx_n_u_pyx_vtable __pyx_string_tab[137]
+#define __pyx_n_u_qualname __pyx_string_tab[138]
+#define __pyx_n_u_r __pyx_string_tab[139]
+#define __pyx_n_u_range __pyx_string_tab[140]
+#define __pyx_n_u_reduce __pyx_string_tab[141]
+#define __pyx_n_u_reduce_cython __pyx_string_tab[142]
+#define __pyx_n_u_reduce_ex __pyx_string_tab[143]
+#define __pyx_n_u_register __pyx_string_tab[144]
+#define __pyx_n_u_result __pyx_string_tab[145]
+#define __pyx_n_u_result_lines __pyx_string_tab[146]
+#define __pyx_n_u_rows __pyx_string_tab[147]
+#define __pyx_kp_u_s_Comprimento_do_caminho __pyx_string_tab[148]
+#define __pyx_kp_u_s_Tempo_mdio_por_execuo __pyx_string_tab[149]
+#define __pyx_n_u_send __pyx_string_tab[150]
+#define __pyx_n_u_set_name __pyx_string_tab[151]
+#define __pyx_n_u_setstate __pyx_string_tab[152]
+#define __pyx_n_u_setstate_cython __pyx_string_tab[153]
+#define __pyx_n_u_shape __pyx_string_tab[154]
+#define __pyx_n_u_size __pyx_string_tab[155]
+#define __pyx_n_u_solve_maze_from_text __pyx_string_tab[156]
+#define __pyx_n_u_solve_maze_from_text_locals_gene __pyx_string_tab[157]
+#define __pyx_n_u_spec __pyx_string_tab[158]
+#define __pyx_n_u_split __pyx_string_tab[159]
+#define __pyx_n_u_start __pyx_string_tab[160]
+#define __pyx_n_u_start_coords __pyx_string_tab[161]
+#define __pyx_n_u_start_time __pyx_string_tab[162]
+#define __pyx_n_u_step __pyx_string_tab[163]
+#define __pyx_n_u_stop __pyx_string_tab[164]
+#define __pyx_kp_u_strided_and_direct __pyx_string_tab[165]
+#define __pyx_kp_u_strided_and_direct_or_indirect __pyx_string_tab[166]
+#define __pyx_kp_u_strided_and_indirect __pyx_string_tab[167]
+#define __pyx_n_u_strip __pyx_string_tab[168]
+#define __pyx_n_u_struct __pyx_string_tab[169]
+#define __pyx_n_u_test __pyx_string_tab[170]
+#define __pyx_n_u_throw __pyx_string_tab[171]
+#define __pyx_n_u_time __pyx_string_tab[172]
+#define __pyx_n_u_uint8 __pyx_string_tab[173]
+#define __pyx_kp_u_unable_to_allocate_array_data __pyx_string_tab[174]
+#define __pyx_kp_u_unable_to_allocate_shape_and_str __pyx_string_tab[175]
+#define __pyx_n_u_unpack __pyx_string_tab[176]
+#define __pyx_n_u_update __pyx_string_tab[177]
+#define __pyx_n_u_value __pyx_string_tab[178]
+#define __pyx_n_u_x __pyx_string_tab[179]
+#define __pyx_n_u_zeros __pyx_string_tab[180]
 /* #### Code section: module_state_clear ### */
 #if CYTHON_USE_MODULE_STATE
 static CYTHON_SMALL_CODE int __pyx_m_clear(PyObject *m) {
@@ -3762,6 +4018,8 @@ static CYTHON_SMALL_CODE int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_ptype_5numpy_flexible);
   Py_CLEAR(clear_module_state->__pyx_ptype_5numpy_character);
   Py_CLEAR(clear_module_state->__pyx_ptype_5numpy_ufunc);
+  Py_CLEAR(clear_module_state->__pyx_ptype_14maze_solver_cy___pyx_scope_struct__genexpr);
+  Py_CLEAR(clear_module_state->__pyx_type_14maze_solver_cy___pyx_scope_struct__genexpr);
   Py_CLEAR(clear_module_state->__pyx_array_type);
   Py_CLEAR(clear_module_state->__pyx_type___pyx_array);
   Py_CLEAR(clear_module_state->__pyx_MemviewEnum_type);
@@ -3771,11 +4029,12 @@ static CYTHON_SMALL_CODE int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_memoryviewslice_type);
   Py_CLEAR(clear_module_state->__pyx_type___pyx_memoryviewslice);
   for (int i=0; i<1; ++i) { Py_CLEAR(clear_module_state->__pyx_slice[i]); }
-  for (int i=0; i<2; ++i) { Py_CLEAR(clear_module_state->__pyx_tuple[i]); }
-  for (int i=0; i<1; ++i) { Py_CLEAR(clear_module_state->__pyx_codeobj_tab[i]); }
-  for (int i=0; i<139; ++i) { Py_CLEAR(clear_module_state->__pyx_string_tab[i]); }
+  for (int i=0; i<3; ++i) { Py_CLEAR(clear_module_state->__pyx_tuple[i]); }
+  for (int i=0; i<5; ++i) { Py_CLEAR(clear_module_state->__pyx_codeobj_tab[i]); }
+  for (int i=0; i<181; ++i) { Py_CLEAR(clear_module_state->__pyx_string_tab[i]); }
   Py_CLEAR(clear_module_state->__pyx_int_0);
   Py_CLEAR(clear_module_state->__pyx_int_1);
+  Py_CLEAR(clear_module_state->__pyx_int_1000);
   Py_CLEAR(clear_module_state->__pyx_int_112105877);
   Py_CLEAR(clear_module_state->__pyx_int_136983863);
   Py_CLEAR(clear_module_state->__pyx_int_184977713);
@@ -3816,6 +4075,8 @@ static CYTHON_SMALL_CODE int __pyx_m_traverse(PyObject *m, visitproc visit, void
   Py_VISIT(traverse_module_state->__pyx_ptype_5numpy_flexible);
   Py_VISIT(traverse_module_state->__pyx_ptype_5numpy_character);
   Py_VISIT(traverse_module_state->__pyx_ptype_5numpy_ufunc);
+  Py_VISIT(traverse_module_state->__pyx_ptype_14maze_solver_cy___pyx_scope_struct__genexpr);
+  Py_VISIT(traverse_module_state->__pyx_type_14maze_solver_cy___pyx_scope_struct__genexpr);
   Py_VISIT(traverse_module_state->__pyx_array_type);
   Py_VISIT(traverse_module_state->__pyx_type___pyx_array);
   Py_VISIT(traverse_module_state->__pyx_MemviewEnum_type);
@@ -3825,11 +4086,12 @@ static CYTHON_SMALL_CODE int __pyx_m_traverse(PyObject *m, visitproc visit, void
   Py_VISIT(traverse_module_state->__pyx_memoryviewslice_type);
   Py_VISIT(traverse_module_state->__pyx_type___pyx_memoryviewslice);
   for (int i=0; i<1; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_slice[i]); }
-  for (int i=0; i<2; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_tuple[i]); }
-  for (int i=0; i<1; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_codeobj_tab[i]); }
-  for (int i=0; i<139; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_string_tab[i]); }
+  for (int i=0; i<3; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_tuple[i]); }
+  for (int i=0; i<5; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_codeobj_tab[i]); }
+  for (int i=0; i<181; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_string_tab[i]); }
   __Pyx_VISIT_CONST(traverse_module_state->__pyx_int_0);
   __Pyx_VISIT_CONST(traverse_module_state->__pyx_int_1);
+  __Pyx_VISIT_CONST(traverse_module_state->__pyx_int_1000);
   __Pyx_VISIT_CONST(traverse_module_state->__pyx_int_112105877);
   __Pyx_VISIT_CONST(traverse_module_state->__pyx_int_136983863);
   __Pyx_VISIT_CONST(traverse_module_state->__pyx_int_184977713);
@@ -18936,46 +19198,343 @@ static CYTHON_INLINE NPY_DATETIMEUNIT __pyx_f_5numpy_get_datetime64_unit(PyObjec
   return __pyx_r;
 }
 
-/* "maze_solver_cy.pyx":22
- * # se S e E so apenas coordenadas e o grid os marca como PATH_CELL.
+/* "maze_solver_cy.pyx":33
+ *     queue_index_t capacity
  * 
- * cpdef list find_shortest_path_cython(cnp.int32_t[:, ::1] int_grid, tuple start_coords, tuple end_coords):             # <<<<<<<<<<<<<<
- *     """
- *     Encontra o caminho mais curto no labirinto (grid de inteiros) usando BFS
+ * cdef inline void init_queue(CircularQueue* q, queue_index_t capacity) nogil:             # <<<<<<<<<<<<<<
+ *     """Inicializa a queue circular com capacidade especificada"""
+ *     q.data_r = <coord_type_t*>malloc(capacity * sizeof(coord_type_t))
 */
 
-static PyObject *__pyx_pw_14maze_solver_cy_1find_shortest_path_cython(PyObject *__pyx_self, 
+static CYTHON_INLINE void __pyx_f_14maze_solver_cy_init_queue(struct __pyx_t_14maze_solver_cy_CircularQueue *__pyx_v_q, __pyx_t_14maze_solver_cy_queue_index_t __pyx_v_capacity) {
+
+  /* "maze_solver_cy.pyx":35
+ * cdef inline void init_queue(CircularQueue* q, queue_index_t capacity) nogil:
+ *     """Inicializa a queue circular com capacidade especificada"""
+ *     q.data_r = <coord_type_t*>malloc(capacity * sizeof(coord_type_t))             # <<<<<<<<<<<<<<
+ *     q.data_c = <coord_type_t*>malloc(capacity * sizeof(coord_type_t))
+ *     q.head = 0
+*/
+  __pyx_v_q->data_r = ((__pyx_t_14maze_solver_cy_coord_type_t *)malloc((__pyx_v_capacity * (sizeof(__pyx_t_14maze_solver_cy_coord_type_t)))));
+
+  /* "maze_solver_cy.pyx":36
+ *     """Inicializa a queue circular com capacidade especificada"""
+ *     q.data_r = <coord_type_t*>malloc(capacity * sizeof(coord_type_t))
+ *     q.data_c = <coord_type_t*>malloc(capacity * sizeof(coord_type_t))             # <<<<<<<<<<<<<<
+ *     q.head = 0
+ *     q.tail = 0
+*/
+  __pyx_v_q->data_c = ((__pyx_t_14maze_solver_cy_coord_type_t *)malloc((__pyx_v_capacity * (sizeof(__pyx_t_14maze_solver_cy_coord_type_t)))));
+
+  /* "maze_solver_cy.pyx":37
+ *     q.data_r = <coord_type_t*>malloc(capacity * sizeof(coord_type_t))
+ *     q.data_c = <coord_type_t*>malloc(capacity * sizeof(coord_type_t))
+ *     q.head = 0             # <<<<<<<<<<<<<<
+ *     q.tail = 0
+ *     q.size = 0
+*/
+  __pyx_v_q->head = 0;
+
+  /* "maze_solver_cy.pyx":38
+ *     q.data_c = <coord_type_t*>malloc(capacity * sizeof(coord_type_t))
+ *     q.head = 0
+ *     q.tail = 0             # <<<<<<<<<<<<<<
+ *     q.size = 0
+ *     q.capacity = capacity
+*/
+  __pyx_v_q->tail = 0;
+
+  /* "maze_solver_cy.pyx":39
+ *     q.head = 0
+ *     q.tail = 0
+ *     q.size = 0             # <<<<<<<<<<<<<<
+ *     q.capacity = capacity
+ * 
+*/
+  __pyx_v_q->size = 0;
+
+  /* "maze_solver_cy.pyx":40
+ *     q.tail = 0
+ *     q.size = 0
+ *     q.capacity = capacity             # <<<<<<<<<<<<<<
+ * 
+ * cdef inline void free_queue(CircularQueue* q) nogil:
+*/
+  __pyx_v_q->capacity = __pyx_v_capacity;
+
+  /* "maze_solver_cy.pyx":33
+ *     queue_index_t capacity
+ * 
+ * cdef inline void init_queue(CircularQueue* q, queue_index_t capacity) nogil:             # <<<<<<<<<<<<<<
+ *     """Inicializa a queue circular com capacidade especificada"""
+ *     q.data_r = <coord_type_t*>malloc(capacity * sizeof(coord_type_t))
+*/
+
+  /* function exit code */
+}
+
+/* "maze_solver_cy.pyx":42
+ *     q.capacity = capacity
+ * 
+ * cdef inline void free_queue(CircularQueue* q) nogil:             # <<<<<<<<<<<<<<
+ *     """Libera a memria da queue"""
+ *     if q.data_r != NULL:
+*/
+
+static CYTHON_INLINE void __pyx_f_14maze_solver_cy_free_queue(struct __pyx_t_14maze_solver_cy_CircularQueue *__pyx_v_q) {
+  int __pyx_t_1;
+
+  /* "maze_solver_cy.pyx":44
+ * cdef inline void free_queue(CircularQueue* q) nogil:
+ *     """Libera a memria da queue"""
+ *     if q.data_r != NULL:             # <<<<<<<<<<<<<<
+ *         free(q.data_r)
+ *     if q.data_c != NULL:
+*/
+  __pyx_t_1 = (__pyx_v_q->data_r != NULL);
+  if (__pyx_t_1) {
+
+    /* "maze_solver_cy.pyx":45
+ *     """Libera a memria da queue"""
+ *     if q.data_r != NULL:
+ *         free(q.data_r)             # <<<<<<<<<<<<<<
+ *     if q.data_c != NULL:
+ *         free(q.data_c)
+*/
+    free(__pyx_v_q->data_r);
+
+    /* "maze_solver_cy.pyx":44
+ * cdef inline void free_queue(CircularQueue* q) nogil:
+ *     """Libera a memria da queue"""
+ *     if q.data_r != NULL:             # <<<<<<<<<<<<<<
+ *         free(q.data_r)
+ *     if q.data_c != NULL:
+*/
+  }
+
+  /* "maze_solver_cy.pyx":46
+ *     if q.data_r != NULL:
+ *         free(q.data_r)
+ *     if q.data_c != NULL:             # <<<<<<<<<<<<<<
+ *         free(q.data_c)
+ * 
+*/
+  __pyx_t_1 = (__pyx_v_q->data_c != NULL);
+  if (__pyx_t_1) {
+
+    /* "maze_solver_cy.pyx":47
+ *         free(q.data_r)
+ *     if q.data_c != NULL:
+ *         free(q.data_c)             # <<<<<<<<<<<<<<
+ * 
+ * cdef inline bint is_queue_empty(CircularQueue* q) nogil:
+*/
+    free(__pyx_v_q->data_c);
+
+    /* "maze_solver_cy.pyx":46
+ *     if q.data_r != NULL:
+ *         free(q.data_r)
+ *     if q.data_c != NULL:             # <<<<<<<<<<<<<<
+ *         free(q.data_c)
+ * 
+*/
+  }
+
+  /* "maze_solver_cy.pyx":42
+ *     q.capacity = capacity
+ * 
+ * cdef inline void free_queue(CircularQueue* q) nogil:             # <<<<<<<<<<<<<<
+ *     """Libera a memria da queue"""
+ *     if q.data_r != NULL:
+*/
+
+  /* function exit code */
+}
+
+/* "maze_solver_cy.pyx":49
+ *         free(q.data_c)
+ * 
+ * cdef inline bint is_queue_empty(CircularQueue* q) nogil:             # <<<<<<<<<<<<<<
+ *     """Verifica se a queue est vazia"""
+ *     return q.size == 0
+*/
+
+static CYTHON_INLINE int __pyx_f_14maze_solver_cy_is_queue_empty(struct __pyx_t_14maze_solver_cy_CircularQueue *__pyx_v_q) {
+  int __pyx_r;
+
+  /* "maze_solver_cy.pyx":51
+ * cdef inline bint is_queue_empty(CircularQueue* q) nogil:
+ *     """Verifica se a queue est vazia"""
+ *     return q.size == 0             # <<<<<<<<<<<<<<
+ * 
+ * cdef inline void enqueue(CircularQueue* q, coord_type_t r, coord_type_t c) nogil:
+*/
+  __pyx_r = (__pyx_v_q->size == 0);
+  goto __pyx_L0;
+
+  /* "maze_solver_cy.pyx":49
+ *         free(q.data_c)
+ * 
+ * cdef inline bint is_queue_empty(CircularQueue* q) nogil:             # <<<<<<<<<<<<<<
+ *     """Verifica se a queue est vazia"""
+ *     return q.size == 0
+*/
+
+  /* function exit code */
+  __pyx_L0:;
+  return __pyx_r;
+}
+
+/* "maze_solver_cy.pyx":53
+ *     return q.size == 0
+ * 
+ * cdef inline void enqueue(CircularQueue* q, coord_type_t r, coord_type_t c) nogil:             # <<<<<<<<<<<<<<
+ *     """Adiciona elemento na queue (assume que h espao)"""
+ *     q.data_r[q.tail] = r
+*/
+
+static CYTHON_INLINE void __pyx_f_14maze_solver_cy_enqueue(struct __pyx_t_14maze_solver_cy_CircularQueue *__pyx_v_q, __pyx_t_14maze_solver_cy_coord_type_t __pyx_v_r, __pyx_t_14maze_solver_cy_coord_type_t __pyx_v_c) {
+
+  /* "maze_solver_cy.pyx":55
+ * cdef inline void enqueue(CircularQueue* q, coord_type_t r, coord_type_t c) nogil:
+ *     """Adiciona elemento na queue (assume que h espao)"""
+ *     q.data_r[q.tail] = r             # <<<<<<<<<<<<<<
+ *     q.data_c[q.tail] = c
+ *     q.tail = (q.tail + 1) % q.capacity
+*/
+  (__pyx_v_q->data_r[__pyx_v_q->tail]) = __pyx_v_r;
+
+  /* "maze_solver_cy.pyx":56
+ *     """Adiciona elemento na queue (assume que h espao)"""
+ *     q.data_r[q.tail] = r
+ *     q.data_c[q.tail] = c             # <<<<<<<<<<<<<<
+ *     q.tail = (q.tail + 1) % q.capacity
+ *     q.size += 1
+*/
+  (__pyx_v_q->data_c[__pyx_v_q->tail]) = __pyx_v_c;
+
+  /* "maze_solver_cy.pyx":57
+ *     q.data_r[q.tail] = r
+ *     q.data_c[q.tail] = c
+ *     q.tail = (q.tail + 1) % q.capacity             # <<<<<<<<<<<<<<
+ *     q.size += 1
+ * 
+*/
+  __pyx_v_q->tail = ((__pyx_v_q->tail + 1) % __pyx_v_q->capacity);
+
+  /* "maze_solver_cy.pyx":58
+ *     q.data_c[q.tail] = c
+ *     q.tail = (q.tail + 1) % q.capacity
+ *     q.size += 1             # <<<<<<<<<<<<<<
+ * 
+ * cdef inline void dequeue(CircularQueue* q, coord_type_t* r, coord_type_t* c) nogil:
+*/
+  __pyx_v_q->size = (__pyx_v_q->size + 1);
+
+  /* "maze_solver_cy.pyx":53
+ *     return q.size == 0
+ * 
+ * cdef inline void enqueue(CircularQueue* q, coord_type_t r, coord_type_t c) nogil:             # <<<<<<<<<<<<<<
+ *     """Adiciona elemento na queue (assume que h espao)"""
+ *     q.data_r[q.tail] = r
+*/
+
+  /* function exit code */
+}
+
+/* "maze_solver_cy.pyx":60
+ *     q.size += 1
+ * 
+ * cdef inline void dequeue(CircularQueue* q, coord_type_t* r, coord_type_t* c) nogil:             # <<<<<<<<<<<<<<
+ *     """Remove elemento da queue (assume que no est vazia)"""
+ *     r[0] = q.data_r[q.head]
+*/
+
+static CYTHON_INLINE void __pyx_f_14maze_solver_cy_dequeue(struct __pyx_t_14maze_solver_cy_CircularQueue *__pyx_v_q, __pyx_t_14maze_solver_cy_coord_type_t *__pyx_v_r, __pyx_t_14maze_solver_cy_coord_type_t *__pyx_v_c) {
+
+  /* "maze_solver_cy.pyx":62
+ * cdef inline void dequeue(CircularQueue* q, coord_type_t* r, coord_type_t* c) nogil:
+ *     """Remove elemento da queue (assume que no est vazia)"""
+ *     r[0] = q.data_r[q.head]             # <<<<<<<<<<<<<<
+ *     c[0] = q.data_c[q.head]
+ *     q.head = (q.head + 1) % q.capacity
+*/
+  (__pyx_v_r[0]) = (__pyx_v_q->data_r[__pyx_v_q->head]);
+
+  /* "maze_solver_cy.pyx":63
+ *     """Remove elemento da queue (assume que no est vazia)"""
+ *     r[0] = q.data_r[q.head]
+ *     c[0] = q.data_c[q.head]             # <<<<<<<<<<<<<<
+ *     q.head = (q.head + 1) % q.capacity
+ *     q.size -= 1
+*/
+  (__pyx_v_c[0]) = (__pyx_v_q->data_c[__pyx_v_q->head]);
+
+  /* "maze_solver_cy.pyx":64
+ *     r[0] = q.data_r[q.head]
+ *     c[0] = q.data_c[q.head]
+ *     q.head = (q.head + 1) % q.capacity             # <<<<<<<<<<<<<<
+ *     q.size -= 1
+ * 
+*/
+  __pyx_v_q->head = ((__pyx_v_q->head + 1) % __pyx_v_q->capacity);
+
+  /* "maze_solver_cy.pyx":65
+ *     c[0] = q.data_c[q.head]
+ *     q.head = (q.head + 1) % q.capacity
+ *     q.size -= 1             # <<<<<<<<<<<<<<
+ * 
+ * # Direes pr-compiladas como constantes
+*/
+  __pyx_v_q->size = (__pyx_v_q->size - 1);
+
+  /* "maze_solver_cy.pyx":60
+ *     q.size += 1
+ * 
+ * cdef inline void dequeue(CircularQueue* q, coord_type_t* r, coord_type_t* c) nogil:             # <<<<<<<<<<<<<<
+ *     """Remove elemento da queue (assume que no est vazia)"""
+ *     r[0] = q.data_r[q.head]
+*/
+
+  /* function exit code */
+}
+
+/* "maze_solver_cy.pyx":77
+ * DEF DC_RIGHT = 1
+ * 
+ * cpdef list find_shortest_path_cython_optimized(cnp.int32_t[:, ::1] int_grid, tuple start_coords, tuple end_coords):             # <<<<<<<<<<<<<<
+ *     """
+ *     Verso otimizada do BFS para encontrar o caminho mais curto no labirinto.
+*/
+
+static PyObject *__pyx_pw_14maze_solver_cy_1find_shortest_path_cython_optimized(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-static PyObject *__pyx_f_14maze_solver_cy_find_shortest_path_cython(__Pyx_memviewslice __pyx_v_int_grid, PyObject *__pyx_v_start_coords, PyObject *__pyx_v_end_coords, CYTHON_UNUSED int __pyx_skip_dispatch) {
+static PyObject *__pyx_f_14maze_solver_cy_find_shortest_path_cython_optimized(__Pyx_memviewslice __pyx_v_int_grid, PyObject *__pyx_v_start_coords, PyObject *__pyx_v_end_coords, CYTHON_UNUSED int __pyx_skip_dispatch) {
   int __pyx_v_rows;
   int __pyx_v_cols;
   __pyx_t_14maze_solver_cy_coord_type_t __pyx_v_start_r;
   __pyx_t_14maze_solver_cy_coord_type_t __pyx_v_start_c;
   __pyx_t_14maze_solver_cy_coord_type_t __pyx_v_end_r;
   __pyx_t_14maze_solver_cy_coord_type_t __pyx_v_end_c;
-  PyObject *__pyx_v_queue = NULL;
+  __pyx_t_14maze_solver_cy_queue_index_t __pyx_v_max_queue_size;
+  struct __pyx_t_14maze_solver_cy_CircularQueue __pyx_v_queue;
   PyObject *__pyx_v_visited_np_array = NULL;
   __Pyx_memviewslice __pyx_v_visited = { 0, 0, { 0 }, { 0 }, { 0 } };
   PyObject *__pyx_v_pred_r_np = NULL;
   PyObject *__pyx_v_pred_c_np = NULL;
   __Pyx_memviewslice __pyx_v_pred_r = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_memviewslice __pyx_v_pred_c = { 0, 0, { 0 }, { 0 }, { 0 } };
-  int __pyx_v_directions[4][2];
   __pyx_t_14maze_solver_cy_coord_type_t __pyx_v_r;
   __pyx_t_14maze_solver_cy_coord_type_t __pyx_v_c;
   __pyx_t_14maze_solver_cy_coord_type_t __pyx_v_nr;
   __pyx_t_14maze_solver_cy_coord_type_t __pyx_v_nc;
-  PyObject *__pyx_v_current_pos_tuple = 0;
-  int __pyx_v_i;
   int __pyx_v_path_found;
-  PyObject *__pyx_v_dr = NULL;
-  PyObject *__pyx_v_dc = NULL;
-  PyObject *__pyx_v_path_deque = NULL;
+  PyObject *__pyx_v_path = 0;
   __pyx_t_14maze_solver_cy_coord_type_t __pyx_v_curr_r;
   __pyx_t_14maze_solver_cy_coord_type_t __pyx_v_curr_c;
   __pyx_t_14maze_solver_cy_coord_type_t __pyx_v_prev_r;
@@ -18983,28 +19542,27 @@ static PyObject *__pyx_f_14maze_solver_cy_find_shortest_path_cython(__Pyx_memvie
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __pyx_t_14maze_solver_cy_coord_type_t __pyx_t_1;
-  PyObject *__pyx_t_2 = NULL;
-  PyObject *__pyx_t_3 = NULL;
-  PyObject *__pyx_t_4 = NULL;
-  PyObject *__pyx_t_5 = NULL;
-  size_t __pyx_t_6;
-  int __pyx_t_7;
+  int __pyx_t_2;
+  int __pyx_t_3;
+  Py_ssize_t __pyx_t_4;
+  Py_ssize_t __pyx_t_5;
+  PyObject *__pyx_t_6 = NULL;
+  PyObject *__pyx_t_7 = NULL;
   PyObject *__pyx_t_8 = NULL;
   PyObject *__pyx_t_9 = NULL;
-  __Pyx_memviewslice __pyx_t_10 = { 0, 0, { 0 }, { 0 }, { 0 } };
-  __Pyx_memviewslice __pyx_t_11 = { 0, 0, { 0 }, { 0 }, { 0 } };
-  int __pyx_t_12;
-  int __pyx_t_13;
-  int __pyx_t_14;
-  Py_ssize_t __pyx_t_15;
-  Py_ssize_t __pyx_t_16;
+  PyObject *__pyx_t_10 = NULL;
+  PyObject *__pyx_t_11 = NULL;
+  size_t __pyx_t_12;
+  __Pyx_memviewslice __pyx_t_13 = { 0, 0, { 0 }, { 0 }, { 0 } };
+  __Pyx_memviewslice __pyx_t_14 = { 0, 0, { 0 }, { 0 }, { 0 } };
+  int __pyx_t_15;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("find_shortest_path_cython", 0);
+  __Pyx_RefNannySetupContext("find_shortest_path_cython_optimized", 0);
 
-  /* "maze_solver_cy.pyx":27
- *     otimizado com rastreamento de predecessores para labirintos grandes.
+  /* "maze_solver_cy.pyx":88
+ *     - Eliminao de checagens redundantes
  *     """
  *     cdef int rows = int_grid.shape[0]             # <<<<<<<<<<<<<<
  *     cdef int cols = int_grid.shape[1]
@@ -19012,7 +19570,7 @@ static PyObject *__pyx_f_14maze_solver_cy_find_shortest_path_cython(__Pyx_memvie
 */
   __pyx_v_rows = (__pyx_v_int_grid.shape[0]);
 
-  /* "maze_solver_cy.pyx":28
+  /* "maze_solver_cy.pyx":89
  *     """
  *     cdef int rows = int_grid.shape[0]
  *     cdef int cols = int_grid.shape[1]             # <<<<<<<<<<<<<<
@@ -19021,7 +19579,7 @@ static PyObject *__pyx_f_14maze_solver_cy_find_shortest_path_cython(__Pyx_memvie
 */
   __pyx_v_cols = (__pyx_v_int_grid.shape[1]);
 
-  /* "maze_solver_cy.pyx":30
+  /* "maze_solver_cy.pyx":91
  *     cdef int cols = int_grid.shape[1]
  * 
  *     cdef coord_type_t start_r = start_coords[0]             # <<<<<<<<<<<<<<
@@ -19030,12 +19588,12 @@ static PyObject *__pyx_f_14maze_solver_cy_find_shortest_path_cython(__Pyx_memvie
 */
   if (unlikely(__pyx_v_start_coords == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-    __PYX_ERR(0, 30, __pyx_L1_error)
+    __PYX_ERR(0, 91, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_PyLong_As_npy_int32(__Pyx_PyTuple_GET_ITEM(__pyx_v_start_coords, 0)); if (unlikely((__pyx_t_1 == ((npy_int32)-1)) && PyErr_Occurred())) __PYX_ERR(0, 30, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyLong_As_npy_int32(__Pyx_PyTuple_GET_ITEM(__pyx_v_start_coords, 0)); if (unlikely((__pyx_t_1 == ((npy_int32)-1)) && PyErr_Occurred())) __PYX_ERR(0, 91, __pyx_L1_error)
   __pyx_v_start_r = __pyx_t_1;
 
-  /* "maze_solver_cy.pyx":31
+  /* "maze_solver_cy.pyx":92
  * 
  *     cdef coord_type_t start_r = start_coords[0]
  *     cdef coord_type_t start_c = start_coords[1]             # <<<<<<<<<<<<<<
@@ -19044,12 +19602,12 @@ static PyObject *__pyx_f_14maze_solver_cy_find_shortest_path_cython(__Pyx_memvie
 */
   if (unlikely(__pyx_v_start_coords == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-    __PYX_ERR(0, 31, __pyx_L1_error)
+    __PYX_ERR(0, 92, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_PyLong_As_npy_int32(__Pyx_PyTuple_GET_ITEM(__pyx_v_start_coords, 1)); if (unlikely((__pyx_t_1 == ((npy_int32)-1)) && PyErr_Occurred())) __PYX_ERR(0, 31, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyLong_As_npy_int32(__Pyx_PyTuple_GET_ITEM(__pyx_v_start_coords, 1)); if (unlikely((__pyx_t_1 == ((npy_int32)-1)) && PyErr_Occurred())) __PYX_ERR(0, 92, __pyx_L1_error)
   __pyx_v_start_c = __pyx_t_1;
 
-  /* "maze_solver_cy.pyx":32
+  /* "maze_solver_cy.pyx":93
  *     cdef coord_type_t start_r = start_coords[0]
  *     cdef coord_type_t start_c = start_coords[1]
  *     cdef coord_type_t end_r = end_coords[0]             # <<<<<<<<<<<<<<
@@ -19058,737 +19616,1164 @@ static PyObject *__pyx_f_14maze_solver_cy_find_shortest_path_cython(__Pyx_memvie
 */
   if (unlikely(__pyx_v_end_coords == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-    __PYX_ERR(0, 32, __pyx_L1_error)
+    __PYX_ERR(0, 93, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_PyLong_As_npy_int32(__Pyx_PyTuple_GET_ITEM(__pyx_v_end_coords, 0)); if (unlikely((__pyx_t_1 == ((npy_int32)-1)) && PyErr_Occurred())) __PYX_ERR(0, 32, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyLong_As_npy_int32(__Pyx_PyTuple_GET_ITEM(__pyx_v_end_coords, 0)); if (unlikely((__pyx_t_1 == ((npy_int32)-1)) && PyErr_Occurred())) __PYX_ERR(0, 93, __pyx_L1_error)
   __pyx_v_end_r = __pyx_t_1;
 
-  /* "maze_solver_cy.pyx":33
+  /* "maze_solver_cy.pyx":94
  *     cdef coord_type_t start_c = start_coords[1]
  *     cdef coord_type_t end_r = end_coords[0]
  *     cdef coord_type_t end_c = end_coords[1]             # <<<<<<<<<<<<<<
  * 
- *     # Fila para o BFS: armazena apenas tuplas (linha, coluna)
+ *     # Validao rpida das coordenadas
 */
   if (unlikely(__pyx_v_end_coords == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-    __PYX_ERR(0, 33, __pyx_L1_error)
+    __PYX_ERR(0, 94, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_PyLong_As_npy_int32(__Pyx_PyTuple_GET_ITEM(__pyx_v_end_coords, 1)); if (unlikely((__pyx_t_1 == ((npy_int32)-1)) && PyErr_Occurred())) __PYX_ERR(0, 33, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyLong_As_npy_int32(__Pyx_PyTuple_GET_ITEM(__pyx_v_end_coords, 1)); if (unlikely((__pyx_t_1 == ((npy_int32)-1)) && PyErr_Occurred())) __PYX_ERR(0, 94, __pyx_L1_error)
   __pyx_v_end_c = __pyx_t_1;
 
-  /* "maze_solver_cy.pyx":36
+  /* "maze_solver_cy.pyx":97
  * 
- *     # Fila para o BFS: armazena apenas tuplas (linha, coluna)
- *     queue = collections.deque()             # <<<<<<<<<<<<<<
- *     queue.append((start_r, start_c))
- * 
+ *     # Validao rpida das coordenadas
+ *     if (start_r < 0 or start_r >= rows or start_c < 0 or start_c >= cols or             # <<<<<<<<<<<<<<
+ *         end_r < 0 or end_r >= rows or end_c < 0 or end_c >= cols):
+ *         return None
 */
-  __pyx_t_3 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_collections); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 36, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_deque); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 36, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_6 = 1;
-  #if CYTHON_UNPACK_METHODS
-  if (unlikely(PyMethod_Check(__pyx_t_5))) {
-    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_5);
-    assert(__pyx_t_3);
-    PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_5);
-    __Pyx_INCREF(__pyx_t_3);
-    __Pyx_INCREF(__pyx__function);
-    __Pyx_DECREF_SET(__pyx_t_5, __pyx__function);
-    __pyx_t_6 = 0;
+  __pyx_t_3 = (__pyx_v_start_r < 0);
+  if (!__pyx_t_3) {
+  } else {
+    __pyx_t_2 = __pyx_t_3;
+    goto __pyx_L4_bool_binop_done;
   }
-  #endif
-  {
-    PyObject *__pyx_callargs[2] = {__pyx_t_3, NULL};
-    __pyx_t_2 = __Pyx_PyObject_FastCall(__pyx_t_5, __pyx_callargs+__pyx_t_6, (1-__pyx_t_6) | (__pyx_t_6*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-    __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = (__pyx_v_start_r >= __pyx_v_rows);
+  if (!__pyx_t_3) {
+  } else {
+    __pyx_t_2 = __pyx_t_3;
+    goto __pyx_L4_bool_binop_done;
   }
-  __pyx_v_queue = __pyx_t_2;
-  __pyx_t_2 = 0;
+  __pyx_t_3 = (__pyx_v_start_c < 0);
+  if (!__pyx_t_3) {
+  } else {
+    __pyx_t_2 = __pyx_t_3;
+    goto __pyx_L4_bool_binop_done;
+  }
+  __pyx_t_3 = (__pyx_v_start_c >= __pyx_v_cols);
+  if (!__pyx_t_3) {
+  } else {
+    __pyx_t_2 = __pyx_t_3;
+    goto __pyx_L4_bool_binop_done;
+  }
 
-  /* "maze_solver_cy.pyx":37
- *     # Fila para o BFS: armazena apenas tuplas (linha, coluna)
- *     queue = collections.deque()
- *     queue.append((start_r, start_c))             # <<<<<<<<<<<<<<
+  /* "maze_solver_cy.pyx":98
+ *     # Validao rpida das coordenadas
+ *     if (start_r < 0 or start_r >= rows or start_c < 0 or start_c >= cols or
+ *         end_r < 0 or end_r >= rows or end_c < 0 or end_c >= cols):             # <<<<<<<<<<<<<<
+ *         return None
  * 
- *     # Array 'visited'
 */
-  __pyx_t_2 = __Pyx_PyLong_From_npy_int32(__pyx_v_start_r); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 37, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_5 = __Pyx_PyLong_From_npy_int32(__pyx_v_start_c); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 37, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 37, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_GIVEREF(__pyx_t_2);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_2) != (0)) __PYX_ERR(0, 37, __pyx_L1_error);
-  __Pyx_GIVEREF(__pyx_t_5);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_t_5) != (0)) __PYX_ERR(0, 37, __pyx_L1_error);
-  __pyx_t_2 = 0;
-  __pyx_t_5 = 0;
-  __pyx_t_7 = __Pyx_PyObject_Append(__pyx_v_queue, __pyx_t_3); if (unlikely(__pyx_t_7 == ((int)-1))) __PYX_ERR(0, 37, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-
-  /* "maze_solver_cy.pyx":40
- * 
- *     # Array 'visited'
- *     visited_np_array = np.zeros((rows, cols), dtype=np.uint8) # np.bool_  uint8             # <<<<<<<<<<<<<<
- *     visited_np_array[start_r, start_c] = 1 # Marca o incio como visitado
- *     cdef visited_cell_type_t[:, ::1] visited = visited_np_array
-*/
-  __pyx_t_5 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 40, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 40, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyLong_From_int(__pyx_v_rows); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 40, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_8 = __Pyx_PyLong_From_int(__pyx_v_cols); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 40, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_9 = PyTuple_New(2); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 40, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_9);
-  __Pyx_GIVEREF(__pyx_t_2);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_9, 0, __pyx_t_2) != (0)) __PYX_ERR(0, 40, __pyx_L1_error);
-  __Pyx_GIVEREF(__pyx_t_8);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_9, 1, __pyx_t_8) != (0)) __PYX_ERR(0, 40, __pyx_L1_error);
-  __pyx_t_2 = 0;
-  __pyx_t_8 = 0;
-  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 40, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_uint8); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 40, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __pyx_t_6 = 1;
-  #if CYTHON_UNPACK_METHODS
-  if (unlikely(PyMethod_Check(__pyx_t_4))) {
-    __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_4);
-    assert(__pyx_t_5);
-    PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_4);
-    __Pyx_INCREF(__pyx_t_5);
-    __Pyx_INCREF(__pyx__function);
-    __Pyx_DECREF_SET(__pyx_t_4, __pyx__function);
-    __pyx_t_6 = 0;
+  __pyx_t_3 = (__pyx_v_end_r < 0);
+  if (!__pyx_t_3) {
+  } else {
+    __pyx_t_2 = __pyx_t_3;
+    goto __pyx_L4_bool_binop_done;
   }
-  #endif
-  {
-    PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 1 : 0)] = {__pyx_t_5, __pyx_t_9};
-    __pyx_t_8 = __Pyx_MakeVectorcallBuilderKwds(1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 40, __pyx_L1_error)
+  __pyx_t_3 = (__pyx_v_end_r >= __pyx_v_rows);
+  if (!__pyx_t_3) {
+  } else {
+    __pyx_t_2 = __pyx_t_3;
+    goto __pyx_L4_bool_binop_done;
+  }
+  __pyx_t_3 = (__pyx_v_end_c < 0);
+  if (!__pyx_t_3) {
+  } else {
+    __pyx_t_2 = __pyx_t_3;
+    goto __pyx_L4_bool_binop_done;
+  }
+  __pyx_t_3 = (__pyx_v_end_c >= __pyx_v_cols);
+  __pyx_t_2 = __pyx_t_3;
+  __pyx_L4_bool_binop_done:;
+
+  /* "maze_solver_cy.pyx":97
+ * 
+ *     # Validao rpida das coordenadas
+ *     if (start_r < 0 or start_r >= rows or start_c < 0 or start_c >= cols or             # <<<<<<<<<<<<<<
+ *         end_r < 0 or end_r >= rows or end_c < 0 or end_c >= cols):
+ *         return None
+*/
+  if (__pyx_t_2) {
+
+    /* "maze_solver_cy.pyx":99
+ *     if (start_r < 0 or start_r >= rows or start_c < 0 or start_c >= cols or
+ *         end_r < 0 or end_r >= rows or end_c < 0 or end_c >= cols):
+ *         return None             # <<<<<<<<<<<<<<
+ * 
+ *     if int_grid[start_r, start_c] == WALL_CELL or int_grid[end_r, end_c] == WALL_CELL:
+*/
+    __Pyx_XDECREF(__pyx_r);
+    __pyx_r = ((PyObject*)Py_None); __Pyx_INCREF(Py_None);
+    goto __pyx_L0;
+
+    /* "maze_solver_cy.pyx":97
+ * 
+ *     # Validao rpida das coordenadas
+ *     if (start_r < 0 or start_r >= rows or start_c < 0 or start_c >= cols or             # <<<<<<<<<<<<<<
+ *         end_r < 0 or end_r >= rows or end_c < 0 or end_c >= cols):
+ *         return None
+*/
+  }
+
+  /* "maze_solver_cy.pyx":101
+ *         return None
+ * 
+ *     if int_grid[start_r, start_c] == WALL_CELL or int_grid[end_r, end_c] == WALL_CELL:             # <<<<<<<<<<<<<<
+ *         return None
+ * 
+*/
+  __pyx_t_4 = __pyx_v_start_r;
+  __pyx_t_5 = __pyx_v_start_c;
+  __pyx_t_3 = ((*((__pyx_t_5numpy_int32_t *) ( /* dim=1 */ ((char *) (((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ (__pyx_v_int_grid.data + __pyx_t_4 * __pyx_v_int_grid.strides[0]) )) + __pyx_t_5)) ))) == 1);
+  if (!__pyx_t_3) {
+  } else {
+    __pyx_t_2 = __pyx_t_3;
+    goto __pyx_L13_bool_binop_done;
+  }
+  __pyx_t_5 = __pyx_v_end_r;
+  __pyx_t_4 = __pyx_v_end_c;
+  __pyx_t_3 = ((*((__pyx_t_5numpy_int32_t *) ( /* dim=1 */ ((char *) (((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ (__pyx_v_int_grid.data + __pyx_t_5 * __pyx_v_int_grid.strides[0]) )) + __pyx_t_4)) ))) == 1);
+  __pyx_t_2 = __pyx_t_3;
+  __pyx_L13_bool_binop_done:;
+  if (__pyx_t_2) {
+
+    /* "maze_solver_cy.pyx":102
+ * 
+ *     if int_grid[start_r, start_c] == WALL_CELL or int_grid[end_r, end_c] == WALL_CELL:
+ *         return None             # <<<<<<<<<<<<<<
+ * 
+ *     # Caso especial: incio igual ao fim
+*/
+    __Pyx_XDECREF(__pyx_r);
+    __pyx_r = ((PyObject*)Py_None); __Pyx_INCREF(Py_None);
+    goto __pyx_L0;
+
+    /* "maze_solver_cy.pyx":101
+ *         return None
+ * 
+ *     if int_grid[start_r, start_c] == WALL_CELL or int_grid[end_r, end_c] == WALL_CELL:             # <<<<<<<<<<<<<<
+ *         return None
+ * 
+*/
+  }
+
+  /* "maze_solver_cy.pyx":105
+ * 
+ *     # Caso especial: incio igual ao fim
+ *     if start_r == end_r and start_c == end_c:             # <<<<<<<<<<<<<<
+ *         return [(start_r, start_c)]
+ * 
+*/
+  __pyx_t_3 = (__pyx_v_start_r == __pyx_v_end_r);
+  if (__pyx_t_3) {
+  } else {
+    __pyx_t_2 = __pyx_t_3;
+    goto __pyx_L16_bool_binop_done;
+  }
+  __pyx_t_3 = (__pyx_v_start_c == __pyx_v_end_c);
+  __pyx_t_2 = __pyx_t_3;
+  __pyx_L16_bool_binop_done:;
+  if (__pyx_t_2) {
+
+    /* "maze_solver_cy.pyx":106
+ *     # Caso especial: incio igual ao fim
+ *     if start_r == end_r and start_c == end_c:
+ *         return [(start_r, start_c)]             # <<<<<<<<<<<<<<
+ * 
+ *     # Inicializar estruturas de dados
+*/
+    __Pyx_XDECREF(__pyx_r);
+    __pyx_t_6 = __Pyx_PyLong_From_npy_int32(__pyx_v_start_r); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 106, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
+    __pyx_t_7 = __Pyx_PyLong_From_npy_int32(__pyx_v_start_c); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 106, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_7);
+    __pyx_t_8 = PyTuple_New(2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 106, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_dtype, __pyx_t_2, __pyx_t_8, __pyx_callargs+2, 0) < 0) __PYX_ERR(0, 40, __pyx_L1_error)
-    __pyx_t_3 = __Pyx_Object_Vectorcall_CallFromBuilder(__pyx_t_4, __pyx_callargs+__pyx_t_6, (2-__pyx_t_6) | (__pyx_t_6*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_8);
-    __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 40, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-  }
-  __pyx_v_visited_np_array = __pyx_t_3;
-  __pyx_t_3 = 0;
+    __Pyx_GIVEREF(__pyx_t_6);
+    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_6) != (0)) __PYX_ERR(0, 106, __pyx_L1_error);
+    __Pyx_GIVEREF(__pyx_t_7);
+    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_8, 1, __pyx_t_7) != (0)) __PYX_ERR(0, 106, __pyx_L1_error);
+    __pyx_t_6 = 0;
+    __pyx_t_7 = 0;
+    __pyx_t_7 = PyList_New(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 106, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_7);
+    __Pyx_GIVEREF(__pyx_t_8);
+    if (__Pyx_PyList_SET_ITEM(__pyx_t_7, 0, __pyx_t_8) != (0)) __PYX_ERR(0, 106, __pyx_L1_error);
+    __pyx_t_8 = 0;
+    __pyx_r = ((PyObject*)__pyx_t_7);
+    __pyx_t_7 = 0;
+    goto __pyx_L0;
 
-  /* "maze_solver_cy.pyx":41
- *     # Array 'visited'
- *     visited_np_array = np.zeros((rows, cols), dtype=np.uint8) # np.bool_  uint8
- *     visited_np_array[start_r, start_c] = 1 # Marca o incio como visitado             # <<<<<<<<<<<<<<
+    /* "maze_solver_cy.pyx":105
+ * 
+ *     # Caso especial: incio igual ao fim
+ *     if start_r == end_r and start_c == end_c:             # <<<<<<<<<<<<<<
+ *         return [(start_r, start_c)]
+ * 
+*/
+  }
+
+  /* "maze_solver_cy.pyx":109
+ * 
+ *     # Inicializar estruturas de dados
+ *     cdef queue_index_t max_queue_size = rows * cols             # <<<<<<<<<<<<<<
+ *     cdef CircularQueue queue
+ *     init_queue(&queue, max_queue_size)
+*/
+  __pyx_v_max_queue_size = (__pyx_v_rows * __pyx_v_cols);
+
+  /* "maze_solver_cy.pyx":111
+ *     cdef queue_index_t max_queue_size = rows * cols
+ *     cdef CircularQueue queue
+ *     init_queue(&queue, max_queue_size)             # <<<<<<<<<<<<<<
+ * 
+ *     # Arrays visitados e predecessores
+*/
+  __pyx_f_14maze_solver_cy_init_queue((&__pyx_v_queue), __pyx_v_max_queue_size); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 111, __pyx_L1_error)
+
+  /* "maze_solver_cy.pyx":114
+ * 
+ *     # Arrays visitados e predecessores
+ *     visited_np_array = np.zeros((rows, cols), dtype=np.uint8)             # <<<<<<<<<<<<<<
  *     cdef visited_cell_type_t[:, ::1] visited = visited_np_array
  * 
 */
-  __pyx_t_3 = __Pyx_PyLong_From_npy_int32(__pyx_v_start_r); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 41, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyLong_From_npy_int32(__pyx_v_start_c); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 41, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_8 = PyTuple_New(2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 41, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_8);
-  __Pyx_GIVEREF(__pyx_t_3);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_3) != (0)) __PYX_ERR(0, 41, __pyx_L1_error);
-  __Pyx_GIVEREF(__pyx_t_4);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_8, 1, __pyx_t_4) != (0)) __PYX_ERR(0, 41, __pyx_L1_error);
-  __pyx_t_3 = 0;
-  __pyx_t_4 = 0;
-  if (unlikely((PyObject_SetItem(__pyx_v_visited_np_array, __pyx_t_8, __pyx_mstate_global->__pyx_int_1) < 0))) __PYX_ERR(0, 41, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+  __pyx_t_8 = NULL;
+  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 114, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_zeros); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 114, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_9);
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  __pyx_t_6 = __Pyx_PyLong_From_int(__pyx_v_rows); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 114, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __pyx_t_10 = __Pyx_PyLong_From_int(__pyx_v_cols); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 114, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_10);
+  __pyx_t_11 = PyTuple_New(2); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 114, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_11);
+  __Pyx_GIVEREF(__pyx_t_6);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_11, 0, __pyx_t_6) != (0)) __PYX_ERR(0, 114, __pyx_L1_error);
+  __Pyx_GIVEREF(__pyx_t_10);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_11, 1, __pyx_t_10) != (0)) __PYX_ERR(0, 114, __pyx_L1_error);
+  __pyx_t_6 = 0;
+  __pyx_t_10 = 0;
+  __Pyx_GetModuleGlobalName(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 114, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_10);
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_uint8); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 114, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+  __pyx_t_12 = 1;
+  #if CYTHON_UNPACK_METHODS
+  if (unlikely(PyMethod_Check(__pyx_t_9))) {
+    __pyx_t_8 = PyMethod_GET_SELF(__pyx_t_9);
+    assert(__pyx_t_8);
+    PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_9);
+    __Pyx_INCREF(__pyx_t_8);
+    __Pyx_INCREF(__pyx__function);
+    __Pyx_DECREF_SET(__pyx_t_9, __pyx__function);
+    __pyx_t_12 = 0;
+  }
+  #endif
+  {
+    PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 1 : 0)] = {__pyx_t_8, __pyx_t_11};
+    __pyx_t_10 = __Pyx_MakeVectorcallBuilderKwds(1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 114, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_10);
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_dtype, __pyx_t_6, __pyx_t_10, __pyx_callargs+2, 0) < 0) __PYX_ERR(0, 114, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_Object_Vectorcall_CallFromBuilder(__pyx_t_9, __pyx_callargs+__pyx_t_12, (2-__pyx_t_12) | (__pyx_t_12*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_10);
+    __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
+    __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+    if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 114, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_7);
+  }
+  __pyx_v_visited_np_array = __pyx_t_7;
+  __pyx_t_7 = 0;
 
-  /* "maze_solver_cy.pyx":42
- *     visited_np_array = np.zeros((rows, cols), dtype=np.uint8) # np.bool_  uint8
- *     visited_np_array[start_r, start_c] = 1 # Marca o incio como visitado
+  /* "maze_solver_cy.pyx":115
+ *     # Arrays visitados e predecessores
+ *     visited_np_array = np.zeros((rows, cols), dtype=np.uint8)
  *     cdef visited_cell_type_t[:, ::1] visited = visited_np_array             # <<<<<<<<<<<<<<
  * 
- *     # Arrays para armazenar predecessores (um para linhas, outro para colunas)
+ *     pred_r_np = np.full((rows, cols), -1, dtype=np.int32)
 */
-  __pyx_t_10 = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn___pyx_t_14maze_solver_cy_visited_cell_type_t(__pyx_v_visited_np_array, PyBUF_WRITABLE); if (unlikely(!__pyx_t_10.memview)) __PYX_ERR(0, 42, __pyx_L1_error)
-  __pyx_v_visited = __pyx_t_10;
-  __pyx_t_10.memview = NULL;
-  __pyx_t_10.data = NULL;
+  __pyx_t_13 = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn___pyx_t_14maze_solver_cy_visited_cell_type_t(__pyx_v_visited_np_array, PyBUF_WRITABLE); if (unlikely(!__pyx_t_13.memview)) __PYX_ERR(0, 115, __pyx_L1_error)
+  __pyx_v_visited = __pyx_t_13;
+  __pyx_t_13.memview = NULL;
+  __pyx_t_13.data = NULL;
 
-  /* "maze_solver_cy.pyx":47
- *     # Inicializados com -1 para indicar que no h predecessor atribudo.
- *     # Usar np.full para inicializao clara.
+  /* "maze_solver_cy.pyx":117
+ *     cdef visited_cell_type_t[:, ::1] visited = visited_np_array
+ * 
  *     pred_r_np = np.full((rows, cols), -1, dtype=np.int32)             # <<<<<<<<<<<<<<
  *     pred_c_np = np.full((rows, cols), -1, dtype=np.int32)
  *     cdef coord_type_t[:, ::1] pred_r = pred_r_np
 */
-  __pyx_t_4 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 47, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_full); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 47, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyLong_From_int(__pyx_v_rows); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 47, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_9 = __Pyx_PyLong_From_int(__pyx_v_cols); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 47, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_9);
-  __pyx_t_5 = PyTuple_New(2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 47, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_GIVEREF(__pyx_t_3);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3) != (0)) __PYX_ERR(0, 47, __pyx_L1_error);
-  __Pyx_GIVEREF(__pyx_t_9);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_5, 1, __pyx_t_9) != (0)) __PYX_ERR(0, 47, __pyx_L1_error);
-  __pyx_t_3 = 0;
-  __pyx_t_9 = 0;
-  __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 47, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_9);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_int32); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 47, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-  __pyx_t_6 = 1;
+  __pyx_t_9 = NULL;
+  __Pyx_GetModuleGlobalName(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 117, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_10);
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_10, __pyx_mstate_global->__pyx_n_u_full); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 117, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+  __pyx_t_10 = __Pyx_PyLong_From_int(__pyx_v_rows); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 117, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_10);
+  __pyx_t_11 = __Pyx_PyLong_From_int(__pyx_v_cols); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 117, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_11);
+  __pyx_t_8 = PyTuple_New(2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 117, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
+  __Pyx_GIVEREF(__pyx_t_10);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_10) != (0)) __PYX_ERR(0, 117, __pyx_L1_error);
+  __Pyx_GIVEREF(__pyx_t_11);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_8, 1, __pyx_t_11) != (0)) __PYX_ERR(0, 117, __pyx_L1_error);
+  __pyx_t_10 = 0;
+  __pyx_t_11 = 0;
+  __Pyx_GetModuleGlobalName(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 117, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_11);
+  __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_int32); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 117, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_10);
+  __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+  __pyx_t_12 = 1;
   #if CYTHON_UNPACK_METHODS
-  if (unlikely(PyMethod_Check(__pyx_t_2))) {
-    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_2);
-    assert(__pyx_t_4);
-    PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_2);
-    __Pyx_INCREF(__pyx_t_4);
+  if (unlikely(PyMethod_Check(__pyx_t_6))) {
+    __pyx_t_9 = PyMethod_GET_SELF(__pyx_t_6);
+    assert(__pyx_t_9);
+    PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_6);
+    __Pyx_INCREF(__pyx_t_9);
     __Pyx_INCREF(__pyx__function);
-    __Pyx_DECREF_SET(__pyx_t_2, __pyx__function);
-    __pyx_t_6 = 0;
+    __Pyx_DECREF_SET(__pyx_t_6, __pyx__function);
+    __pyx_t_12 = 0;
   }
   #endif
   {
-    PyObject *__pyx_callargs[3 + ((CYTHON_VECTORCALL) ? 1 : 0)] = {__pyx_t_4, __pyx_t_5, __pyx_mstate_global->__pyx_int_neg_1};
-    __pyx_t_9 = __Pyx_MakeVectorcallBuilderKwds(1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 47, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_9);
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_dtype, __pyx_t_3, __pyx_t_9, __pyx_callargs+3, 0) < 0) __PYX_ERR(0, 47, __pyx_L1_error)
-    __pyx_t_8 = __Pyx_Object_Vectorcall_CallFromBuilder(__pyx_t_2, __pyx_callargs+__pyx_t_6, (3-__pyx_t_6) | (__pyx_t_6*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_9);
-    __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 47, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_8);
+    PyObject *__pyx_callargs[3 + ((CYTHON_VECTORCALL) ? 1 : 0)] = {__pyx_t_9, __pyx_t_8, __pyx_mstate_global->__pyx_int_neg_1};
+    __pyx_t_11 = __Pyx_MakeVectorcallBuilderKwds(1); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 117, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_11);
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_dtype, __pyx_t_10, __pyx_t_11, __pyx_callargs+3, 0) < 0) __PYX_ERR(0, 117, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_Object_Vectorcall_CallFromBuilder(__pyx_t_6, __pyx_callargs+__pyx_t_12, (3-__pyx_t_12) | (__pyx_t_12*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_11);
+    __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
+    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+    __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+    __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 117, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_7);
   }
-  __pyx_v_pred_r_np = __pyx_t_8;
-  __pyx_t_8 = 0;
+  __pyx_v_pred_r_np = __pyx_t_7;
+  __pyx_t_7 = 0;
 
-  /* "maze_solver_cy.pyx":48
- *     # Usar np.full para inicializao clara.
+  /* "maze_solver_cy.pyx":118
+ * 
  *     pred_r_np = np.full((rows, cols), -1, dtype=np.int32)
  *     pred_c_np = np.full((rows, cols), -1, dtype=np.int32)             # <<<<<<<<<<<<<<
  *     cdef coord_type_t[:, ::1] pred_r = pred_r_np
  *     cdef coord_type_t[:, ::1] pred_c = pred_c_np
 */
-  __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 48, __pyx_L1_error)
+  __pyx_t_6 = NULL;
+  __Pyx_GetModuleGlobalName(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 118, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_11);
+  __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_full); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 118, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_10);
+  __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+  __pyx_t_11 = __Pyx_PyLong_From_int(__pyx_v_rows); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 118, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_11);
+  __pyx_t_8 = __Pyx_PyLong_From_int(__pyx_v_cols); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 118, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
+  __pyx_t_9 = PyTuple_New(2); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 118, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_mstate_global->__pyx_n_u_full); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 48, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-  __pyx_t_9 = __Pyx_PyLong_From_int(__pyx_v_rows); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 48, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_9);
-  __pyx_t_5 = __Pyx_PyLong_From_int(__pyx_v_cols); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 48, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 48, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_GIVEREF(__pyx_t_9);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_9) != (0)) __PYX_ERR(0, 48, __pyx_L1_error);
-  __Pyx_GIVEREF(__pyx_t_5);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_t_5) != (0)) __PYX_ERR(0, 48, __pyx_L1_error);
-  __pyx_t_9 = 0;
-  __pyx_t_5 = 0;
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 48, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_int32); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 48, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_9);
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_6 = 1;
+  __Pyx_GIVEREF(__pyx_t_11);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_9, 0, __pyx_t_11) != (0)) __PYX_ERR(0, 118, __pyx_L1_error);
+  __Pyx_GIVEREF(__pyx_t_8);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_9, 1, __pyx_t_8) != (0)) __PYX_ERR(0, 118, __pyx_L1_error);
+  __pyx_t_11 = 0;
+  __pyx_t_8 = 0;
+  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 118, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
+  __pyx_t_11 = __Pyx_PyObject_GetAttrStr(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_int32); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 118, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_11);
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+  __pyx_t_12 = 1;
   #if CYTHON_UNPACK_METHODS
-  if (unlikely(PyMethod_Check(__pyx_t_3))) {
-    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_3);
-    assert(__pyx_t_2);
-    PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_3);
-    __Pyx_INCREF(__pyx_t_2);
+  if (unlikely(PyMethod_Check(__pyx_t_10))) {
+    __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_10);
+    assert(__pyx_t_6);
+    PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_10);
+    __Pyx_INCREF(__pyx_t_6);
     __Pyx_INCREF(__pyx__function);
-    __Pyx_DECREF_SET(__pyx_t_3, __pyx__function);
-    __pyx_t_6 = 0;
+    __Pyx_DECREF_SET(__pyx_t_10, __pyx__function);
+    __pyx_t_12 = 0;
   }
   #endif
   {
-    PyObject *__pyx_callargs[3 + ((CYTHON_VECTORCALL) ? 1 : 0)] = {__pyx_t_2, __pyx_t_4, __pyx_mstate_global->__pyx_int_neg_1};
-    __pyx_t_5 = __Pyx_MakeVectorcallBuilderKwds(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 48, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_dtype, __pyx_t_9, __pyx_t_5, __pyx_callargs+3, 0) < 0) __PYX_ERR(0, 48, __pyx_L1_error)
-    __pyx_t_8 = __Pyx_Object_Vectorcall_CallFromBuilder(__pyx_t_3, __pyx_callargs+__pyx_t_6, (3-__pyx_t_6) | (__pyx_t_6*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_5);
-    __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 48, __pyx_L1_error)
+    PyObject *__pyx_callargs[3 + ((CYTHON_VECTORCALL) ? 1 : 0)] = {__pyx_t_6, __pyx_t_9, __pyx_mstate_global->__pyx_int_neg_1};
+    __pyx_t_8 = __Pyx_MakeVectorcallBuilderKwds(1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 118, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_dtype, __pyx_t_11, __pyx_t_8, __pyx_callargs+3, 0) < 0) __PYX_ERR(0, 118, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_Object_Vectorcall_CallFromBuilder(__pyx_t_10, __pyx_callargs+__pyx_t_12, (3-__pyx_t_12) | (__pyx_t_12*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_8);
+    __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+    __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+    __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+    if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 118, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_7);
   }
-  __pyx_v_pred_c_np = __pyx_t_8;
-  __pyx_t_8 = 0;
+  __pyx_v_pred_c_np = __pyx_t_7;
+  __pyx_t_7 = 0;
 
-  /* "maze_solver_cy.pyx":49
+  /* "maze_solver_cy.pyx":119
  *     pred_r_np = np.full((rows, cols), -1, dtype=np.int32)
  *     pred_c_np = np.full((rows, cols), -1, dtype=np.int32)
  *     cdef coord_type_t[:, ::1] pred_r = pred_r_np             # <<<<<<<<<<<<<<
  *     cdef coord_type_t[:, ::1] pred_c = pred_c_np
  * 
 */
-  __pyx_t_11 = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn___pyx_t_14maze_solver_cy_coord_type_t(__pyx_v_pred_r_np, PyBUF_WRITABLE); if (unlikely(!__pyx_t_11.memview)) __PYX_ERR(0, 49, __pyx_L1_error)
-  __pyx_v_pred_r = __pyx_t_11;
-  __pyx_t_11.memview = NULL;
-  __pyx_t_11.data = NULL;
+  __pyx_t_14 = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn___pyx_t_14maze_solver_cy_coord_type_t(__pyx_v_pred_r_np, PyBUF_WRITABLE); if (unlikely(!__pyx_t_14.memview)) __PYX_ERR(0, 119, __pyx_L1_error)
+  __pyx_v_pred_r = __pyx_t_14;
+  __pyx_t_14.memview = NULL;
+  __pyx_t_14.data = NULL;
 
-  /* "maze_solver_cy.pyx":50
+  /* "maze_solver_cy.pyx":120
  *     pred_c_np = np.full((rows, cols), -1, dtype=np.int32)
  *     cdef coord_type_t[:, ::1] pred_r = pred_r_np
  *     cdef coord_type_t[:, ::1] pred_c = pred_c_np             # <<<<<<<<<<<<<<
  * 
- *     # Direes: Cima, Baixo, Esquerda, Direita
+ *     # Inicializar BFS
 */
-  __pyx_t_11 = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn___pyx_t_14maze_solver_cy_coord_type_t(__pyx_v_pred_c_np, PyBUF_WRITABLE); if (unlikely(!__pyx_t_11.memview)) __PYX_ERR(0, 50, __pyx_L1_error)
-  __pyx_v_pred_c = __pyx_t_11;
-  __pyx_t_11.memview = NULL;
-  __pyx_t_11.data = NULL;
+  __pyx_t_14 = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn___pyx_t_14maze_solver_cy_coord_type_t(__pyx_v_pred_c_np, PyBUF_WRITABLE); if (unlikely(!__pyx_t_14.memview)) __PYX_ERR(0, 120, __pyx_L1_error)
+  __pyx_v_pred_c = __pyx_t_14;
+  __pyx_t_14.memview = NULL;
+  __pyx_t_14.data = NULL;
 
-  /* "maze_solver_cy.pyx":54
- *     # Direes: Cima, Baixo, Esquerda, Direita
- *     cdef int directions[4][2]
- *     directions[0][0] = -1; directions[0][1] = 0  # Cima             # <<<<<<<<<<<<<<
- *     directions[1][0] = 1;  directions[1][1] = 0  # Baixo
- *     directions[2][0] = 0;  directions[2][1] = -1 # Esquerda
-*/
-  ((__pyx_v_directions[0])[0]) = -1;
-  ((__pyx_v_directions[0])[1]) = 0;
-
-  /* "maze_solver_cy.pyx":55
- *     cdef int directions[4][2]
- *     directions[0][0] = -1; directions[0][1] = 0  # Cima
- *     directions[1][0] = 1;  directions[1][1] = 0  # Baixo             # <<<<<<<<<<<<<<
- *     directions[2][0] = 0;  directions[2][1] = -1 # Esquerda
- *     directions[3][0] = 0;  directions[3][1] = 1  # Direita
-*/
-  ((__pyx_v_directions[1])[0]) = 1;
-  ((__pyx_v_directions[1])[1]) = 0;
-
-  /* "maze_solver_cy.pyx":56
- *     directions[0][0] = -1; directions[0][1] = 0  # Cima
- *     directions[1][0] = 1;  directions[1][1] = 0  # Baixo
- *     directions[2][0] = 0;  directions[2][1] = -1 # Esquerda             # <<<<<<<<<<<<<<
- *     directions[3][0] = 0;  directions[3][1] = 1  # Direita
+  /* "maze_solver_cy.pyx":123
+ * 
+ *     # Inicializar BFS
+ *     enqueue(&queue, start_r, start_c)             # <<<<<<<<<<<<<<
+ *     visited[start_r, start_c] = 1
  * 
 */
-  ((__pyx_v_directions[2])[0]) = 0;
-  ((__pyx_v_directions[2])[1]) = -1;
+  __pyx_f_14maze_solver_cy_enqueue((&__pyx_v_queue), __pyx_v_start_r, __pyx_v_start_c); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 123, __pyx_L1_error)
 
-  /* "maze_solver_cy.pyx":57
- *     directions[1][0] = 1;  directions[1][1] = 0  # Baixo
- *     directions[2][0] = 0;  directions[2][1] = -1 # Esquerda
- *     directions[3][0] = 0;  directions[3][1] = 1  # Direita             # <<<<<<<<<<<<<<
+  /* "maze_solver_cy.pyx":124
+ *     # Inicializar BFS
+ *     enqueue(&queue, start_r, start_c)
+ *     visited[start_r, start_c] = 1             # <<<<<<<<<<<<<<
  * 
- *     cdef coord_type_t r, c, nr, nc # Tipagem para coordenadas
+ *     cdef coord_type_t r, c, nr, nc
 */
-  ((__pyx_v_directions[3])[0]) = 0;
-  ((__pyx_v_directions[3])[1]) = 1;
+  __pyx_t_4 = __pyx_v_start_r;
+  __pyx_t_5 = __pyx_v_start_c;
+  *((__pyx_t_14maze_solver_cy_visited_cell_type_t *) ( /* dim=1 */ ((char *) (((__pyx_t_14maze_solver_cy_visited_cell_type_t *) ( /* dim=0 */ (__pyx_v_visited.data + __pyx_t_4 * __pyx_v_visited.strides[0]) )) + __pyx_t_5)) )) = 1;
 
-  /* "maze_solver_cy.pyx":62
- *     cdef tuple current_pos_tuple
- *     cdef int i # Contador de direes
- *     cdef bint path_found = False # Flag Cython booleana             # <<<<<<<<<<<<<<
+  /* "maze_solver_cy.pyx":127
  * 
- *     while queue:
+ *     cdef coord_type_t r, c, nr, nc
+ *     cdef bint path_found = False             # <<<<<<<<<<<<<<
+ * 
+ *     # BFS principal com nogil para mxima performance
 */
   __pyx_v_path_found = 0;
 
-  /* "maze_solver_cy.pyx":64
- *     cdef bint path_found = False # Flag Cython booleana
+  /* "maze_solver_cy.pyx":130
  * 
- *     while queue:             # <<<<<<<<<<<<<<
- *         current_pos_tuple = queue.popleft()
- *         r = current_pos_tuple[0]
+ *     # BFS principal com nogil para mxima performance
+ *     with nogil:             # <<<<<<<<<<<<<<
+ *         while not is_queue_empty(&queue):
+ *             dequeue(&queue, &r, &c)
 */
-  while (1) {
-    __pyx_t_12 = __Pyx_PyObject_IsTrue(__pyx_v_queue); if (unlikely((__pyx_t_12 < 0))) __PYX_ERR(0, 64, __pyx_L1_error)
-    if (!__pyx_t_12) break;
+  {
+      PyThreadState *_save;
+      _save = NULL;
+      Py_UNBLOCK_THREADS
+      __Pyx_FastGIL_Remember();
+      /*try:*/ {
 
-    /* "maze_solver_cy.pyx":65
+        /* "maze_solver_cy.pyx":131
+ *     # BFS principal com nogil para mxima performance
+ *     with nogil:
+ *         while not is_queue_empty(&queue):             # <<<<<<<<<<<<<<
+ *             dequeue(&queue, &r, &c)
  * 
- *     while queue:
- *         current_pos_tuple = queue.popleft()             # <<<<<<<<<<<<<<
- *         r = current_pos_tuple[0]
- *         c = current_pos_tuple[1]
 */
-    __pyx_t_3 = __pyx_v_queue;
-    __Pyx_INCREF(__pyx_t_3);
-    __pyx_t_6 = 0;
-    {
-      PyObject *__pyx_callargs[2] = {__pyx_t_3, NULL};
-      __pyx_t_8 = __Pyx_PyObject_FastCallMethod(__pyx_mstate_global->__pyx_n_u_popleft, __pyx_callargs+__pyx_t_6, (1-__pyx_t_6) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-      __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-      if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 65, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_8);
-    }
-    if (!(likely(PyTuple_CheckExact(__pyx_t_8))||((__pyx_t_8) == Py_None) || __Pyx_RaiseUnexpectedTypeError("tuple", __pyx_t_8))) __PYX_ERR(0, 65, __pyx_L1_error)
-    __Pyx_XDECREF_SET(__pyx_v_current_pos_tuple, ((PyObject*)__pyx_t_8));
-    __pyx_t_8 = 0;
+        while (1) {
+          __pyx_t_2 = __pyx_f_14maze_solver_cy_is_queue_empty((&__pyx_v_queue)); if (unlikely(__pyx_t_2 == ((int)-1) && __Pyx_ErrOccurredWithGIL())) __PYX_ERR(0, 131, __pyx_L19_error)
+          __pyx_t_3 = (!__pyx_t_2);
+          if (!__pyx_t_3) break;
 
-    /* "maze_solver_cy.pyx":66
- *     while queue:
- *         current_pos_tuple = queue.popleft()
- *         r = current_pos_tuple[0]             # <<<<<<<<<<<<<<
- *         c = current_pos_tuple[1]
+          /* "maze_solver_cy.pyx":132
+ *     with nogil:
+ *         while not is_queue_empty(&queue):
+ *             dequeue(&queue, &r, &c)             # <<<<<<<<<<<<<<
  * 
+ *             # Verificar se chegamos ao destino
 */
-    if (unlikely(__pyx_v_current_pos_tuple == Py_None)) {
-      PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 66, __pyx_L1_error)
-    }
-    __pyx_t_1 = __Pyx_PyLong_As_npy_int32(__Pyx_PyTuple_GET_ITEM(__pyx_v_current_pos_tuple, 0)); if (unlikely((__pyx_t_1 == ((npy_int32)-1)) && PyErr_Occurred())) __PYX_ERR(0, 66, __pyx_L1_error)
-    __pyx_v_r = __pyx_t_1;
+          __pyx_f_14maze_solver_cy_dequeue((&__pyx_v_queue), (&__pyx_v_r), (&__pyx_v_c)); if (unlikely(__Pyx_ErrOccurredWithGIL())) __PYX_ERR(0, 132, __pyx_L19_error)
 
-    /* "maze_solver_cy.pyx":67
- *         current_pos_tuple = queue.popleft()
- *         r = current_pos_tuple[0]
- *         c = current_pos_tuple[1]             # <<<<<<<<<<<<<<
+          /* "maze_solver_cy.pyx":135
  * 
- *         if r == end_r and c == end_c:
+ *             # Verificar se chegamos ao destino
+ *             if r == end_r and c == end_c:             # <<<<<<<<<<<<<<
+ *                 path_found = True
+ *                 break
 */
-    if (unlikely(__pyx_v_current_pos_tuple == Py_None)) {
-      PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 67, __pyx_L1_error)
-    }
-    __pyx_t_1 = __Pyx_PyLong_As_npy_int32(__Pyx_PyTuple_GET_ITEM(__pyx_v_current_pos_tuple, 1)); if (unlikely((__pyx_t_1 == ((npy_int32)-1)) && PyErr_Occurred())) __PYX_ERR(0, 67, __pyx_L1_error)
-    __pyx_v_c = __pyx_t_1;
+          __pyx_t_2 = (__pyx_v_r == __pyx_v_end_r);
+          if (__pyx_t_2) {
+          } else {
+            __pyx_t_3 = __pyx_t_2;
+            goto __pyx_L24_bool_binop_done;
+          }
+          __pyx_t_2 = (__pyx_v_c == __pyx_v_end_c);
+          __pyx_t_3 = __pyx_t_2;
+          __pyx_L24_bool_binop_done:;
+          if (__pyx_t_3) {
 
-    /* "maze_solver_cy.pyx":69
- *         c = current_pos_tuple[1]
+            /* "maze_solver_cy.pyx":136
+ *             # Verificar se chegamos ao destino
+ *             if r == end_r and c == end_c:
+ *                 path_found = True             # <<<<<<<<<<<<<<
+ *                 break
  * 
- *         if r == end_r and c == end_c:             # <<<<<<<<<<<<<<
- *             path_found = True
- *             break # Destino alcanado
 */
-    __pyx_t_13 = (__pyx_v_r == __pyx_v_end_r);
-    if (__pyx_t_13) {
-    } else {
-      __pyx_t_12 = __pyx_t_13;
-      goto __pyx_L6_bool_binop_done;
-    }
-    __pyx_t_13 = (__pyx_v_c == __pyx_v_end_c);
-    __pyx_t_12 = __pyx_t_13;
-    __pyx_L6_bool_binop_done:;
-    if (__pyx_t_12) {
+            __pyx_v_path_found = 1;
 
-      /* "maze_solver_cy.pyx":70
+            /* "maze_solver_cy.pyx":137
+ *             if r == end_r and c == end_c:
+ *                 path_found = True
+ *                 break             # <<<<<<<<<<<<<<
  * 
- *         if r == end_r and c == end_c:
- *             path_found = True             # <<<<<<<<<<<<<<
- *             break # Destino alcanado
- * 
+ *             # Explorar direes (desenrolado para performance)
 */
-      __pyx_v_path_found = 1;
+            goto __pyx_L22_break;
 
-      /* "maze_solver_cy.pyx":71
- *         if r == end_r and c == end_c:
- *             path_found = True
- *             break # Destino alcanado             # <<<<<<<<<<<<<<
+            /* "maze_solver_cy.pyx":135
  * 
- *         for i in range(4):
+ *             # Verificar se chegamos ao destino
+ *             if r == end_r and c == end_c:             # <<<<<<<<<<<<<<
+ *                 path_found = True
+ *                 break
 */
-      goto __pyx_L4_break;
+          }
 
-      /* "maze_solver_cy.pyx":69
- *         c = current_pos_tuple[1]
- * 
- *         if r == end_r and c == end_c:             # <<<<<<<<<<<<<<
- *             path_found = True
- *             break # Destino alcanado
+          /* "maze_solver_cy.pyx":141
+ *             # Explorar direes (desenrolado para performance)
+ *             # Direo UP
+ *             nr = r + DR_UP             # <<<<<<<<<<<<<<
+ *             nc = c + DC_UP
+ *             if (nr >= 0 and nr < rows and nc >= 0 and nc < cols and
 */
-    }
+          __pyx_v_nr = (__pyx_v_r + -1L);
 
-    /* "maze_solver_cy.pyx":73
- *             break # Destino alcanado
- * 
- *         for i in range(4):             # <<<<<<<<<<<<<<
- *             dr = directions[i][0]
- *             dc = directions[i][1]
+          /* "maze_solver_cy.pyx":142
+ *             # Direo UP
+ *             nr = r + DR_UP
+ *             nc = c + DC_UP             # <<<<<<<<<<<<<<
+ *             if (nr >= 0 and nr < rows and nc >= 0 and nc < cols and
+ *                 int_grid[nr, nc] != WALL_CELL and not visited[nr, nc]):
 */
-    for (__pyx_t_14 = 0; __pyx_t_14 < 4; __pyx_t_14+=1) {
-      __pyx_v_i = __pyx_t_14;
+          __pyx_v_nc = (__pyx_v_c + 0);
 
-      /* "maze_solver_cy.pyx":74
- * 
- *         for i in range(4):
- *             dr = directions[i][0]             # <<<<<<<<<<<<<<
- *             dc = directions[i][1]
- * 
+          /* "maze_solver_cy.pyx":143
+ *             nr = r + DR_UP
+ *             nc = c + DC_UP
+ *             if (nr >= 0 and nr < rows and nc >= 0 and nc < cols and             # <<<<<<<<<<<<<<
+ *                 int_grid[nr, nc] != WALL_CELL and not visited[nr, nc]):
+ *                 visited[nr, nc] = 1
 */
-      __pyx_t_8 = __Pyx_PyLong_From_int(((__pyx_v_directions[__pyx_v_i])[0])); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 74, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_8);
-      __Pyx_XDECREF_SET(__pyx_v_dr, __pyx_t_8);
-      __pyx_t_8 = 0;
+          __pyx_t_2 = (__pyx_v_nr >= 0);
+          if (__pyx_t_2) {
+          } else {
+            __pyx_t_3 = __pyx_t_2;
+            goto __pyx_L27_bool_binop_done;
+          }
+          __pyx_t_2 = (__pyx_v_nr < __pyx_v_rows);
+          if (__pyx_t_2) {
+          } else {
+            __pyx_t_3 = __pyx_t_2;
+            goto __pyx_L27_bool_binop_done;
+          }
+          __pyx_t_2 = (__pyx_v_nc >= 0);
+          if (__pyx_t_2) {
+          } else {
+            __pyx_t_3 = __pyx_t_2;
+            goto __pyx_L27_bool_binop_done;
+          }
+          __pyx_t_2 = (__pyx_v_nc < __pyx_v_cols);
+          if (__pyx_t_2) {
+          } else {
+            __pyx_t_3 = __pyx_t_2;
+            goto __pyx_L27_bool_binop_done;
+          }
 
-      /* "maze_solver_cy.pyx":75
- *         for i in range(4):
- *             dr = directions[i][0]
- *             dc = directions[i][1]             # <<<<<<<<<<<<<<
- * 
- *             nr = r + dr
+          /* "maze_solver_cy.pyx":144
+ *             nc = c + DC_UP
+ *             if (nr >= 0 and nr < rows and nc >= 0 and nc < cols and
+ *                 int_grid[nr, nc] != WALL_CELL and not visited[nr, nc]):             # <<<<<<<<<<<<<<
+ *                 visited[nr, nc] = 1
+ *                 pred_r[nr, nc] = r
 */
-      __pyx_t_8 = __Pyx_PyLong_From_int(((__pyx_v_directions[__pyx_v_i])[1])); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 75, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_8);
-      __Pyx_XDECREF_SET(__pyx_v_dc, __pyx_t_8);
-      __pyx_t_8 = 0;
+          __pyx_t_5 = __pyx_v_nr;
+          __pyx_t_4 = __pyx_v_nc;
+          __pyx_t_2 = ((*((__pyx_t_5numpy_int32_t *) ( /* dim=1 */ ((char *) (((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ (__pyx_v_int_grid.data + __pyx_t_5 * __pyx_v_int_grid.strides[0]) )) + __pyx_t_4)) ))) != 1);
+          if (__pyx_t_2) {
+          } else {
+            __pyx_t_3 = __pyx_t_2;
+            goto __pyx_L27_bool_binop_done;
+          }
+          __pyx_t_4 = __pyx_v_nr;
+          __pyx_t_5 = __pyx_v_nc;
+          __pyx_t_2 = (!((*((__pyx_t_14maze_solver_cy_visited_cell_type_t *) ( /* dim=1 */ ((char *) (((__pyx_t_14maze_solver_cy_visited_cell_type_t *) ( /* dim=0 */ (__pyx_v_visited.data + __pyx_t_4 * __pyx_v_visited.strides[0]) )) + __pyx_t_5)) ))) != 0));
+          __pyx_t_3 = __pyx_t_2;
+          __pyx_L27_bool_binop_done:;
 
-      /* "maze_solver_cy.pyx":77
- *             dc = directions[i][1]
- * 
- *             nr = r + dr             # <<<<<<<<<<<<<<
- *             nc = c + dc
- * 
+          /* "maze_solver_cy.pyx":143
+ *             nr = r + DR_UP
+ *             nc = c + DC_UP
+ *             if (nr >= 0 and nr < rows and nc >= 0 and nc < cols and             # <<<<<<<<<<<<<<
+ *                 int_grid[nr, nc] != WALL_CELL and not visited[nr, nc]):
+ *                 visited[nr, nc] = 1
 */
-      __pyx_t_8 = __Pyx_PyLong_From_npy_int32(__pyx_v_r); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 77, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_8);
-      __pyx_t_3 = PyNumber_Add(__pyx_t_8, __pyx_v_dr); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 77, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-      __pyx_t_1 = __Pyx_PyLong_As_npy_int32(__pyx_t_3); if (unlikely((__pyx_t_1 == ((npy_int32)-1)) && PyErr_Occurred())) __PYX_ERR(0, 77, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __pyx_v_nr = __pyx_t_1;
+          if (__pyx_t_3) {
 
-      /* "maze_solver_cy.pyx":78
- * 
- *             nr = r + dr
- *             nc = c + dc             # <<<<<<<<<<<<<<
- * 
- *             if 0 <= nr < rows and 0 <= nc < cols: # Checagem de limites
+            /* "maze_solver_cy.pyx":145
+ *             if (nr >= 0 and nr < rows and nc >= 0 and nc < cols and
+ *                 int_grid[nr, nc] != WALL_CELL and not visited[nr, nc]):
+ *                 visited[nr, nc] = 1             # <<<<<<<<<<<<<<
+ *                 pred_r[nr, nc] = r
+ *                 pred_c[nr, nc] = c
 */
-      __pyx_t_3 = __Pyx_PyLong_From_npy_int32(__pyx_v_c); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 78, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_8 = PyNumber_Add(__pyx_t_3, __pyx_v_dc); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 78, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_8);
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __pyx_t_1 = __Pyx_PyLong_As_npy_int32(__pyx_t_8); if (unlikely((__pyx_t_1 == ((npy_int32)-1)) && PyErr_Occurred())) __PYX_ERR(0, 78, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-      __pyx_v_nc = __pyx_t_1;
+            __pyx_t_5 = __pyx_v_nr;
+            __pyx_t_4 = __pyx_v_nc;
+            *((__pyx_t_14maze_solver_cy_visited_cell_type_t *) ( /* dim=1 */ ((char *) (((__pyx_t_14maze_solver_cy_visited_cell_type_t *) ( /* dim=0 */ (__pyx_v_visited.data + __pyx_t_5 * __pyx_v_visited.strides[0]) )) + __pyx_t_4)) )) = 1;
 
-      /* "maze_solver_cy.pyx":80
- *             nc = c + dc
- * 
- *             if 0 <= nr < rows and 0 <= nc < cols: # Checagem de limites             # <<<<<<<<<<<<<<
- *                 if int_grid[nr, nc] != WALL_CELL and not visited[nr, nc]:
- *                     visited[nr, nc] = 1 # Marca como visitado
+            /* "maze_solver_cy.pyx":146
+ *                 int_grid[nr, nc] != WALL_CELL and not visited[nr, nc]):
+ *                 visited[nr, nc] = 1
+ *                 pred_r[nr, nc] = r             # <<<<<<<<<<<<<<
+ *                 pred_c[nr, nc] = c
+ *                 enqueue(&queue, nr, nc)
 */
-      __pyx_t_13 = (0 <= __pyx_v_nr);
-      if (__pyx_t_13) {
-        __pyx_t_13 = (__pyx_v_nr < __pyx_v_rows);
-      }
-      if (__pyx_t_13) {
-      } else {
-        __pyx_t_12 = __pyx_t_13;
-        goto __pyx_L11_bool_binop_done;
-      }
-      __pyx_t_13 = (0 <= __pyx_v_nc);
-      if (__pyx_t_13) {
-        __pyx_t_13 = (__pyx_v_nc < __pyx_v_cols);
-      }
-      __pyx_t_12 = __pyx_t_13;
-      __pyx_L11_bool_binop_done:;
-      if (__pyx_t_12) {
+            __pyx_t_4 = __pyx_v_nr;
+            __pyx_t_5 = __pyx_v_nc;
+            *((__pyx_t_14maze_solver_cy_coord_type_t *) ( /* dim=1 */ ((char *) (((__pyx_t_14maze_solver_cy_coord_type_t *) ( /* dim=0 */ (__pyx_v_pred_r.data + __pyx_t_4 * __pyx_v_pred_r.strides[0]) )) + __pyx_t_5)) )) = __pyx_v_r;
 
-        /* "maze_solver_cy.pyx":81
+            /* "maze_solver_cy.pyx":147
+ *                 visited[nr, nc] = 1
+ *                 pred_r[nr, nc] = r
+ *                 pred_c[nr, nc] = c             # <<<<<<<<<<<<<<
+ *                 enqueue(&queue, nr, nc)
  * 
- *             if 0 <= nr < rows and 0 <= nc < cols: # Checagem de limites
- *                 if int_grid[nr, nc] != WALL_CELL and not visited[nr, nc]:             # <<<<<<<<<<<<<<
- *                     visited[nr, nc] = 1 # Marca como visitado
- *                     pred_r[nr, nc] = r  # Armazena predecessor
 */
-        __pyx_t_15 = __pyx_v_nr;
-        __pyx_t_16 = __pyx_v_nc;
-        __pyx_t_13 = ((*((__pyx_t_5numpy_int32_t *) ( /* dim=1 */ ((char *) (((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ (__pyx_v_int_grid.data + __pyx_t_15 * __pyx_v_int_grid.strides[0]) )) + __pyx_t_16)) ))) != 1);
-        if (__pyx_t_13) {
-        } else {
-          __pyx_t_12 = __pyx_t_13;
-          goto __pyx_L14_bool_binop_done;
+            __pyx_t_5 = __pyx_v_nr;
+            __pyx_t_4 = __pyx_v_nc;
+            *((__pyx_t_14maze_solver_cy_coord_type_t *) ( /* dim=1 */ ((char *) (((__pyx_t_14maze_solver_cy_coord_type_t *) ( /* dim=0 */ (__pyx_v_pred_c.data + __pyx_t_5 * __pyx_v_pred_c.strides[0]) )) + __pyx_t_4)) )) = __pyx_v_c;
+
+            /* "maze_solver_cy.pyx":148
+ *                 pred_r[nr, nc] = r
+ *                 pred_c[nr, nc] = c
+ *                 enqueue(&queue, nr, nc)             # <<<<<<<<<<<<<<
+ * 
+ *             # Direo DOWN
+*/
+            __pyx_f_14maze_solver_cy_enqueue((&__pyx_v_queue), __pyx_v_nr, __pyx_v_nc); if (unlikely(__Pyx_ErrOccurredWithGIL())) __PYX_ERR(0, 148, __pyx_L19_error)
+
+            /* "maze_solver_cy.pyx":143
+ *             nr = r + DR_UP
+ *             nc = c + DC_UP
+ *             if (nr >= 0 and nr < rows and nc >= 0 and nc < cols and             # <<<<<<<<<<<<<<
+ *                 int_grid[nr, nc] != WALL_CELL and not visited[nr, nc]):
+ *                 visited[nr, nc] = 1
+*/
+          }
+
+          /* "maze_solver_cy.pyx":151
+ * 
+ *             # Direo DOWN
+ *             nr = r + DR_DOWN             # <<<<<<<<<<<<<<
+ *             nc = c + DC_DOWN
+ *             if (nr >= 0 and nr < rows and nc >= 0 and nc < cols and
+*/
+          __pyx_v_nr = (__pyx_v_r + 1);
+
+          /* "maze_solver_cy.pyx":152
+ *             # Direo DOWN
+ *             nr = r + DR_DOWN
+ *             nc = c + DC_DOWN             # <<<<<<<<<<<<<<
+ *             if (nr >= 0 and nr < rows and nc >= 0 and nc < cols and
+ *                 int_grid[nr, nc] != WALL_CELL and not visited[nr, nc]):
+*/
+          __pyx_v_nc = (__pyx_v_c + 0);
+
+          /* "maze_solver_cy.pyx":153
+ *             nr = r + DR_DOWN
+ *             nc = c + DC_DOWN
+ *             if (nr >= 0 and nr < rows and nc >= 0 and nc < cols and             # <<<<<<<<<<<<<<
+ *                 int_grid[nr, nc] != WALL_CELL and not visited[nr, nc]):
+ *                 visited[nr, nc] = 1
+*/
+          __pyx_t_2 = (__pyx_v_nr >= 0);
+          if (__pyx_t_2) {
+          } else {
+            __pyx_t_3 = __pyx_t_2;
+            goto __pyx_L34_bool_binop_done;
+          }
+          __pyx_t_2 = (__pyx_v_nr < __pyx_v_rows);
+          if (__pyx_t_2) {
+          } else {
+            __pyx_t_3 = __pyx_t_2;
+            goto __pyx_L34_bool_binop_done;
+          }
+          __pyx_t_2 = (__pyx_v_nc >= 0);
+          if (__pyx_t_2) {
+          } else {
+            __pyx_t_3 = __pyx_t_2;
+            goto __pyx_L34_bool_binop_done;
+          }
+          __pyx_t_2 = (__pyx_v_nc < __pyx_v_cols);
+          if (__pyx_t_2) {
+          } else {
+            __pyx_t_3 = __pyx_t_2;
+            goto __pyx_L34_bool_binop_done;
+          }
+
+          /* "maze_solver_cy.pyx":154
+ *             nc = c + DC_DOWN
+ *             if (nr >= 0 and nr < rows and nc >= 0 and nc < cols and
+ *                 int_grid[nr, nc] != WALL_CELL and not visited[nr, nc]):             # <<<<<<<<<<<<<<
+ *                 visited[nr, nc] = 1
+ *                 pred_r[nr, nc] = r
+*/
+          __pyx_t_4 = __pyx_v_nr;
+          __pyx_t_5 = __pyx_v_nc;
+          __pyx_t_2 = ((*((__pyx_t_5numpy_int32_t *) ( /* dim=1 */ ((char *) (((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ (__pyx_v_int_grid.data + __pyx_t_4 * __pyx_v_int_grid.strides[0]) )) + __pyx_t_5)) ))) != 1);
+          if (__pyx_t_2) {
+          } else {
+            __pyx_t_3 = __pyx_t_2;
+            goto __pyx_L34_bool_binop_done;
+          }
+          __pyx_t_5 = __pyx_v_nr;
+          __pyx_t_4 = __pyx_v_nc;
+          __pyx_t_2 = (!((*((__pyx_t_14maze_solver_cy_visited_cell_type_t *) ( /* dim=1 */ ((char *) (((__pyx_t_14maze_solver_cy_visited_cell_type_t *) ( /* dim=0 */ (__pyx_v_visited.data + __pyx_t_5 * __pyx_v_visited.strides[0]) )) + __pyx_t_4)) ))) != 0));
+          __pyx_t_3 = __pyx_t_2;
+          __pyx_L34_bool_binop_done:;
+
+          /* "maze_solver_cy.pyx":153
+ *             nr = r + DR_DOWN
+ *             nc = c + DC_DOWN
+ *             if (nr >= 0 and nr < rows and nc >= 0 and nc < cols and             # <<<<<<<<<<<<<<
+ *                 int_grid[nr, nc] != WALL_CELL and not visited[nr, nc]):
+ *                 visited[nr, nc] = 1
+*/
+          if (__pyx_t_3) {
+
+            /* "maze_solver_cy.pyx":155
+ *             if (nr >= 0 and nr < rows and nc >= 0 and nc < cols and
+ *                 int_grid[nr, nc] != WALL_CELL and not visited[nr, nc]):
+ *                 visited[nr, nc] = 1             # <<<<<<<<<<<<<<
+ *                 pred_r[nr, nc] = r
+ *                 pred_c[nr, nc] = c
+*/
+            __pyx_t_4 = __pyx_v_nr;
+            __pyx_t_5 = __pyx_v_nc;
+            *((__pyx_t_14maze_solver_cy_visited_cell_type_t *) ( /* dim=1 */ ((char *) (((__pyx_t_14maze_solver_cy_visited_cell_type_t *) ( /* dim=0 */ (__pyx_v_visited.data + __pyx_t_4 * __pyx_v_visited.strides[0]) )) + __pyx_t_5)) )) = 1;
+
+            /* "maze_solver_cy.pyx":156
+ *                 int_grid[nr, nc] != WALL_CELL and not visited[nr, nc]):
+ *                 visited[nr, nc] = 1
+ *                 pred_r[nr, nc] = r             # <<<<<<<<<<<<<<
+ *                 pred_c[nr, nc] = c
+ *                 enqueue(&queue, nr, nc)
+*/
+            __pyx_t_5 = __pyx_v_nr;
+            __pyx_t_4 = __pyx_v_nc;
+            *((__pyx_t_14maze_solver_cy_coord_type_t *) ( /* dim=1 */ ((char *) (((__pyx_t_14maze_solver_cy_coord_type_t *) ( /* dim=0 */ (__pyx_v_pred_r.data + __pyx_t_5 * __pyx_v_pred_r.strides[0]) )) + __pyx_t_4)) )) = __pyx_v_r;
+
+            /* "maze_solver_cy.pyx":157
+ *                 visited[nr, nc] = 1
+ *                 pred_r[nr, nc] = r
+ *                 pred_c[nr, nc] = c             # <<<<<<<<<<<<<<
+ *                 enqueue(&queue, nr, nc)
+ * 
+*/
+            __pyx_t_4 = __pyx_v_nr;
+            __pyx_t_5 = __pyx_v_nc;
+            *((__pyx_t_14maze_solver_cy_coord_type_t *) ( /* dim=1 */ ((char *) (((__pyx_t_14maze_solver_cy_coord_type_t *) ( /* dim=0 */ (__pyx_v_pred_c.data + __pyx_t_4 * __pyx_v_pred_c.strides[0]) )) + __pyx_t_5)) )) = __pyx_v_c;
+
+            /* "maze_solver_cy.pyx":158
+ *                 pred_r[nr, nc] = r
+ *                 pred_c[nr, nc] = c
+ *                 enqueue(&queue, nr, nc)             # <<<<<<<<<<<<<<
+ * 
+ *             # Direo LEFT
+*/
+            __pyx_f_14maze_solver_cy_enqueue((&__pyx_v_queue), __pyx_v_nr, __pyx_v_nc); if (unlikely(__Pyx_ErrOccurredWithGIL())) __PYX_ERR(0, 158, __pyx_L19_error)
+
+            /* "maze_solver_cy.pyx":153
+ *             nr = r + DR_DOWN
+ *             nc = c + DC_DOWN
+ *             if (nr >= 0 and nr < rows and nc >= 0 and nc < cols and             # <<<<<<<<<<<<<<
+ *                 int_grid[nr, nc] != WALL_CELL and not visited[nr, nc]):
+ *                 visited[nr, nc] = 1
+*/
+          }
+
+          /* "maze_solver_cy.pyx":161
+ * 
+ *             # Direo LEFT
+ *             nr = r + DR_LEFT             # <<<<<<<<<<<<<<
+ *             nc = c + DC_LEFT
+ *             if (nr >= 0 and nr < rows and nc >= 0 and nc < cols and
+*/
+          __pyx_v_nr = (__pyx_v_r + 0);
+
+          /* "maze_solver_cy.pyx":162
+ *             # Direo LEFT
+ *             nr = r + DR_LEFT
+ *             nc = c + DC_LEFT             # <<<<<<<<<<<<<<
+ *             if (nr >= 0 and nr < rows and nc >= 0 and nc < cols and
+ *                 int_grid[nr, nc] != WALL_CELL and not visited[nr, nc]):
+*/
+          __pyx_v_nc = (__pyx_v_c + -1L);
+
+          /* "maze_solver_cy.pyx":163
+ *             nr = r + DR_LEFT
+ *             nc = c + DC_LEFT
+ *             if (nr >= 0 and nr < rows and nc >= 0 and nc < cols and             # <<<<<<<<<<<<<<
+ *                 int_grid[nr, nc] != WALL_CELL and not visited[nr, nc]):
+ *                 visited[nr, nc] = 1
+*/
+          __pyx_t_2 = (__pyx_v_nr >= 0);
+          if (__pyx_t_2) {
+          } else {
+            __pyx_t_3 = __pyx_t_2;
+            goto __pyx_L41_bool_binop_done;
+          }
+          __pyx_t_2 = (__pyx_v_nr < __pyx_v_rows);
+          if (__pyx_t_2) {
+          } else {
+            __pyx_t_3 = __pyx_t_2;
+            goto __pyx_L41_bool_binop_done;
+          }
+          __pyx_t_2 = (__pyx_v_nc >= 0);
+          if (__pyx_t_2) {
+          } else {
+            __pyx_t_3 = __pyx_t_2;
+            goto __pyx_L41_bool_binop_done;
+          }
+          __pyx_t_2 = (__pyx_v_nc < __pyx_v_cols);
+          if (__pyx_t_2) {
+          } else {
+            __pyx_t_3 = __pyx_t_2;
+            goto __pyx_L41_bool_binop_done;
+          }
+
+          /* "maze_solver_cy.pyx":164
+ *             nc = c + DC_LEFT
+ *             if (nr >= 0 and nr < rows and nc >= 0 and nc < cols and
+ *                 int_grid[nr, nc] != WALL_CELL and not visited[nr, nc]):             # <<<<<<<<<<<<<<
+ *                 visited[nr, nc] = 1
+ *                 pred_r[nr, nc] = r
+*/
+          __pyx_t_5 = __pyx_v_nr;
+          __pyx_t_4 = __pyx_v_nc;
+          __pyx_t_2 = ((*((__pyx_t_5numpy_int32_t *) ( /* dim=1 */ ((char *) (((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ (__pyx_v_int_grid.data + __pyx_t_5 * __pyx_v_int_grid.strides[0]) )) + __pyx_t_4)) ))) != 1);
+          if (__pyx_t_2) {
+          } else {
+            __pyx_t_3 = __pyx_t_2;
+            goto __pyx_L41_bool_binop_done;
+          }
+          __pyx_t_4 = __pyx_v_nr;
+          __pyx_t_5 = __pyx_v_nc;
+          __pyx_t_2 = (!((*((__pyx_t_14maze_solver_cy_visited_cell_type_t *) ( /* dim=1 */ ((char *) (((__pyx_t_14maze_solver_cy_visited_cell_type_t *) ( /* dim=0 */ (__pyx_v_visited.data + __pyx_t_4 * __pyx_v_visited.strides[0]) )) + __pyx_t_5)) ))) != 0));
+          __pyx_t_3 = __pyx_t_2;
+          __pyx_L41_bool_binop_done:;
+
+          /* "maze_solver_cy.pyx":163
+ *             nr = r + DR_LEFT
+ *             nc = c + DC_LEFT
+ *             if (nr >= 0 and nr < rows and nc >= 0 and nc < cols and             # <<<<<<<<<<<<<<
+ *                 int_grid[nr, nc] != WALL_CELL and not visited[nr, nc]):
+ *                 visited[nr, nc] = 1
+*/
+          if (__pyx_t_3) {
+
+            /* "maze_solver_cy.pyx":165
+ *             if (nr >= 0 and nr < rows and nc >= 0 and nc < cols and
+ *                 int_grid[nr, nc] != WALL_CELL and not visited[nr, nc]):
+ *                 visited[nr, nc] = 1             # <<<<<<<<<<<<<<
+ *                 pred_r[nr, nc] = r
+ *                 pred_c[nr, nc] = c
+*/
+            __pyx_t_5 = __pyx_v_nr;
+            __pyx_t_4 = __pyx_v_nc;
+            *((__pyx_t_14maze_solver_cy_visited_cell_type_t *) ( /* dim=1 */ ((char *) (((__pyx_t_14maze_solver_cy_visited_cell_type_t *) ( /* dim=0 */ (__pyx_v_visited.data + __pyx_t_5 * __pyx_v_visited.strides[0]) )) + __pyx_t_4)) )) = 1;
+
+            /* "maze_solver_cy.pyx":166
+ *                 int_grid[nr, nc] != WALL_CELL and not visited[nr, nc]):
+ *                 visited[nr, nc] = 1
+ *                 pred_r[nr, nc] = r             # <<<<<<<<<<<<<<
+ *                 pred_c[nr, nc] = c
+ *                 enqueue(&queue, nr, nc)
+*/
+            __pyx_t_4 = __pyx_v_nr;
+            __pyx_t_5 = __pyx_v_nc;
+            *((__pyx_t_14maze_solver_cy_coord_type_t *) ( /* dim=1 */ ((char *) (((__pyx_t_14maze_solver_cy_coord_type_t *) ( /* dim=0 */ (__pyx_v_pred_r.data + __pyx_t_4 * __pyx_v_pred_r.strides[0]) )) + __pyx_t_5)) )) = __pyx_v_r;
+
+            /* "maze_solver_cy.pyx":167
+ *                 visited[nr, nc] = 1
+ *                 pred_r[nr, nc] = r
+ *                 pred_c[nr, nc] = c             # <<<<<<<<<<<<<<
+ *                 enqueue(&queue, nr, nc)
+ * 
+*/
+            __pyx_t_5 = __pyx_v_nr;
+            __pyx_t_4 = __pyx_v_nc;
+            *((__pyx_t_14maze_solver_cy_coord_type_t *) ( /* dim=1 */ ((char *) (((__pyx_t_14maze_solver_cy_coord_type_t *) ( /* dim=0 */ (__pyx_v_pred_c.data + __pyx_t_5 * __pyx_v_pred_c.strides[0]) )) + __pyx_t_4)) )) = __pyx_v_c;
+
+            /* "maze_solver_cy.pyx":168
+ *                 pred_r[nr, nc] = r
+ *                 pred_c[nr, nc] = c
+ *                 enqueue(&queue, nr, nc)             # <<<<<<<<<<<<<<
+ * 
+ *             # Direo RIGHT
+*/
+            __pyx_f_14maze_solver_cy_enqueue((&__pyx_v_queue), __pyx_v_nr, __pyx_v_nc); if (unlikely(__Pyx_ErrOccurredWithGIL())) __PYX_ERR(0, 168, __pyx_L19_error)
+
+            /* "maze_solver_cy.pyx":163
+ *             nr = r + DR_LEFT
+ *             nc = c + DC_LEFT
+ *             if (nr >= 0 and nr < rows and nc >= 0 and nc < cols and             # <<<<<<<<<<<<<<
+ *                 int_grid[nr, nc] != WALL_CELL and not visited[nr, nc]):
+ *                 visited[nr, nc] = 1
+*/
+          }
+
+          /* "maze_solver_cy.pyx":171
+ * 
+ *             # Direo RIGHT
+ *             nr = r + DR_RIGHT             # <<<<<<<<<<<<<<
+ *             nc = c + DC_RIGHT
+ *             if (nr >= 0 and nr < rows and nc >= 0 and nc < cols and
+*/
+          __pyx_v_nr = (__pyx_v_r + 0);
+
+          /* "maze_solver_cy.pyx":172
+ *             # Direo RIGHT
+ *             nr = r + DR_RIGHT
+ *             nc = c + DC_RIGHT             # <<<<<<<<<<<<<<
+ *             if (nr >= 0 and nr < rows and nc >= 0 and nc < cols and
+ *                 int_grid[nr, nc] != WALL_CELL and not visited[nr, nc]):
+*/
+          __pyx_v_nc = (__pyx_v_c + 1);
+
+          /* "maze_solver_cy.pyx":173
+ *             nr = r + DR_RIGHT
+ *             nc = c + DC_RIGHT
+ *             if (nr >= 0 and nr < rows and nc >= 0 and nc < cols and             # <<<<<<<<<<<<<<
+ *                 int_grid[nr, nc] != WALL_CELL and not visited[nr, nc]):
+ *                 visited[nr, nc] = 1
+*/
+          __pyx_t_2 = (__pyx_v_nr >= 0);
+          if (__pyx_t_2) {
+          } else {
+            __pyx_t_3 = __pyx_t_2;
+            goto __pyx_L48_bool_binop_done;
+          }
+          __pyx_t_2 = (__pyx_v_nr < __pyx_v_rows);
+          if (__pyx_t_2) {
+          } else {
+            __pyx_t_3 = __pyx_t_2;
+            goto __pyx_L48_bool_binop_done;
+          }
+          __pyx_t_2 = (__pyx_v_nc >= 0);
+          if (__pyx_t_2) {
+          } else {
+            __pyx_t_3 = __pyx_t_2;
+            goto __pyx_L48_bool_binop_done;
+          }
+          __pyx_t_2 = (__pyx_v_nc < __pyx_v_cols);
+          if (__pyx_t_2) {
+          } else {
+            __pyx_t_3 = __pyx_t_2;
+            goto __pyx_L48_bool_binop_done;
+          }
+
+          /* "maze_solver_cy.pyx":174
+ *             nc = c + DC_RIGHT
+ *             if (nr >= 0 and nr < rows and nc >= 0 and nc < cols and
+ *                 int_grid[nr, nc] != WALL_CELL and not visited[nr, nc]):             # <<<<<<<<<<<<<<
+ *                 visited[nr, nc] = 1
+ *                 pred_r[nr, nc] = r
+*/
+          __pyx_t_4 = __pyx_v_nr;
+          __pyx_t_5 = __pyx_v_nc;
+          __pyx_t_2 = ((*((__pyx_t_5numpy_int32_t *) ( /* dim=1 */ ((char *) (((__pyx_t_5numpy_int32_t *) ( /* dim=0 */ (__pyx_v_int_grid.data + __pyx_t_4 * __pyx_v_int_grid.strides[0]) )) + __pyx_t_5)) ))) != 1);
+          if (__pyx_t_2) {
+          } else {
+            __pyx_t_3 = __pyx_t_2;
+            goto __pyx_L48_bool_binop_done;
+          }
+          __pyx_t_5 = __pyx_v_nr;
+          __pyx_t_4 = __pyx_v_nc;
+          __pyx_t_2 = (!((*((__pyx_t_14maze_solver_cy_visited_cell_type_t *) ( /* dim=1 */ ((char *) (((__pyx_t_14maze_solver_cy_visited_cell_type_t *) ( /* dim=0 */ (__pyx_v_visited.data + __pyx_t_5 * __pyx_v_visited.strides[0]) )) + __pyx_t_4)) ))) != 0));
+          __pyx_t_3 = __pyx_t_2;
+          __pyx_L48_bool_binop_done:;
+
+          /* "maze_solver_cy.pyx":173
+ *             nr = r + DR_RIGHT
+ *             nc = c + DC_RIGHT
+ *             if (nr >= 0 and nr < rows and nc >= 0 and nc < cols and             # <<<<<<<<<<<<<<
+ *                 int_grid[nr, nc] != WALL_CELL and not visited[nr, nc]):
+ *                 visited[nr, nc] = 1
+*/
+          if (__pyx_t_3) {
+
+            /* "maze_solver_cy.pyx":175
+ *             if (nr >= 0 and nr < rows and nc >= 0 and nc < cols and
+ *                 int_grid[nr, nc] != WALL_CELL and not visited[nr, nc]):
+ *                 visited[nr, nc] = 1             # <<<<<<<<<<<<<<
+ *                 pred_r[nr, nc] = r
+ *                 pred_c[nr, nc] = c
+*/
+            __pyx_t_4 = __pyx_v_nr;
+            __pyx_t_5 = __pyx_v_nc;
+            *((__pyx_t_14maze_solver_cy_visited_cell_type_t *) ( /* dim=1 */ ((char *) (((__pyx_t_14maze_solver_cy_visited_cell_type_t *) ( /* dim=0 */ (__pyx_v_visited.data + __pyx_t_4 * __pyx_v_visited.strides[0]) )) + __pyx_t_5)) )) = 1;
+
+            /* "maze_solver_cy.pyx":176
+ *                 int_grid[nr, nc] != WALL_CELL and not visited[nr, nc]):
+ *                 visited[nr, nc] = 1
+ *                 pred_r[nr, nc] = r             # <<<<<<<<<<<<<<
+ *                 pred_c[nr, nc] = c
+ *                 enqueue(&queue, nr, nc)
+*/
+            __pyx_t_5 = __pyx_v_nr;
+            __pyx_t_4 = __pyx_v_nc;
+            *((__pyx_t_14maze_solver_cy_coord_type_t *) ( /* dim=1 */ ((char *) (((__pyx_t_14maze_solver_cy_coord_type_t *) ( /* dim=0 */ (__pyx_v_pred_r.data + __pyx_t_5 * __pyx_v_pred_r.strides[0]) )) + __pyx_t_4)) )) = __pyx_v_r;
+
+            /* "maze_solver_cy.pyx":177
+ *                 visited[nr, nc] = 1
+ *                 pred_r[nr, nc] = r
+ *                 pred_c[nr, nc] = c             # <<<<<<<<<<<<<<
+ *                 enqueue(&queue, nr, nc)
+ * 
+*/
+            __pyx_t_4 = __pyx_v_nr;
+            __pyx_t_5 = __pyx_v_nc;
+            *((__pyx_t_14maze_solver_cy_coord_type_t *) ( /* dim=1 */ ((char *) (((__pyx_t_14maze_solver_cy_coord_type_t *) ( /* dim=0 */ (__pyx_v_pred_c.data + __pyx_t_4 * __pyx_v_pred_c.strides[0]) )) + __pyx_t_5)) )) = __pyx_v_c;
+
+            /* "maze_solver_cy.pyx":178
+ *                 pred_r[nr, nc] = r
+ *                 pred_c[nr, nc] = c
+ *                 enqueue(&queue, nr, nc)             # <<<<<<<<<<<<<<
+ * 
+ *     # Liberar memria da queue
+*/
+            __pyx_f_14maze_solver_cy_enqueue((&__pyx_v_queue), __pyx_v_nr, __pyx_v_nc); if (unlikely(__Pyx_ErrOccurredWithGIL())) __PYX_ERR(0, 178, __pyx_L19_error)
+
+            /* "maze_solver_cy.pyx":173
+ *             nr = r + DR_RIGHT
+ *             nc = c + DC_RIGHT
+ *             if (nr >= 0 and nr < rows and nc >= 0 and nc < cols and             # <<<<<<<<<<<<<<
+ *                 int_grid[nr, nc] != WALL_CELL and not visited[nr, nc]):
+ *                 visited[nr, nc] = 1
+*/
+          }
         }
-        __pyx_t_16 = __pyx_v_nr;
-        __pyx_t_15 = __pyx_v_nc;
-        __pyx_t_13 = (!((*((__pyx_t_14maze_solver_cy_visited_cell_type_t *) ( /* dim=1 */ ((char *) (((__pyx_t_14maze_solver_cy_visited_cell_type_t *) ( /* dim=0 */ (__pyx_v_visited.data + __pyx_t_16 * __pyx_v_visited.strides[0]) )) + __pyx_t_15)) ))) != 0));
-        __pyx_t_12 = __pyx_t_13;
-        __pyx_L14_bool_binop_done:;
-        if (__pyx_t_12) {
+        __pyx_L22_break:;
+      }
 
-          /* "maze_solver_cy.pyx":82
- *             if 0 <= nr < rows and 0 <= nc < cols: # Checagem de limites
- *                 if int_grid[nr, nc] != WALL_CELL and not visited[nr, nc]:
- *                     visited[nr, nc] = 1 # Marca como visitado             # <<<<<<<<<<<<<<
- *                     pred_r[nr, nc] = r  # Armazena predecessor
- *                     pred_c[nr, nc] = c
-*/
-          __pyx_t_15 = __pyx_v_nr;
-          __pyx_t_16 = __pyx_v_nc;
-          *((__pyx_t_14maze_solver_cy_visited_cell_type_t *) ( /* dim=1 */ ((char *) (((__pyx_t_14maze_solver_cy_visited_cell_type_t *) ( /* dim=0 */ (__pyx_v_visited.data + __pyx_t_15 * __pyx_v_visited.strides[0]) )) + __pyx_t_16)) )) = 1;
-
-          /* "maze_solver_cy.pyx":83
- *                 if int_grid[nr, nc] != WALL_CELL and not visited[nr, nc]:
- *                     visited[nr, nc] = 1 # Marca como visitado
- *                     pred_r[nr, nc] = r  # Armazena predecessor             # <<<<<<<<<<<<<<
- *                     pred_c[nr, nc] = c
- *                     queue.append((nr, nc))
-*/
-          __pyx_t_16 = __pyx_v_nr;
-          __pyx_t_15 = __pyx_v_nc;
-          *((__pyx_t_14maze_solver_cy_coord_type_t *) ( /* dim=1 */ ((char *) (((__pyx_t_14maze_solver_cy_coord_type_t *) ( /* dim=0 */ (__pyx_v_pred_r.data + __pyx_t_16 * __pyx_v_pred_r.strides[0]) )) + __pyx_t_15)) )) = __pyx_v_r;
-
-          /* "maze_solver_cy.pyx":84
- *                     visited[nr, nc] = 1 # Marca como visitado
- *                     pred_r[nr, nc] = r  # Armazena predecessor
- *                     pred_c[nr, nc] = c             # <<<<<<<<<<<<<<
- *                     queue.append((nr, nc))
+      /* "maze_solver_cy.pyx":130
  * 
+ *     # BFS principal com nogil para mxima performance
+ *     with nogil:             # <<<<<<<<<<<<<<
+ *         while not is_queue_empty(&queue):
+ *             dequeue(&queue, &r, &c)
 */
-          __pyx_t_15 = __pyx_v_nr;
-          __pyx_t_16 = __pyx_v_nc;
-          *((__pyx_t_14maze_solver_cy_coord_type_t *) ( /* dim=1 */ ((char *) (((__pyx_t_14maze_solver_cy_coord_type_t *) ( /* dim=0 */ (__pyx_v_pred_c.data + __pyx_t_15 * __pyx_v_pred_c.strides[0]) )) + __pyx_t_16)) )) = __pyx_v_c;
+      /*finally:*/ {
+        /*normal exit:*/{
+          __Pyx_FastGIL_Forget();
+          Py_BLOCK_THREADS
+          goto __pyx_L20;
+        }
+        __pyx_L19_error: {
+          __Pyx_FastGIL_Forget();
+          Py_BLOCK_THREADS
+          goto __pyx_L1_error;
+        }
+        __pyx_L20:;
+      }
+  }
 
-          /* "maze_solver_cy.pyx":85
- *                     pred_r[nr, nc] = r  # Armazena predecessor
- *                     pred_c[nr, nc] = c
- *                     queue.append((nr, nc))             # <<<<<<<<<<<<<<
+  /* "maze_solver_cy.pyx":181
+ * 
+ *     # Liberar memria da queue
+ *     free_queue(&queue)             # <<<<<<<<<<<<<<
  * 
  *     if not path_found:
 */
-          __pyx_t_8 = __Pyx_PyLong_From_npy_int32(__pyx_v_nr); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 85, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_8);
-          __pyx_t_3 = __Pyx_PyLong_From_npy_int32(__pyx_v_nc); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 85, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_3);
-          __pyx_t_5 = PyTuple_New(2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 85, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_5);
-          __Pyx_GIVEREF(__pyx_t_8);
-          if (__Pyx_PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_8) != (0)) __PYX_ERR(0, 85, __pyx_L1_error);
-          __Pyx_GIVEREF(__pyx_t_3);
-          if (__Pyx_PyTuple_SET_ITEM(__pyx_t_5, 1, __pyx_t_3) != (0)) __PYX_ERR(0, 85, __pyx_L1_error);
-          __pyx_t_8 = 0;
-          __pyx_t_3 = 0;
-          __pyx_t_7 = __Pyx_PyObject_Append(__pyx_v_queue, __pyx_t_5); if (unlikely(__pyx_t_7 == ((int)-1))) __PYX_ERR(0, 85, __pyx_L1_error)
-          __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  __pyx_f_14maze_solver_cy_free_queue((&__pyx_v_queue)); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 181, __pyx_L1_error)
 
-          /* "maze_solver_cy.pyx":81
- * 
- *             if 0 <= nr < rows and 0 <= nc < cols: # Checagem de limites
- *                 if int_grid[nr, nc] != WALL_CELL and not visited[nr, nc]:             # <<<<<<<<<<<<<<
- *                     visited[nr, nc] = 1 # Marca como visitado
- *                     pred_r[nr, nc] = r  # Armazena predecessor
-*/
-        }
-
-        /* "maze_solver_cy.pyx":80
- *             nc = c + dc
- * 
- *             if 0 <= nr < rows and 0 <= nc < cols: # Checagem de limites             # <<<<<<<<<<<<<<
- *                 if int_grid[nr, nc] != WALL_CELL and not visited[nr, nc]:
- *                     visited[nr, nc] = 1 # Marca como visitado
-*/
-      }
-    }
-  }
-  __pyx_L4_break:;
-
-  /* "maze_solver_cy.pyx":87
- *                     queue.append((nr, nc))
+  /* "maze_solver_cy.pyx":183
+ *     free_queue(&queue)
  * 
  *     if not path_found:             # <<<<<<<<<<<<<<
- *         return None # Nenhum caminho encontrado
+ *         return None
  * 
 */
-  __pyx_t_12 = (!__pyx_v_path_found);
-  if (__pyx_t_12) {
+  __pyx_t_3 = (!__pyx_v_path_found);
+  if (__pyx_t_3) {
 
-    /* "maze_solver_cy.pyx":88
+    /* "maze_solver_cy.pyx":184
  * 
  *     if not path_found:
- *         return None # Nenhum caminho encontrado             # <<<<<<<<<<<<<<
+ *         return None             # <<<<<<<<<<<<<<
  * 
- *     # Reconstruir o caminho de trs para frente usando predecessores
+ *     # Reconstruir caminho otimizado
 */
     __Pyx_XDECREF(__pyx_r);
     __pyx_r = ((PyObject*)Py_None); __Pyx_INCREF(Py_None);
     goto __pyx_L0;
 
-    /* "maze_solver_cy.pyx":87
- *                     queue.append((nr, nc))
+    /* "maze_solver_cy.pyx":183
+ *     free_queue(&queue)
  * 
  *     if not path_found:             # <<<<<<<<<<<<<<
- *         return None # Nenhum caminho encontrado
+ *         return None
  * 
 */
   }
 
-  /* "maze_solver_cy.pyx":92
- *     # Reconstruir o caminho de trs para frente usando predecessores
- *     # Usar collections.deque para appendleft eficiente
- *     path_deque = collections.deque()             # <<<<<<<<<<<<<<
+  /* "maze_solver_cy.pyx":187
+ * 
+ *     # Reconstruir caminho otimizado
+ *     cdef list path = []             # <<<<<<<<<<<<<<
  *     cdef coord_type_t curr_r = end_r
  *     cdef coord_type_t curr_c = end_c
 */
-  __pyx_t_3 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_collections); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 92, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_8, __pyx_mstate_global->__pyx_n_u_deque); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 92, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_9);
-  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __pyx_t_6 = 1;
-  #if CYTHON_UNPACK_METHODS
-  if (unlikely(PyMethod_Check(__pyx_t_9))) {
-    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_9);
-    assert(__pyx_t_3);
-    PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_9);
-    __Pyx_INCREF(__pyx_t_3);
-    __Pyx_INCREF(__pyx__function);
-    __Pyx_DECREF_SET(__pyx_t_9, __pyx__function);
-    __pyx_t_6 = 0;
-  }
-  #endif
-  {
-    PyObject *__pyx_callargs[2] = {__pyx_t_3, NULL};
-    __pyx_t_5 = __Pyx_PyObject_FastCall(__pyx_t_9, __pyx_callargs+__pyx_t_6, (1-__pyx_t_6) | (__pyx_t_6*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-    __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 92, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-  }
-  __pyx_v_path_deque = __pyx_t_5;
-  __pyx_t_5 = 0;
+  __pyx_t_7 = PyList_New(0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 187, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_7);
+  __pyx_v_path = ((PyObject*)__pyx_t_7);
+  __pyx_t_7 = 0;
 
-  /* "maze_solver_cy.pyx":93
- *     # Usar collections.deque para appendleft eficiente
- *     path_deque = collections.deque()
+  /* "maze_solver_cy.pyx":188
+ *     # Reconstruir caminho otimizado
+ *     cdef list path = []
  *     cdef coord_type_t curr_r = end_r             # <<<<<<<<<<<<<<
  *     cdef coord_type_t curr_c = end_c
  *     cdef coord_type_t prev_r, prev_c
 */
   __pyx_v_curr_r = __pyx_v_end_r;
 
-  /* "maze_solver_cy.pyx":94
- *     path_deque = collections.deque()
+  /* "maze_solver_cy.pyx":189
+ *     cdef list path = []
  *     cdef coord_type_t curr_r = end_r
  *     cdef coord_type_t curr_c = end_c             # <<<<<<<<<<<<<<
  *     cdef coord_type_t prev_r, prev_c
@@ -19796,127 +20781,117 @@ static PyObject *__pyx_f_14maze_solver_cy_find_shortest_path_cython(__Pyx_memvie
 */
   __pyx_v_curr_c = __pyx_v_end_c;
 
-  /* "maze_solver_cy.pyx":99
- *     # Loop enquanto no chegamos ao incio (que no tem predecessor marcado ou  -1)
- *     # ou se a clula atual no tem predecessor (indicando erro ou incio)
+  /* "maze_solver_cy.pyx":193
+ * 
+ *     # Construir caminho de trs para frente
  *     while True:             # <<<<<<<<<<<<<<
- *         path_deque.appendleft((curr_r, curr_c))
- *         if curr_r == start_r and curr_c == start_c:
+ *         path.append((curr_r, curr_c))
+ * 
 */
   while (1) {
 
-    /* "maze_solver_cy.pyx":100
- *     # ou se a clula atual no tem predecessor (indicando erro ou incio)
+    /* "maze_solver_cy.pyx":194
+ *     # Construir caminho de trs para frente
  *     while True:
- *         path_deque.appendleft((curr_r, curr_c))             # <<<<<<<<<<<<<<
+ *         path.append((curr_r, curr_c))             # <<<<<<<<<<<<<<
+ * 
  *         if curr_r == start_r and curr_c == start_c:
- *             break # Chegamos ao incio
 */
-    __pyx_t_9 = __pyx_v_path_deque;
-    __Pyx_INCREF(__pyx_t_9);
-    __pyx_t_3 = __Pyx_PyLong_From_npy_int32(__pyx_v_curr_r); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 100, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_8 = __Pyx_PyLong_From_npy_int32(__pyx_v_curr_c); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 100, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyLong_From_npy_int32(__pyx_v_curr_r); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 194, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_7);
+    __pyx_t_10 = __Pyx_PyLong_From_npy_int32(__pyx_v_curr_c); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 194, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_10);
+    __pyx_t_8 = PyTuple_New(2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 194, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
-    __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 100, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_GIVEREF(__pyx_t_3);
-    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3) != (0)) __PYX_ERR(0, 100, __pyx_L1_error);
-    __Pyx_GIVEREF(__pyx_t_8);
-    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_t_8) != (0)) __PYX_ERR(0, 100, __pyx_L1_error);
-    __pyx_t_3 = 0;
-    __pyx_t_8 = 0;
-    __pyx_t_6 = 0;
-    {
-      PyObject *__pyx_callargs[2] = {__pyx_t_9, __pyx_t_4};
-      __pyx_t_5 = __Pyx_PyObject_FastCallMethod(__pyx_mstate_global->__pyx_n_u_appendleft, __pyx_callargs+__pyx_t_6, (2-__pyx_t_6) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
-      __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
-      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 100, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_5);
-    }
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __Pyx_GIVEREF(__pyx_t_7);
+    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_7) != (0)) __PYX_ERR(0, 194, __pyx_L1_error);
+    __Pyx_GIVEREF(__pyx_t_10);
+    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_8, 1, __pyx_t_10) != (0)) __PYX_ERR(0, 194, __pyx_L1_error);
+    __pyx_t_7 = 0;
+    __pyx_t_10 = 0;
+    __pyx_t_15 = __Pyx_PyList_Append(__pyx_v_path, __pyx_t_8); if (unlikely(__pyx_t_15 == ((int)-1))) __PYX_ERR(0, 194, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-    /* "maze_solver_cy.pyx":101
- *     while True:
- *         path_deque.appendleft((curr_r, curr_c))
+    /* "maze_solver_cy.pyx":196
+ *         path.append((curr_r, curr_c))
+ * 
  *         if curr_r == start_r and curr_c == start_c:             # <<<<<<<<<<<<<<
- *             break # Chegamos ao incio
+ *             break
  * 
 */
-    __pyx_t_13 = (__pyx_v_curr_r == __pyx_v_start_r);
-    if (__pyx_t_13) {
+    __pyx_t_2 = (__pyx_v_curr_r == __pyx_v_start_r);
+    if (__pyx_t_2) {
     } else {
-      __pyx_t_12 = __pyx_t_13;
-      goto __pyx_L20_bool_binop_done;
+      __pyx_t_3 = __pyx_t_2;
+      goto __pyx_L58_bool_binop_done;
     }
-    __pyx_t_13 = (__pyx_v_curr_c == __pyx_v_start_c);
-    __pyx_t_12 = __pyx_t_13;
-    __pyx_L20_bool_binop_done:;
-    if (__pyx_t_12) {
+    __pyx_t_2 = (__pyx_v_curr_c == __pyx_v_start_c);
+    __pyx_t_3 = __pyx_t_2;
+    __pyx_L58_bool_binop_done:;
+    if (__pyx_t_3) {
 
-      /* "maze_solver_cy.pyx":102
- *         path_deque.appendleft((curr_r, curr_c))
+      /* "maze_solver_cy.pyx":197
+ * 
  *         if curr_r == start_r and curr_c == start_c:
- *             break # Chegamos ao incio             # <<<<<<<<<<<<<<
+ *             break             # <<<<<<<<<<<<<<
  * 
  *         prev_r = pred_r[curr_r, curr_c]
 */
-      goto __pyx_L18_break;
+      goto __pyx_L56_break;
 
-      /* "maze_solver_cy.pyx":101
- *     while True:
- *         path_deque.appendleft((curr_r, curr_c))
+      /* "maze_solver_cy.pyx":196
+ *         path.append((curr_r, curr_c))
+ * 
  *         if curr_r == start_r and curr_c == start_c:             # <<<<<<<<<<<<<<
- *             break # Chegamos ao incio
+ *             break
  * 
 */
     }
 
-    /* "maze_solver_cy.pyx":104
- *             break # Chegamos ao incio
+    /* "maze_solver_cy.pyx":199
+ *             break
  * 
  *         prev_r = pred_r[curr_r, curr_c]             # <<<<<<<<<<<<<<
  *         prev_c = pred_c[curr_r, curr_c]
  * 
 */
-    __pyx_t_16 = __pyx_v_curr_r;
-    __pyx_t_15 = __pyx_v_curr_c;
-    __pyx_v_prev_r = (*((__pyx_t_14maze_solver_cy_coord_type_t *) ( /* dim=1 */ ((char *) (((__pyx_t_14maze_solver_cy_coord_type_t *) ( /* dim=0 */ (__pyx_v_pred_r.data + __pyx_t_16 * __pyx_v_pred_r.strides[0]) )) + __pyx_t_15)) )));
+    __pyx_t_5 = __pyx_v_curr_r;
+    __pyx_t_4 = __pyx_v_curr_c;
+    __pyx_v_prev_r = (*((__pyx_t_14maze_solver_cy_coord_type_t *) ( /* dim=1 */ ((char *) (((__pyx_t_14maze_solver_cy_coord_type_t *) ( /* dim=0 */ (__pyx_v_pred_r.data + __pyx_t_5 * __pyx_v_pred_r.strides[0]) )) + __pyx_t_4)) )));
 
-    /* "maze_solver_cy.pyx":105
+    /* "maze_solver_cy.pyx":200
  * 
  *         prev_r = pred_r[curr_r, curr_c]
  *         prev_c = pred_c[curr_r, curr_c]             # <<<<<<<<<<<<<<
  * 
  *         if prev_r == -1 and prev_c == -1:
 */
-    __pyx_t_15 = __pyx_v_curr_r;
-    __pyx_t_16 = __pyx_v_curr_c;
-    __pyx_v_prev_c = (*((__pyx_t_14maze_solver_cy_coord_type_t *) ( /* dim=1 */ ((char *) (((__pyx_t_14maze_solver_cy_coord_type_t *) ( /* dim=0 */ (__pyx_v_pred_c.data + __pyx_t_15 * __pyx_v_pred_c.strides[0]) )) + __pyx_t_16)) )));
+    __pyx_t_4 = __pyx_v_curr_r;
+    __pyx_t_5 = __pyx_v_curr_c;
+    __pyx_v_prev_c = (*((__pyx_t_14maze_solver_cy_coord_type_t *) ( /* dim=1 */ ((char *) (((__pyx_t_14maze_solver_cy_coord_type_t *) ( /* dim=0 */ (__pyx_v_pred_c.data + __pyx_t_4 * __pyx_v_pred_c.strides[0]) )) + __pyx_t_5)) )));
 
-    /* "maze_solver_cy.pyx":107
+    /* "maze_solver_cy.pyx":202
  *         prev_c = pred_c[curr_r, curr_c]
  * 
  *         if prev_r == -1 and prev_c == -1:             # <<<<<<<<<<<<<<
- *             # Se chegamos aqui e no  o start_node, algo est errado (caminho quebrado)
- *             # Isso no deveria acontecer se 'S'  alcanvel e a lgica est correta.
+ *             return None  # Erro na reconstruo
+ * 
 */
-    __pyx_t_13 = (__pyx_v_prev_r == -1L);
-    if (__pyx_t_13) {
+    __pyx_t_2 = (__pyx_v_prev_r == -1L);
+    if (__pyx_t_2) {
     } else {
-      __pyx_t_12 = __pyx_t_13;
-      goto __pyx_L23_bool_binop_done;
+      __pyx_t_3 = __pyx_t_2;
+      goto __pyx_L61_bool_binop_done;
     }
-    __pyx_t_13 = (__pyx_v_prev_c == -1L);
-    __pyx_t_12 = __pyx_t_13;
-    __pyx_L23_bool_binop_done:;
-    if (__pyx_t_12) {
+    __pyx_t_2 = (__pyx_v_prev_c == -1L);
+    __pyx_t_3 = __pyx_t_2;
+    __pyx_L61_bool_binop_done:;
+    if (__pyx_t_3) {
 
-      /* "maze_solver_cy.pyx":112
- *             # Para um 'S' vlido, o loop quebraria na condio anterior.
- *             # Retornar None indica que a reconstruo falhou, embora o BFS tenha encontrado 'E'.
- *             return None             # <<<<<<<<<<<<<<
+      /* "maze_solver_cy.pyx":203
+ * 
+ *         if prev_r == -1 and prev_c == -1:
+ *             return None  # Erro na reconstruo             # <<<<<<<<<<<<<<
  * 
  *         curr_r = prev_r
 */
@@ -19924,17 +20899,17 @@ static PyObject *__pyx_f_14maze_solver_cy_find_shortest_path_cython(__Pyx_memvie
       __pyx_r = ((PyObject*)Py_None); __Pyx_INCREF(Py_None);
       goto __pyx_L0;
 
-      /* "maze_solver_cy.pyx":107
+      /* "maze_solver_cy.pyx":202
  *         prev_c = pred_c[curr_r, curr_c]
  * 
  *         if prev_r == -1 and prev_c == -1:             # <<<<<<<<<<<<<<
- *             # Se chegamos aqui e no  o start_node, algo est errado (caminho quebrado)
- *             # Isso no deveria acontecer se 'S'  alcanvel e a lgica est correta.
+ *             return None  # Erro na reconstruo
+ * 
 */
     }
 
-    /* "maze_solver_cy.pyx":114
- *             return None
+    /* "maze_solver_cy.pyx":205
+ *             return None  # Erro na reconstruo
  * 
  *         curr_r = prev_r             # <<<<<<<<<<<<<<
  *         curr_c = prev_c
@@ -19942,77 +20917,82 @@ static PyObject *__pyx_f_14maze_solver_cy_find_shortest_path_cython(__Pyx_memvie
 */
     __pyx_v_curr_r = __pyx_v_prev_r;
 
-    /* "maze_solver_cy.pyx":115
+    /* "maze_solver_cy.pyx":206
  * 
  *         curr_r = prev_r
  *         curr_c = prev_c             # <<<<<<<<<<<<<<
  * 
- *     return list(path_deque) # Converte o deque para uma lista Python
+ *     # Reverter o caminho para ordem correta
 */
     __pyx_v_curr_c = __pyx_v_prev_c;
   }
-  __pyx_L18_break:;
+  __pyx_L56_break:;
 
-  /* "maze_solver_cy.pyx":117
- *         curr_c = prev_c
+  /* "maze_solver_cy.pyx":209
  * 
- *     return list(path_deque) # Converte o deque para uma lista Python             # <<<<<<<<<<<<<<
+ *     # Reverter o caminho para ordem correta
+ *     path.reverse()             # <<<<<<<<<<<<<<
+ *     return path
+ * 
+*/
+  __pyx_t_15 = PyList_Reverse(__pyx_v_path); if (unlikely(__pyx_t_15 == ((int)-1))) __PYX_ERR(0, 209, __pyx_L1_error)
+
+  /* "maze_solver_cy.pyx":210
+ *     # Reverter o caminho para ordem correta
+ *     path.reverse()
+ *     return path             # <<<<<<<<<<<<<<
+ * 
+ * 
 */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_5 = PySequence_List(__pyx_v_path_deque); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 117, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __pyx_r = ((PyObject*)__pyx_t_5);
-  __pyx_t_5 = 0;
+  __Pyx_INCREF(__pyx_v_path);
+  __pyx_r = __pyx_v_path;
   goto __pyx_L0;
 
-  /* "maze_solver_cy.pyx":22
- * # se S e E so apenas coordenadas e o grid os marca como PATH_CELL.
+  /* "maze_solver_cy.pyx":77
+ * DEF DC_RIGHT = 1
  * 
- * cpdef list find_shortest_path_cython(cnp.int32_t[:, ::1] int_grid, tuple start_coords, tuple end_coords):             # <<<<<<<<<<<<<<
+ * cpdef list find_shortest_path_cython_optimized(cnp.int32_t[:, ::1] int_grid, tuple start_coords, tuple end_coords):             # <<<<<<<<<<<<<<
  *     """
- *     Encontra o caminho mais curto no labirinto (grid de inteiros) usando BFS
+ *     Verso otimizada do BFS para encontrar o caminho mais curto no labirinto.
 */
 
   /* function exit code */
   __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_XDECREF(__pyx_t_7);
   __Pyx_XDECREF(__pyx_t_8);
   __Pyx_XDECREF(__pyx_t_9);
-  __PYX_XCLEAR_MEMVIEW(&__pyx_t_10, 1);
-  __PYX_XCLEAR_MEMVIEW(&__pyx_t_11, 1);
-  __Pyx_AddTraceback("maze_solver_cy.find_shortest_path_cython", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_XDECREF(__pyx_t_10);
+  __Pyx_XDECREF(__pyx_t_11);
+  __PYX_XCLEAR_MEMVIEW(&__pyx_t_13, 1);
+  __PYX_XCLEAR_MEMVIEW(&__pyx_t_14, 1);
+  __Pyx_AddTraceback("maze_solver_cy.find_shortest_path_cython_optimized", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
-  __Pyx_XDECREF(__pyx_v_queue);
   __Pyx_XDECREF(__pyx_v_visited_np_array);
   __PYX_XCLEAR_MEMVIEW(&__pyx_v_visited, 1);
   __Pyx_XDECREF(__pyx_v_pred_r_np);
   __Pyx_XDECREF(__pyx_v_pred_c_np);
   __PYX_XCLEAR_MEMVIEW(&__pyx_v_pred_r, 1);
   __PYX_XCLEAR_MEMVIEW(&__pyx_v_pred_c, 1);
-  __Pyx_XDECREF(__pyx_v_current_pos_tuple);
-  __Pyx_XDECREF(__pyx_v_dr);
-  __Pyx_XDECREF(__pyx_v_dc);
-  __Pyx_XDECREF(__pyx_v_path_deque);
+  __Pyx_XDECREF(__pyx_v_path);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_14maze_solver_cy_1find_shortest_path_cython(PyObject *__pyx_self, 
+static PyObject *__pyx_pw_14maze_solver_cy_1find_shortest_path_cython_optimized(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-PyDoc_STRVAR(__pyx_doc_14maze_solver_cy_find_shortest_path_cython, "\n    Encontra o caminho mais curto no labirinto (grid de inteiros) usando BFS\n    otimizado com rastreamento de predecessores para labirintos grandes.\n    ");
-static PyMethodDef __pyx_mdef_14maze_solver_cy_1find_shortest_path_cython = {"find_shortest_path_cython", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_14maze_solver_cy_1find_shortest_path_cython, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_14maze_solver_cy_find_shortest_path_cython};
-static PyObject *__pyx_pw_14maze_solver_cy_1find_shortest_path_cython(PyObject *__pyx_self, 
+PyDoc_STRVAR(__pyx_doc_14maze_solver_cy_find_shortest_path_cython_optimized, "\n    Vers\303\243o otimizada do BFS para encontrar o caminho mais curto no labirinto.\n    \n    Otimiza\303\247\303\265es implementadas:\n    - Queue circular customizada em C para eliminar overhead do Python\n    - Elimina\303\247\303\243o de aloca\303\247\303\265es desnecess\303\241rias\n    - Uso de nogil para paralelismo potencial\n    - Estruturas de dados mais eficientes\n    - Elimina\303\247\303\243o de checagens redundantes\n    ");
+static PyMethodDef __pyx_mdef_14maze_solver_cy_1find_shortest_path_cython_optimized = {"find_shortest_path_cython_optimized", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_14maze_solver_cy_1find_shortest_path_cython_optimized, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_14maze_solver_cy_find_shortest_path_cython_optimized};
+static PyObject *__pyx_pw_14maze_solver_cy_1find_shortest_path_cython_optimized(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -20032,7 +21012,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   int __pyx_clineno = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("find_shortest_path_cython (wrapper)", 0);
+  __Pyx_RefNannySetupContext("find_shortest_path_cython_optimized (wrapper)", 0);
   #if !CYTHON_METH_FASTCALL
   #if CYTHON_ASSUME_SAFE_SIZE
   __pyx_nargs = PyTuple_GET_SIZE(__pyx_args);
@@ -20044,46 +21024,46 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_int_grid,&__pyx_mstate_global->__pyx_n_u_start_coords,&__pyx_mstate_global->__pyx_n_u_end_coords,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 22, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 77, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 22, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 77, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 22, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 77, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 22, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 77, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "find_shortest_path_cython", 0) < 0) __PYX_ERR(0, 22, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "find_shortest_path_cython_optimized", 0) < 0) __PYX_ERR(0, 77, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 3; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("find_shortest_path_cython", 1, 3, 3, i); __PYX_ERR(0, 22, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("find_shortest_path_cython_optimized", 1, 3, 3, i); __PYX_ERR(0, 77, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 3)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 22, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 77, __pyx_L3_error)
       values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 22, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 77, __pyx_L3_error)
       values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 22, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 77, __pyx_L3_error)
     }
-    __pyx_v_int_grid = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn___pyx_t_5numpy_int32_t(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v_int_grid.memview)) __PYX_ERR(0, 22, __pyx_L3_error)
+    __pyx_v_int_grid = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn___pyx_t_5numpy_int32_t(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v_int_grid.memview)) __PYX_ERR(0, 77, __pyx_L3_error)
     __pyx_v_start_coords = ((PyObject*)values[1]);
     __pyx_v_end_coords = ((PyObject*)values[2]);
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("find_shortest_path_cython", 1, 3, 3, __pyx_nargs); __PYX_ERR(0, 22, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("find_shortest_path_cython_optimized", 1, 3, 3, __pyx_nargs); __PYX_ERR(0, 77, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -20091,13 +21071,13 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
     Py_XDECREF(values[__pyx_temp]);
   }
   __PYX_XCLEAR_MEMVIEW(&__pyx_v_int_grid, 1);
-  __Pyx_AddTraceback("maze_solver_cy.find_shortest_path_cython", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("maze_solver_cy.find_shortest_path_cython_optimized", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_start_coords), (&PyTuple_Type), 1, "start_coords", 1))) __PYX_ERR(0, 22, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_end_coords), (&PyTuple_Type), 1, "end_coords", 1))) __PYX_ERR(0, 22, __pyx_L1_error)
-  __pyx_r = __pyx_pf_14maze_solver_cy_find_shortest_path_cython(__pyx_self, __pyx_v_int_grid, __pyx_v_start_coords, __pyx_v_end_coords);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_start_coords), (&PyTuple_Type), 1, "start_coords", 1))) __PYX_ERR(0, 77, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_end_coords), (&PyTuple_Type), 1, "end_coords", 1))) __PYX_ERR(0, 77, __pyx_L1_error)
+  __pyx_r = __pyx_pf_14maze_solver_cy_find_shortest_path_cython_optimized(__pyx_self, __pyx_v_int_grid, __pyx_v_start_coords, __pyx_v_end_coords);
 
   /* function exit code */
   goto __pyx_L0;
@@ -20117,16 +21097,16 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_14maze_solver_cy_find_shortest_path_cython(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_int_grid, PyObject *__pyx_v_start_coords, PyObject *__pyx_v_end_coords) {
+static PyObject *__pyx_pf_14maze_solver_cy_find_shortest_path_cython_optimized(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_int_grid, PyObject *__pyx_v_start_coords, PyObject *__pyx_v_end_coords) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("find_shortest_path_cython", 0);
+  __Pyx_RefNannySetupContext("find_shortest_path_cython_optimized", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_14maze_solver_cy_find_shortest_path_cython(__pyx_v_int_grid, __pyx_v_start_coords, __pyx_v_end_coords, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 22, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_14maze_solver_cy_find_shortest_path_cython_optimized(__pyx_v_int_grid, __pyx_v_start_coords, __pyx_v_end_coords, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 77, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -20135,14 +21115,2225 @@ static PyObject *__pyx_pf_14maze_solver_cy_find_shortest_path_cython(CYTHON_UNUS
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("maze_solver_cy.find_shortest_path_cython", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("maze_solver_cy.find_shortest_path_cython_optimized", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
+
+/* "maze_solver_cy.pyx":213
+ * 
+ * 
+ * def parse_maze_text(maze_text):             # <<<<<<<<<<<<<<
+ *     """
+ *     Converte texto do labirinto para formato de grid inteiro.
+*/
+
+/* Python wrapper */
+static PyObject *__pyx_pw_14maze_solver_cy_3parse_maze_text(PyObject *__pyx_self, 
+#if CYTHON_METH_FASTCALL
+PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
+#else
+PyObject *__pyx_args, PyObject *__pyx_kwds
+#endif
+); /*proto*/
+PyDoc_STRVAR(__pyx_doc_14maze_solver_cy_2parse_maze_text, "\n    Converte texto do labirinto para formato de grid inteiro.\n    \n    Args:\n        maze_text: string com o labirinto, linhas separadas por \n\n        \n    Returns:\n        tuple: (int_grid, start_coords, end_coords) ou None se inv\303\241lido\n    ");
+static PyMethodDef __pyx_mdef_14maze_solver_cy_3parse_maze_text = {"parse_maze_text", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_14maze_solver_cy_3parse_maze_text, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_14maze_solver_cy_2parse_maze_text};
+static PyObject *__pyx_pw_14maze_solver_cy_3parse_maze_text(PyObject *__pyx_self, 
+#if CYTHON_METH_FASTCALL
+PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
+#else
+PyObject *__pyx_args, PyObject *__pyx_kwds
+#endif
+) {
+  PyObject *__pyx_v_maze_text = 0;
+  #if !CYTHON_METH_FASTCALL
+  CYTHON_UNUSED Py_ssize_t __pyx_nargs;
+  #endif
+  CYTHON_UNUSED PyObject *const *__pyx_kwvalues;
+  PyObject* values[1] = {0};
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("parse_maze_text (wrapper)", 0);
+  #if !CYTHON_METH_FASTCALL
+  #if CYTHON_ASSUME_SAFE_SIZE
+  __pyx_nargs = PyTuple_GET_SIZE(__pyx_args);
+  #else
+  __pyx_nargs = PyTuple_Size(__pyx_args); if (unlikely(__pyx_nargs < 0)) return NULL;
+  #endif
+  #endif
+  __pyx_kwvalues = __Pyx_KwValues_FASTCALL(__pyx_args, __pyx_nargs);
+  {
+    PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_maze_text,0};
+    const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 213, __pyx_L3_error)
+    if (__pyx_kwds_len > 0) {
+      switch (__pyx_nargs) {
+        case  1:
+        values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 213, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      const Py_ssize_t kwd_pos_args = __pyx_nargs;
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "parse_maze_text", 0) < 0) __PYX_ERR(0, 213, __pyx_L3_error)
+      for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("parse_maze_text", 1, 1, 1, i); __PYX_ERR(0, 213, __pyx_L3_error) }
+      }
+    } else if (unlikely(__pyx_nargs != 1)) {
+      goto __pyx_L5_argtuple_error;
+    } else {
+      values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 213, __pyx_L3_error)
+    }
+    __pyx_v_maze_text = values[0];
+  }
+  goto __pyx_L6_skip;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("parse_maze_text", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 213, __pyx_L3_error)
+  __pyx_L6_skip:;
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L3_error:;
+  for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
+    Py_XDECREF(values[__pyx_temp]);
+  }
+  __Pyx_AddTraceback("maze_solver_cy.parse_maze_text", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_14maze_solver_cy_2parse_maze_text(__pyx_self, __pyx_v_maze_text);
+
+  /* function exit code */
+  for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
+    Py_XDECREF(values[__pyx_temp]);
+  }
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_14maze_solver_cy_2parse_maze_text(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_maze_text) {
+  PyObject *__pyx_v_lines = NULL;
+  Py_ssize_t __pyx_v_rows;
+  Py_ssize_t __pyx_v_cols;
+  PyObject *__pyx_v_line = NULL;
+  PyObject *__pyx_v_int_grid = NULL;
+  PyObject *__pyx_v_start_coords = NULL;
+  PyObject *__pyx_v_end_coords = NULL;
+  Py_ssize_t __pyx_v_r;
+  Py_ssize_t __pyx_v_c;
+  PyObject *__pyx_v_char = NULL;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  PyObject *__pyx_t_4 = NULL;
+  size_t __pyx_t_5;
+  int __pyx_t_6;
+  int __pyx_t_7;
+  Py_ssize_t __pyx_t_8;
+  Py_ssize_t __pyx_t_9;
+  PyObject *(*__pyx_t_10)(PyObject *);
+  PyObject *__pyx_t_11 = NULL;
+  PyObject *__pyx_t_12 = NULL;
+  Py_ssize_t __pyx_t_13;
+  Py_ssize_t __pyx_t_14;
+  Py_ssize_t __pyx_t_15;
+  Py_ssize_t __pyx_t_16;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("parse_maze_text", 0);
+
+  /* "maze_solver_cy.pyx":223
+ *         tuple: (int_grid, start_coords, end_coords) ou None se invlido
+ *     """
+ *     lines = maze_text.strip().split('\n')             # <<<<<<<<<<<<<<
+ *     if not lines:
+ *         return None
+*/
+  __pyx_t_4 = __pyx_v_maze_text;
+  __Pyx_INCREF(__pyx_t_4);
+  __pyx_t_5 = 0;
+  {
+    PyObject *__pyx_callargs[2] = {__pyx_t_4, NULL};
+    __pyx_t_3 = __Pyx_PyObject_FastCallMethod(__pyx_mstate_global->__pyx_n_u_strip, __pyx_callargs+__pyx_t_5, (1-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+    __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 223, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+  }
+  __pyx_t_2 = __pyx_t_3;
+  __Pyx_INCREF(__pyx_t_2);
+  __pyx_t_5 = 0;
+  {
+    PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_mstate_global->__pyx_kp_u__6};
+    __pyx_t_1 = __Pyx_PyObject_FastCallMethod(__pyx_mstate_global->__pyx_n_u_split, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+    __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 223, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+  }
+  __pyx_v_lines = __pyx_t_1;
+  __pyx_t_1 = 0;
+
+  /* "maze_solver_cy.pyx":224
+ *     """
+ *     lines = maze_text.strip().split('\n')
+ *     if not lines:             # <<<<<<<<<<<<<<
+ *         return None
+ * 
+*/
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_v_lines); if (unlikely((__pyx_t_6 < 0))) __PYX_ERR(0, 224, __pyx_L1_error)
+  __pyx_t_7 = (!__pyx_t_6);
+  if (__pyx_t_7) {
+
+    /* "maze_solver_cy.pyx":225
+ *     lines = maze_text.strip().split('\n')
+ *     if not lines:
+ *         return None             # <<<<<<<<<<<<<<
+ * 
+ *     rows = len(lines)
+*/
+    __Pyx_XDECREF(__pyx_r);
+    __pyx_r = Py_None; __Pyx_INCREF(Py_None);
+    goto __pyx_L0;
+
+    /* "maze_solver_cy.pyx":224
+ *     """
+ *     lines = maze_text.strip().split('\n')
+ *     if not lines:             # <<<<<<<<<<<<<<
+ *         return None
+ * 
+*/
+  }
+
+  /* "maze_solver_cy.pyx":227
+ *         return None
+ * 
+ *     rows = len(lines)             # <<<<<<<<<<<<<<
+ *     cols = len(lines[0]) if lines else 0
+ * 
+*/
+  __pyx_t_8 = PyObject_Length(__pyx_v_lines); if (unlikely(__pyx_t_8 == ((Py_ssize_t)-1))) __PYX_ERR(0, 227, __pyx_L1_error)
+  __pyx_v_rows = __pyx_t_8;
+
+  /* "maze_solver_cy.pyx":228
+ * 
+ *     rows = len(lines)
+ *     cols = len(lines[0]) if lines else 0             # <<<<<<<<<<<<<<
+ * 
+ *     # Verificar se todas as linhas tm o mesmo tamanho
+*/
+  __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_v_lines); if (unlikely((__pyx_t_7 < 0))) __PYX_ERR(0, 228, __pyx_L1_error)
+  if (__pyx_t_7) {
+    __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_lines, 0, long, 1, __Pyx_PyLong_From_long, 0, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 228, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_t_9 = PyObject_Length(__pyx_t_1); if (unlikely(__pyx_t_9 == ((Py_ssize_t)-1))) __PYX_ERR(0, 228, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    __pyx_t_8 = __pyx_t_9;
+  } else {
+    __pyx_t_8 = 0;
+  }
+  __pyx_v_cols = __pyx_t_8;
+
+  /* "maze_solver_cy.pyx":231
+ * 
+ *     # Verificar se todas as linhas tm o mesmo tamanho
+ *     for line in lines:             # <<<<<<<<<<<<<<
+ *         if len(line) != cols:
+ *             return None
+*/
+  if (likely(PyList_CheckExact(__pyx_v_lines)) || PyTuple_CheckExact(__pyx_v_lines)) {
+    __pyx_t_1 = __pyx_v_lines; __Pyx_INCREF(__pyx_t_1);
+    __pyx_t_8 = 0;
+    __pyx_t_10 = NULL;
+  } else {
+    __pyx_t_8 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_lines); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 231, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_t_10 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 231, __pyx_L1_error)
+  }
+  for (;;) {
+    if (likely(!__pyx_t_10)) {
+      if (likely(PyList_CheckExact(__pyx_t_1))) {
+        {
+          Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_1);
+          #if !CYTHON_ASSUME_SAFE_SIZE
+          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 231, __pyx_L1_error)
+          #endif
+          if (__pyx_t_8 >= __pyx_temp) break;
+        }
+        __pyx_t_3 = __Pyx_PyList_GetItemRef(__pyx_t_1, __pyx_t_8);
+        ++__pyx_t_8;
+      } else {
+        {
+          Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_1);
+          #if !CYTHON_ASSUME_SAFE_SIZE
+          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 231, __pyx_L1_error)
+          #endif
+          if (__pyx_t_8 >= __pyx_temp) break;
+        }
+        #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+        __pyx_t_3 = __Pyx_NewRef(PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_8));
+        #else
+        __pyx_t_3 = __Pyx_PySequence_ITEM(__pyx_t_1, __pyx_t_8);
+        #endif
+        ++__pyx_t_8;
+      }
+      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 231, __pyx_L1_error)
+    } else {
+      __pyx_t_3 = __pyx_t_10(__pyx_t_1);
+      if (unlikely(!__pyx_t_3)) {
+        PyObject* exc_type = PyErr_Occurred();
+        if (exc_type) {
+          if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 231, __pyx_L1_error)
+          PyErr_Clear();
+        }
+        break;
+      }
+    }
+    __Pyx_GOTREF(__pyx_t_3);
+    __Pyx_XDECREF_SET(__pyx_v_line, __pyx_t_3);
+    __pyx_t_3 = 0;
+
+    /* "maze_solver_cy.pyx":232
+ *     # Verificar se todas as linhas tm o mesmo tamanho
+ *     for line in lines:
+ *         if len(line) != cols:             # <<<<<<<<<<<<<<
+ *             return None
+ * 
+*/
+    __pyx_t_9 = PyObject_Length(__pyx_v_line); if (unlikely(__pyx_t_9 == ((Py_ssize_t)-1))) __PYX_ERR(0, 232, __pyx_L1_error)
+    __pyx_t_7 = (__pyx_t_9 != __pyx_v_cols);
+    if (__pyx_t_7) {
+
+      /* "maze_solver_cy.pyx":233
+ *     for line in lines:
+ *         if len(line) != cols:
+ *             return None             # <<<<<<<<<<<<<<
+ * 
+ *     # Criar grid e encontrar S e E
+*/
+      __Pyx_XDECREF(__pyx_r);
+      __pyx_r = Py_None; __Pyx_INCREF(Py_None);
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      goto __pyx_L0;
+
+      /* "maze_solver_cy.pyx":232
+ *     # Verificar se todas as linhas tm o mesmo tamanho
+ *     for line in lines:
+ *         if len(line) != cols:             # <<<<<<<<<<<<<<
+ *             return None
+ * 
+*/
+    }
+
+    /* "maze_solver_cy.pyx":231
+ * 
+ *     # Verificar se todas as linhas tm o mesmo tamanho
+ *     for line in lines:             # <<<<<<<<<<<<<<
+ *         if len(line) != cols:
+ *             return None
+*/
+  }
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "maze_solver_cy.pyx":236
+ * 
+ *     # Criar grid e encontrar S e E
+ *     int_grid = np.zeros((rows, cols), dtype=np.int32)             # <<<<<<<<<<<<<<
+ *     start_coords = None
+ *     end_coords = None
+*/
+  __pyx_t_3 = NULL;
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 236, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 236, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = PyLong_FromSsize_t(__pyx_v_rows); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 236, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_11 = PyLong_FromSsize_t(__pyx_v_cols); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 236, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_11);
+  __pyx_t_12 = PyTuple_New(2); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 236, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_12);
+  __Pyx_GIVEREF(__pyx_t_2);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_12, 0, __pyx_t_2) != (0)) __PYX_ERR(0, 236, __pyx_L1_error);
+  __Pyx_GIVEREF(__pyx_t_11);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_12, 1, __pyx_t_11) != (0)) __PYX_ERR(0, 236, __pyx_L1_error);
+  __pyx_t_2 = 0;
+  __pyx_t_11 = 0;
+  __Pyx_GetModuleGlobalName(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 236, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_11);
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_11, __pyx_mstate_global->__pyx_n_u_int32); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 236, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+  __pyx_t_5 = 1;
+  #if CYTHON_UNPACK_METHODS
+  if (unlikely(PyMethod_Check(__pyx_t_4))) {
+    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_4);
+    assert(__pyx_t_3);
+    PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_4);
+    __Pyx_INCREF(__pyx_t_3);
+    __Pyx_INCREF(__pyx__function);
+    __Pyx_DECREF_SET(__pyx_t_4, __pyx__function);
+    __pyx_t_5 = 0;
+  }
+  #endif
+  {
+    PyObject *__pyx_callargs[2 + ((CYTHON_VECTORCALL) ? 1 : 0)] = {__pyx_t_3, __pyx_t_12};
+    __pyx_t_11 = __Pyx_MakeVectorcallBuilderKwds(1); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 236, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_11);
+    if (__Pyx_VectorcallBuilder_AddArg(__pyx_mstate_global->__pyx_n_u_dtype, __pyx_t_2, __pyx_t_11, __pyx_callargs+2, 0) < 0) __PYX_ERR(0, 236, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_Object_Vectorcall_CallFromBuilder(__pyx_t_4, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET), __pyx_t_11);
+    __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 236, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+  }
+  __pyx_v_int_grid = __pyx_t_1;
+  __pyx_t_1 = 0;
+
+  /* "maze_solver_cy.pyx":237
+ *     # Criar grid e encontrar S e E
+ *     int_grid = np.zeros((rows, cols), dtype=np.int32)
+ *     start_coords = None             # <<<<<<<<<<<<<<
+ *     end_coords = None
+ * 
+*/
+  __Pyx_INCREF(Py_None);
+  __pyx_v_start_coords = Py_None;
+
+  /* "maze_solver_cy.pyx":238
+ *     int_grid = np.zeros((rows, cols), dtype=np.int32)
+ *     start_coords = None
+ *     end_coords = None             # <<<<<<<<<<<<<<
+ * 
+ *     for r in range(rows):
+*/
+  __Pyx_INCREF(Py_None);
+  __pyx_v_end_coords = Py_None;
+
+  /* "maze_solver_cy.pyx":240
+ *     end_coords = None
+ * 
+ *     for r in range(rows):             # <<<<<<<<<<<<<<
+ *         for c in range(cols):
+ *             char = lines[r][c]
+*/
+  __pyx_t_8 = __pyx_v_rows;
+  __pyx_t_9 = __pyx_t_8;
+  for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_9; __pyx_t_13+=1) {
+    __pyx_v_r = __pyx_t_13;
+
+    /* "maze_solver_cy.pyx":241
+ * 
+ *     for r in range(rows):
+ *         for c in range(cols):             # <<<<<<<<<<<<<<
+ *             char = lines[r][c]
+ *             if char == '#':
+*/
+    __pyx_t_14 = __pyx_v_cols;
+    __pyx_t_15 = __pyx_t_14;
+    for (__pyx_t_16 = 0; __pyx_t_16 < __pyx_t_15; __pyx_t_16+=1) {
+      __pyx_v_c = __pyx_t_16;
+
+      /* "maze_solver_cy.pyx":242
+ *     for r in range(rows):
+ *         for c in range(cols):
+ *             char = lines[r][c]             # <<<<<<<<<<<<<<
+ *             if char == '#':
+ *                 int_grid[r, c] = WALL_CELL
+*/
+      __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_lines, __pyx_v_r, Py_ssize_t, 1, PyLong_FromSsize_t, 0, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 242, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_1);
+      __pyx_t_4 = __Pyx_GetItemInt(__pyx_t_1, __pyx_v_c, Py_ssize_t, 1, PyLong_FromSsize_t, 0, 0, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 242, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_4);
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      __Pyx_XDECREF_SET(__pyx_v_char, __pyx_t_4);
+      __pyx_t_4 = 0;
+
+      /* "maze_solver_cy.pyx":243
+ *         for c in range(cols):
+ *             char = lines[r][c]
+ *             if char == '#':             # <<<<<<<<<<<<<<
+ *                 int_grid[r, c] = WALL_CELL
+ *             elif char == ' ' or char == '':
+*/
+      __pyx_t_7 = (__Pyx_PyUnicode_Equals(__pyx_v_char, __pyx_mstate_global->__pyx_kp_u__7, Py_EQ)); if (unlikely((__pyx_t_7 < 0))) __PYX_ERR(0, 243, __pyx_L1_error)
+      if (__pyx_t_7) {
+
+        /* "maze_solver_cy.pyx":244
+ *             char = lines[r][c]
+ *             if char == '#':
+ *                 int_grid[r, c] = WALL_CELL             # <<<<<<<<<<<<<<
+ *             elif char == ' ' or char == '':
+ *                 int_grid[r, c] = PATH_CELL
+*/
+        __pyx_t_4 = PyLong_FromSsize_t(__pyx_v_r); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 244, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_4);
+        __pyx_t_1 = PyLong_FromSsize_t(__pyx_v_c); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 244, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_1);
+        __pyx_t_11 = PyTuple_New(2); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 244, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_11);
+        __Pyx_GIVEREF(__pyx_t_4);
+        if (__Pyx_PyTuple_SET_ITEM(__pyx_t_11, 0, __pyx_t_4) != (0)) __PYX_ERR(0, 244, __pyx_L1_error);
+        __Pyx_GIVEREF(__pyx_t_1);
+        if (__Pyx_PyTuple_SET_ITEM(__pyx_t_11, 1, __pyx_t_1) != (0)) __PYX_ERR(0, 244, __pyx_L1_error);
+        __pyx_t_4 = 0;
+        __pyx_t_1 = 0;
+        if (unlikely((PyObject_SetItem(__pyx_v_int_grid, __pyx_t_11, __pyx_mstate_global->__pyx_int_1) < 0))) __PYX_ERR(0, 244, __pyx_L1_error)
+        __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+
+        /* "maze_solver_cy.pyx":243
+ *         for c in range(cols):
+ *             char = lines[r][c]
+ *             if char == '#':             # <<<<<<<<<<<<<<
+ *                 int_grid[r, c] = WALL_CELL
+ *             elif char == ' ' or char == '':
+*/
+        goto __pyx_L12;
+      }
+
+      /* "maze_solver_cy.pyx":245
+ *             if char == '#':
+ *                 int_grid[r, c] = WALL_CELL
+ *             elif char == ' ' or char == '':             # <<<<<<<<<<<<<<
+ *                 int_grid[r, c] = PATH_CELL
+ *             elif char == 'S':
+*/
+      __pyx_t_6 = (__Pyx_PyUnicode_Equals(__pyx_v_char, __pyx_mstate_global->__pyx_kp_u__8, Py_EQ)); if (unlikely((__pyx_t_6 < 0))) __PYX_ERR(0, 245, __pyx_L1_error)
+      if (!__pyx_t_6) {
+      } else {
+        __pyx_t_7 = __pyx_t_6;
+        goto __pyx_L13_bool_binop_done;
+      }
+      __pyx_t_6 = (__Pyx_PyUnicode_Equals(__pyx_v_char, __pyx_mstate_global->__pyx_kp_u__9, Py_EQ)); if (unlikely((__pyx_t_6 < 0))) __PYX_ERR(0, 245, __pyx_L1_error)
+      __pyx_t_7 = __pyx_t_6;
+      __pyx_L13_bool_binop_done:;
+      if (__pyx_t_7) {
+
+        /* "maze_solver_cy.pyx":246
+ *                 int_grid[r, c] = WALL_CELL
+ *             elif char == ' ' or char == '':
+ *                 int_grid[r, c] = PATH_CELL             # <<<<<<<<<<<<<<
+ *             elif char == 'S':
+ *                 int_grid[r, c] = PATH_CELL
+*/
+        __pyx_t_11 = PyLong_FromSsize_t(__pyx_v_r); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 246, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_11);
+        __pyx_t_1 = PyLong_FromSsize_t(__pyx_v_c); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 246, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_1);
+        __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 246, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_4);
+        __Pyx_GIVEREF(__pyx_t_11);
+        if (__Pyx_PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_11) != (0)) __PYX_ERR(0, 246, __pyx_L1_error);
+        __Pyx_GIVEREF(__pyx_t_1);
+        if (__Pyx_PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_t_1) != (0)) __PYX_ERR(0, 246, __pyx_L1_error);
+        __pyx_t_11 = 0;
+        __pyx_t_1 = 0;
+        if (unlikely((PyObject_SetItem(__pyx_v_int_grid, __pyx_t_4, __pyx_mstate_global->__pyx_int_0) < 0))) __PYX_ERR(0, 246, __pyx_L1_error)
+        __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+        /* "maze_solver_cy.pyx":245
+ *             if char == '#':
+ *                 int_grid[r, c] = WALL_CELL
+ *             elif char == ' ' or char == '':             # <<<<<<<<<<<<<<
+ *                 int_grid[r, c] = PATH_CELL
+ *             elif char == 'S':
+*/
+        goto __pyx_L12;
+      }
+
+      /* "maze_solver_cy.pyx":247
+ *             elif char == ' ' or char == '':
+ *                 int_grid[r, c] = PATH_CELL
+ *             elif char == 'S':             # <<<<<<<<<<<<<<
+ *                 int_grid[r, c] = PATH_CELL
+ *                 start_coords = (r, c)
+*/
+      __pyx_t_7 = (__Pyx_PyUnicode_Equals(__pyx_v_char, __pyx_mstate_global->__pyx_n_u_S, Py_EQ)); if (unlikely((__pyx_t_7 < 0))) __PYX_ERR(0, 247, __pyx_L1_error)
+      if (__pyx_t_7) {
+
+        /* "maze_solver_cy.pyx":248
+ *                 int_grid[r, c] = PATH_CELL
+ *             elif char == 'S':
+ *                 int_grid[r, c] = PATH_CELL             # <<<<<<<<<<<<<<
+ *                 start_coords = (r, c)
+ *             elif char == 'E':
+*/
+        __pyx_t_4 = PyLong_FromSsize_t(__pyx_v_r); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 248, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_4);
+        __pyx_t_1 = PyLong_FromSsize_t(__pyx_v_c); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 248, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_1);
+        __pyx_t_11 = PyTuple_New(2); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 248, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_11);
+        __Pyx_GIVEREF(__pyx_t_4);
+        if (__Pyx_PyTuple_SET_ITEM(__pyx_t_11, 0, __pyx_t_4) != (0)) __PYX_ERR(0, 248, __pyx_L1_error);
+        __Pyx_GIVEREF(__pyx_t_1);
+        if (__Pyx_PyTuple_SET_ITEM(__pyx_t_11, 1, __pyx_t_1) != (0)) __PYX_ERR(0, 248, __pyx_L1_error);
+        __pyx_t_4 = 0;
+        __pyx_t_1 = 0;
+        if (unlikely((PyObject_SetItem(__pyx_v_int_grid, __pyx_t_11, __pyx_mstate_global->__pyx_int_0) < 0))) __PYX_ERR(0, 248, __pyx_L1_error)
+        __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+
+        /* "maze_solver_cy.pyx":249
+ *             elif char == 'S':
+ *                 int_grid[r, c] = PATH_CELL
+ *                 start_coords = (r, c)             # <<<<<<<<<<<<<<
+ *             elif char == 'E':
+ *                 int_grid[r, c] = PATH_CELL
+*/
+        __pyx_t_11 = PyLong_FromSsize_t(__pyx_v_r); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 249, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_11);
+        __pyx_t_1 = PyLong_FromSsize_t(__pyx_v_c); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 249, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_1);
+        __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 249, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_4);
+        __Pyx_GIVEREF(__pyx_t_11);
+        if (__Pyx_PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_11) != (0)) __PYX_ERR(0, 249, __pyx_L1_error);
+        __Pyx_GIVEREF(__pyx_t_1);
+        if (__Pyx_PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_t_1) != (0)) __PYX_ERR(0, 249, __pyx_L1_error);
+        __pyx_t_11 = 0;
+        __pyx_t_1 = 0;
+        __Pyx_DECREF_SET(__pyx_v_start_coords, __pyx_t_4);
+        __pyx_t_4 = 0;
+
+        /* "maze_solver_cy.pyx":247
+ *             elif char == ' ' or char == '':
+ *                 int_grid[r, c] = PATH_CELL
+ *             elif char == 'S':             # <<<<<<<<<<<<<<
+ *                 int_grid[r, c] = PATH_CELL
+ *                 start_coords = (r, c)
+*/
+        goto __pyx_L12;
+      }
+
+      /* "maze_solver_cy.pyx":250
+ *                 int_grid[r, c] = PATH_CELL
+ *                 start_coords = (r, c)
+ *             elif char == 'E':             # <<<<<<<<<<<<<<
+ *                 int_grid[r, c] = PATH_CELL
+ *                 end_coords = (r, c)
+*/
+      __pyx_t_7 = (__Pyx_PyUnicode_Equals(__pyx_v_char, __pyx_mstate_global->__pyx_n_u_E, Py_EQ)); if (unlikely((__pyx_t_7 < 0))) __PYX_ERR(0, 250, __pyx_L1_error)
+      if (__pyx_t_7) {
+
+        /* "maze_solver_cy.pyx":251
+ *                 start_coords = (r, c)
+ *             elif char == 'E':
+ *                 int_grid[r, c] = PATH_CELL             # <<<<<<<<<<<<<<
+ *                 end_coords = (r, c)
+ *             else:
+*/
+        __pyx_t_4 = PyLong_FromSsize_t(__pyx_v_r); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 251, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_4);
+        __pyx_t_1 = PyLong_FromSsize_t(__pyx_v_c); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 251, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_1);
+        __pyx_t_11 = PyTuple_New(2); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 251, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_11);
+        __Pyx_GIVEREF(__pyx_t_4);
+        if (__Pyx_PyTuple_SET_ITEM(__pyx_t_11, 0, __pyx_t_4) != (0)) __PYX_ERR(0, 251, __pyx_L1_error);
+        __Pyx_GIVEREF(__pyx_t_1);
+        if (__Pyx_PyTuple_SET_ITEM(__pyx_t_11, 1, __pyx_t_1) != (0)) __PYX_ERR(0, 251, __pyx_L1_error);
+        __pyx_t_4 = 0;
+        __pyx_t_1 = 0;
+        if (unlikely((PyObject_SetItem(__pyx_v_int_grid, __pyx_t_11, __pyx_mstate_global->__pyx_int_0) < 0))) __PYX_ERR(0, 251, __pyx_L1_error)
+        __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+
+        /* "maze_solver_cy.pyx":252
+ *             elif char == 'E':
+ *                 int_grid[r, c] = PATH_CELL
+ *                 end_coords = (r, c)             # <<<<<<<<<<<<<<
+ *             else:
+ *                 int_grid[r, c] = PATH_CELL  # Assume qualquer outro char como caminho
+*/
+        __pyx_t_11 = PyLong_FromSsize_t(__pyx_v_r); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 252, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_11);
+        __pyx_t_1 = PyLong_FromSsize_t(__pyx_v_c); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 252, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_1);
+        __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 252, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_4);
+        __Pyx_GIVEREF(__pyx_t_11);
+        if (__Pyx_PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_11) != (0)) __PYX_ERR(0, 252, __pyx_L1_error);
+        __Pyx_GIVEREF(__pyx_t_1);
+        if (__Pyx_PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_t_1) != (0)) __PYX_ERR(0, 252, __pyx_L1_error);
+        __pyx_t_11 = 0;
+        __pyx_t_1 = 0;
+        __Pyx_DECREF_SET(__pyx_v_end_coords, __pyx_t_4);
+        __pyx_t_4 = 0;
+
+        /* "maze_solver_cy.pyx":250
+ *                 int_grid[r, c] = PATH_CELL
+ *                 start_coords = (r, c)
+ *             elif char == 'E':             # <<<<<<<<<<<<<<
+ *                 int_grid[r, c] = PATH_CELL
+ *                 end_coords = (r, c)
+*/
+        goto __pyx_L12;
+      }
+
+      /* "maze_solver_cy.pyx":254
+ *                 end_coords = (r, c)
+ *             else:
+ *                 int_grid[r, c] = PATH_CELL  # Assume qualquer outro char como caminho             # <<<<<<<<<<<<<<
+ * 
+ *     if start_coords is None or end_coords is None:
+*/
+      /*else*/ {
+        __pyx_t_4 = PyLong_FromSsize_t(__pyx_v_r); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 254, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_4);
+        __pyx_t_1 = PyLong_FromSsize_t(__pyx_v_c); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 254, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_1);
+        __pyx_t_11 = PyTuple_New(2); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 254, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_11);
+        __Pyx_GIVEREF(__pyx_t_4);
+        if (__Pyx_PyTuple_SET_ITEM(__pyx_t_11, 0, __pyx_t_4) != (0)) __PYX_ERR(0, 254, __pyx_L1_error);
+        __Pyx_GIVEREF(__pyx_t_1);
+        if (__Pyx_PyTuple_SET_ITEM(__pyx_t_11, 1, __pyx_t_1) != (0)) __PYX_ERR(0, 254, __pyx_L1_error);
+        __pyx_t_4 = 0;
+        __pyx_t_1 = 0;
+        if (unlikely((PyObject_SetItem(__pyx_v_int_grid, __pyx_t_11, __pyx_mstate_global->__pyx_int_0) < 0))) __PYX_ERR(0, 254, __pyx_L1_error)
+        __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+      }
+      __pyx_L12:;
+    }
+  }
+
+  /* "maze_solver_cy.pyx":256
+ *                 int_grid[r, c] = PATH_CELL  # Assume qualquer outro char como caminho
+ * 
+ *     if start_coords is None or end_coords is None:             # <<<<<<<<<<<<<<
+ *         return None
+ * 
+*/
+  __pyx_t_6 = (__pyx_v_start_coords == Py_None);
+  if (!__pyx_t_6) {
+  } else {
+    __pyx_t_7 = __pyx_t_6;
+    goto __pyx_L16_bool_binop_done;
+  }
+  __pyx_t_6 = (__pyx_v_end_coords == Py_None);
+  __pyx_t_7 = __pyx_t_6;
+  __pyx_L16_bool_binop_done:;
+  if (__pyx_t_7) {
+
+    /* "maze_solver_cy.pyx":257
+ * 
+ *     if start_coords is None or end_coords is None:
+ *         return None             # <<<<<<<<<<<<<<
+ * 
+ *     return int_grid, start_coords, end_coords
+*/
+    __Pyx_XDECREF(__pyx_r);
+    __pyx_r = Py_None; __Pyx_INCREF(Py_None);
+    goto __pyx_L0;
+
+    /* "maze_solver_cy.pyx":256
+ *                 int_grid[r, c] = PATH_CELL  # Assume qualquer outro char como caminho
+ * 
+ *     if start_coords is None or end_coords is None:             # <<<<<<<<<<<<<<
+ *         return None
+ * 
+*/
+  }
+
+  /* "maze_solver_cy.pyx":259
+ *         return None
+ * 
+ *     return int_grid, start_coords, end_coords             # <<<<<<<<<<<<<<
+ * 
+ * 
+*/
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_11 = PyTuple_New(3); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 259, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_11);
+  __Pyx_INCREF(__pyx_v_int_grid);
+  __Pyx_GIVEREF(__pyx_v_int_grid);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_11, 0, __pyx_v_int_grid) != (0)) __PYX_ERR(0, 259, __pyx_L1_error);
+  __Pyx_INCREF(__pyx_v_start_coords);
+  __Pyx_GIVEREF(__pyx_v_start_coords);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_11, 1, __pyx_v_start_coords) != (0)) __PYX_ERR(0, 259, __pyx_L1_error);
+  __Pyx_INCREF(__pyx_v_end_coords);
+  __Pyx_GIVEREF(__pyx_v_end_coords);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_11, 2, __pyx_v_end_coords) != (0)) __PYX_ERR(0, 259, __pyx_L1_error);
+  __pyx_r = __pyx_t_11;
+  __pyx_t_11 = 0;
+  goto __pyx_L0;
+
+  /* "maze_solver_cy.pyx":213
+ * 
+ * 
+ * def parse_maze_text(maze_text):             # <<<<<<<<<<<<<<
+ *     """
+ *     Converte texto do labirinto para formato de grid inteiro.
+*/
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_XDECREF(__pyx_t_11);
+  __Pyx_XDECREF(__pyx_t_12);
+  __Pyx_AddTraceback("maze_solver_cy.parse_maze_text", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_lines);
+  __Pyx_XDECREF(__pyx_v_line);
+  __Pyx_XDECREF(__pyx_v_int_grid);
+  __Pyx_XDECREF(__pyx_v_start_coords);
+  __Pyx_XDECREF(__pyx_v_end_coords);
+  __Pyx_XDECREF(__pyx_v_char);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "maze_solver_cy.pyx":262
+ * 
+ * 
+ * def solve_maze_from_text(maze_text):             # <<<<<<<<<<<<<<
+ *     """
+ *     Resolve o labirinto a partir do texto e retorna o resultado formatado.
+*/
+
+/* Python wrapper */
+static PyObject *__pyx_pw_14maze_solver_cy_5solve_maze_from_text(PyObject *__pyx_self, 
+#if CYTHON_METH_FASTCALL
+PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
+#else
+PyObject *__pyx_args, PyObject *__pyx_kwds
+#endif
+); /*proto*/
+PyDoc_STRVAR(__pyx_doc_14maze_solver_cy_4solve_maze_from_text, "\n    Resolve o labirinto a partir do texto e retorna o resultado formatado.\n    \n    Args:\n        maze_text: string com o labirinto\n        \n    Returns:\n        string: labirinto com caminho marcado ou mensagem de erro\n    ");
+static PyMethodDef __pyx_mdef_14maze_solver_cy_5solve_maze_from_text = {"solve_maze_from_text", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_14maze_solver_cy_5solve_maze_from_text, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_14maze_solver_cy_4solve_maze_from_text};
+static PyObject *__pyx_pw_14maze_solver_cy_5solve_maze_from_text(PyObject *__pyx_self, 
+#if CYTHON_METH_FASTCALL
+PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
+#else
+PyObject *__pyx_args, PyObject *__pyx_kwds
+#endif
+) {
+  PyObject *__pyx_v_maze_text = 0;
+  #if !CYTHON_METH_FASTCALL
+  CYTHON_UNUSED Py_ssize_t __pyx_nargs;
+  #endif
+  CYTHON_UNUSED PyObject *const *__pyx_kwvalues;
+  PyObject* values[1] = {0};
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("solve_maze_from_text (wrapper)", 0);
+  #if !CYTHON_METH_FASTCALL
+  #if CYTHON_ASSUME_SAFE_SIZE
+  __pyx_nargs = PyTuple_GET_SIZE(__pyx_args);
+  #else
+  __pyx_nargs = PyTuple_Size(__pyx_args); if (unlikely(__pyx_nargs < 0)) return NULL;
+  #endif
+  #endif
+  __pyx_kwvalues = __Pyx_KwValues_FASTCALL(__pyx_args, __pyx_nargs);
+  {
+    PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_maze_text,0};
+    const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 262, __pyx_L3_error)
+    if (__pyx_kwds_len > 0) {
+      switch (__pyx_nargs) {
+        case  1:
+        values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 262, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      const Py_ssize_t kwd_pos_args = __pyx_nargs;
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "solve_maze_from_text", 0) < 0) __PYX_ERR(0, 262, __pyx_L3_error)
+      for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("solve_maze_from_text", 1, 1, 1, i); __PYX_ERR(0, 262, __pyx_L3_error) }
+      }
+    } else if (unlikely(__pyx_nargs != 1)) {
+      goto __pyx_L5_argtuple_error;
+    } else {
+      values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 262, __pyx_L3_error)
+    }
+    __pyx_v_maze_text = values[0];
+  }
+  goto __pyx_L6_skip;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("solve_maze_from_text", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 262, __pyx_L3_error)
+  __pyx_L6_skip:;
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L3_error:;
+  for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
+    Py_XDECREF(values[__pyx_temp]);
+  }
+  __Pyx_AddTraceback("maze_solver_cy.solve_maze_from_text", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_14maze_solver_cy_4solve_maze_from_text(__pyx_self, __pyx_v_maze_text);
+
+  /* function exit code */
+  for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
+    Py_XDECREF(values[__pyx_temp]);
+  }
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+static PyObject *__pyx_gb_14maze_solver_cy_20solve_maze_from_text_2generator(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
+
+/* "maze_solver_cy.pyx":293
+ *             result_lines[r][c] = ''
+ * 
+ *     return '\n'.join(''.join(line) for line in result_lines)             # <<<<<<<<<<<<<<
+ * 
+ * 
+*/
+
+static PyObject *__pyx_pf_14maze_solver_cy_20solve_maze_from_text_genexpr(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_genexpr_arg_0) {
+  struct __pyx_obj_14maze_solver_cy___pyx_scope_struct__genexpr *__pyx_cur_scope;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("genexpr", 0);
+  __pyx_cur_scope = (struct __pyx_obj_14maze_solver_cy___pyx_scope_struct__genexpr *)__pyx_tp_new_14maze_solver_cy___pyx_scope_struct__genexpr(__pyx_mstate_global->__pyx_ptype_14maze_solver_cy___pyx_scope_struct__genexpr, __pyx_mstate_global->__pyx_empty_tuple, NULL);
+  if (unlikely(!__pyx_cur_scope)) {
+    __pyx_cur_scope = ((struct __pyx_obj_14maze_solver_cy___pyx_scope_struct__genexpr *)Py_None);
+    __Pyx_INCREF(Py_None);
+    __PYX_ERR(0, 293, __pyx_L1_error)
+  } else {
+    __Pyx_GOTREF((PyObject *)__pyx_cur_scope);
+  }
+  __pyx_cur_scope->__pyx_genexpr_arg_0 = __pyx_genexpr_arg_0;
+  __Pyx_INCREF(__pyx_cur_scope->__pyx_genexpr_arg_0);
+  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_genexpr_arg_0);
+  {
+    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_14maze_solver_cy_20solve_maze_from_text_2generator, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[0]), (PyObject *) __pyx_cur_scope, __pyx_mstate_global->__pyx_n_u_genexpr, __pyx_mstate_global->__pyx_n_u_solve_maze_from_text_locals_gene, __pyx_mstate_global->__pyx_n_u_maze_solver_cy); if (unlikely(!gen)) __PYX_ERR(0, 293, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_cur_scope);
+    __Pyx_RefNannyFinishContext();
+    return (PyObject *) gen;
+  }
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_AddTraceback("maze_solver_cy.solve_maze_from_text.genexpr", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __Pyx_DECREF((PyObject *)__pyx_cur_scope);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_gb_14maze_solver_cy_20solve_maze_from_text_2generator(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value) /* generator body */
+{
+  struct __pyx_obj_14maze_solver_cy___pyx_scope_struct__genexpr *__pyx_cur_scope = ((struct __pyx_obj_14maze_solver_cy___pyx_scope_struct__genexpr *)__pyx_generator->closure);
+  PyObject *__pyx_r = NULL;
+  PyObject *__pyx_t_1 = NULL;
+  Py_ssize_t __pyx_t_2;
+  PyObject *__pyx_t_3 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("genexpr", 0);
+  switch (__pyx_generator->resume_label) {
+    case 0: goto __pyx_L3_first_run;
+    default: /* CPython raises the right error here */
+    __Pyx_RefNannyFinishContext();
+    return NULL;
+  }
+  __pyx_L3_first_run:;
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 293, __pyx_L1_error)
+  __pyx_r = PyList_New(0); if (unlikely(!__pyx_r)) __PYX_ERR(0, 293, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_r);
+  if (unlikely(!__pyx_cur_scope->__pyx_genexpr_arg_0)) { __Pyx_RaiseUnboundLocalError(".0"); __PYX_ERR(0, 293, __pyx_L1_error) }
+  __pyx_t_1 = __pyx_cur_scope->__pyx_genexpr_arg_0; __Pyx_INCREF(__pyx_t_1);
+  __pyx_t_2 = 0;
+  for (;;) {
+    {
+      Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_1);
+      #if !CYTHON_ASSUME_SAFE_SIZE
+      if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 293, __pyx_L1_error)
+      #endif
+      if (__pyx_t_2 >= __pyx_temp) break;
+    }
+    __pyx_t_3 = __Pyx_PyList_GetItemRef(__pyx_t_1, __pyx_t_2);
+    ++__pyx_t_2;
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 293, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __Pyx_XGOTREF(__pyx_cur_scope->__pyx_v_line);
+    __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v_line, __pyx_t_3);
+    __Pyx_GIVEREF(__pyx_t_3);
+    __pyx_t_3 = 0;
+    __pyx_t_3 = PyUnicode_Join(__pyx_mstate_global->__pyx_kp_u__10, __pyx_cur_scope->__pyx_v_line); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 293, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    if (unlikely(__Pyx_ListComp_Append(__pyx_r, (PyObject*)__pyx_t_3))) __PYX_ERR(0, 293, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  }
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
+
+  /* function exit code */
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_r); __pyx_r = 0;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_3);
+  if (__Pyx_PyErr_Occurred()) {
+    __Pyx_Generator_Replace_StopIteration(0);
+    __Pyx_AddTraceback("genexpr", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  }
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  #if !CYTHON_USE_EXC_INFO_STACK
+  __Pyx_Coroutine_ResetAndClearException(__pyx_generator);
+  #endif
+  __pyx_generator->resume_label = -1;
+  __Pyx_Coroutine_clear((PyObject*)__pyx_generator);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "maze_solver_cy.pyx":262
+ * 
+ * 
+ * def solve_maze_from_text(maze_text):             # <<<<<<<<<<<<<<
+ *     """
+ *     Resolve o labirinto a partir do texto e retorna o resultado formatado.
+*/
+
+static PyObject *__pyx_pf_14maze_solver_cy_4solve_maze_from_text(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_maze_text) {
+  PyObject *__pyx_v_result = NULL;
+  PyObject *__pyx_v_int_grid = NULL;
+  PyObject *__pyx_v_start_coords = NULL;
+  PyObject *__pyx_v_end_coords = NULL;
+  PyObject *__pyx_v_path = NULL;
+  PyObject *__pyx_v_lines = NULL;
+  PyObject *__pyx_v_result_lines = NULL;
+  PyObject *__pyx_v_r = NULL;
+  PyObject *__pyx_v_c = NULL;
+  PyObject *__pyx_7genexpr__pyx_v_line = NULL;
+  PyObject *__pyx_gb_14maze_solver_cy_20solve_maze_from_text_2generator = 0;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  size_t __pyx_t_4;
+  int __pyx_t_5;
+  PyObject *__pyx_t_6 = NULL;
+  PyObject *(*__pyx_t_7)(PyObject *);
+  __Pyx_memviewslice __pyx_t_8 = { 0, 0, { 0 }, { 0 }, { 0 } };
+  Py_ssize_t __pyx_t_9;
+  PyObject *(*__pyx_t_10)(PyObject *);
+  PyObject *__pyx_t_11 = NULL;
+  int __pyx_t_12;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("solve_maze_from_text", 0);
+
+  /* "maze_solver_cy.pyx":272
+ *         string: labirinto com caminho marcado ou mensagem de erro
+ *     """
+ *     result = parse_maze_text(maze_text)             # <<<<<<<<<<<<<<
+ *     if result is None:
+ *         return "Erro: Labirinto invlido (sem S ou E)"
+*/
+  __pyx_t_2 = NULL;
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_parse_maze_text); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 272, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_4 = 1;
+  #if CYTHON_UNPACK_METHODS
+  if (unlikely(PyMethod_Check(__pyx_t_3))) {
+    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_3);
+    assert(__pyx_t_2);
+    PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_3);
+    __Pyx_INCREF(__pyx_t_2);
+    __Pyx_INCREF(__pyx__function);
+    __Pyx_DECREF_SET(__pyx_t_3, __pyx__function);
+    __pyx_t_4 = 0;
+  }
+  #endif
+  {
+    PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_v_maze_text};
+    __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_3, __pyx_callargs+__pyx_t_4, (2-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+    __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 272, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+  }
+  __pyx_v_result = __pyx_t_1;
+  __pyx_t_1 = 0;
+
+  /* "maze_solver_cy.pyx":273
+ *     """
+ *     result = parse_maze_text(maze_text)
+ *     if result is None:             # <<<<<<<<<<<<<<
+ *         return "Erro: Labirinto invlido (sem S ou E)"
+ * 
+*/
+  __pyx_t_5 = (__pyx_v_result == Py_None);
+  if (__pyx_t_5) {
+
+    /* "maze_solver_cy.pyx":274
+ *     result = parse_maze_text(maze_text)
+ *     if result is None:
+ *         return "Erro: Labirinto invlido (sem S ou E)"             # <<<<<<<<<<<<<<
+ * 
+ *     int_grid, start_coords, end_coords = result
+*/
+    __Pyx_XDECREF(__pyx_r);
+    __Pyx_INCREF(__pyx_mstate_global->__pyx_kp_u_Erro_Labirinto_invlido_sem_S_ou);
+    __pyx_r = __pyx_mstate_global->__pyx_kp_u_Erro_Labirinto_invlido_sem_S_ou;
+    goto __pyx_L0;
+
+    /* "maze_solver_cy.pyx":273
+ *     """
+ *     result = parse_maze_text(maze_text)
+ *     if result is None:             # <<<<<<<<<<<<<<
+ *         return "Erro: Labirinto invlido (sem S ou E)"
+ * 
+*/
+  }
+
+  /* "maze_solver_cy.pyx":276
+ *         return "Erro: Labirinto invlido (sem S ou E)"
+ * 
+ *     int_grid, start_coords, end_coords = result             # <<<<<<<<<<<<<<
+ * 
+ *     # Encontrar caminho
+*/
+  if ((likely(PyTuple_CheckExact(__pyx_v_result))) || (PyList_CheckExact(__pyx_v_result))) {
+    PyObject* sequence = __pyx_v_result;
+    Py_ssize_t size = __Pyx_PySequence_SIZE(sequence);
+    if (unlikely(size != 3)) {
+      if (size > 3) __Pyx_RaiseTooManyValuesError(3);
+      else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
+      __PYX_ERR(0, 276, __pyx_L1_error)
+    }
+    #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+    if (likely(PyTuple_CheckExact(sequence))) {
+      __pyx_t_1 = PyTuple_GET_ITEM(sequence, 0);
+      __Pyx_INCREF(__pyx_t_1);
+      __pyx_t_3 = PyTuple_GET_ITEM(sequence, 1);
+      __Pyx_INCREF(__pyx_t_3);
+      __pyx_t_2 = PyTuple_GET_ITEM(sequence, 2);
+      __Pyx_INCREF(__pyx_t_2);
+    } else {
+      __pyx_t_1 = __Pyx_PyList_GetItemRef(sequence, 0);
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 276, __pyx_L1_error)
+      __Pyx_XGOTREF(__pyx_t_1);
+      __pyx_t_3 = __Pyx_PyList_GetItemRef(sequence, 1);
+      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 276, __pyx_L1_error)
+      __Pyx_XGOTREF(__pyx_t_3);
+      __pyx_t_2 = __Pyx_PyList_GetItemRef(sequence, 2);
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 276, __pyx_L1_error)
+      __Pyx_XGOTREF(__pyx_t_2);
+    }
+    #else
+    __pyx_t_1 = __Pyx_PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 276, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_t_3 = __Pyx_PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 276, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __pyx_t_2 = __Pyx_PySequence_ITEM(sequence, 2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 276, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    #endif
+  } else {
+    Py_ssize_t index = -1;
+    __pyx_t_6 = PyObject_GetIter(__pyx_v_result); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 276, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
+    __pyx_t_7 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_6);
+    index = 0; __pyx_t_1 = __pyx_t_7(__pyx_t_6); if (unlikely(!__pyx_t_1)) goto __pyx_L4_unpacking_failed;
+    __Pyx_GOTREF(__pyx_t_1);
+    index = 1; __pyx_t_3 = __pyx_t_7(__pyx_t_6); if (unlikely(!__pyx_t_3)) goto __pyx_L4_unpacking_failed;
+    __Pyx_GOTREF(__pyx_t_3);
+    index = 2; __pyx_t_2 = __pyx_t_7(__pyx_t_6); if (unlikely(!__pyx_t_2)) goto __pyx_L4_unpacking_failed;
+    __Pyx_GOTREF(__pyx_t_2);
+    if (__Pyx_IternextUnpackEndCheck(__pyx_t_7(__pyx_t_6), 3) < 0) __PYX_ERR(0, 276, __pyx_L1_error)
+    __pyx_t_7 = NULL;
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    goto __pyx_L5_unpacking_done;
+    __pyx_L4_unpacking_failed:;
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __pyx_t_7 = NULL;
+    if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
+    __PYX_ERR(0, 276, __pyx_L1_error)
+    __pyx_L5_unpacking_done:;
+  }
+  __pyx_v_int_grid = __pyx_t_1;
+  __pyx_t_1 = 0;
+  __pyx_v_start_coords = __pyx_t_3;
+  __pyx_t_3 = 0;
+  __pyx_v_end_coords = __pyx_t_2;
+  __pyx_t_2 = 0;
+
+  /* "maze_solver_cy.pyx":279
+ * 
+ *     # Encontrar caminho
+ *     path = find_shortest_path_cython_optimized(int_grid, start_coords, end_coords)             # <<<<<<<<<<<<<<
+ * 
+ *     if path is None:
+*/
+  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn___pyx_t_5numpy_int32_t(__pyx_v_int_grid, PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 279, __pyx_L1_error)
+  if (!(likely(PyTuple_CheckExact(__pyx_v_start_coords))||((__pyx_v_start_coords) == Py_None) || __Pyx_RaiseUnexpectedTypeError("tuple", __pyx_v_start_coords))) __PYX_ERR(0, 279, __pyx_L1_error)
+  if (!(likely(PyTuple_CheckExact(__pyx_v_end_coords))||((__pyx_v_end_coords) == Py_None) || __Pyx_RaiseUnexpectedTypeError("tuple", __pyx_v_end_coords))) __PYX_ERR(0, 279, __pyx_L1_error)
+  __pyx_t_2 = __pyx_f_14maze_solver_cy_find_shortest_path_cython_optimized(__pyx_t_8, ((PyObject*)__pyx_v_start_coords), ((PyObject*)__pyx_v_end_coords), 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 279, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __PYX_XCLEAR_MEMVIEW(&__pyx_t_8, 1);
+  __pyx_t_8.memview = NULL; __pyx_t_8.data = NULL;
+  __pyx_v_path = ((PyObject*)__pyx_t_2);
+  __pyx_t_2 = 0;
+
+  /* "maze_solver_cy.pyx":281
+ *     path = find_shortest_path_cython_optimized(int_grid, start_coords, end_coords)
+ * 
+ *     if path is None:             # <<<<<<<<<<<<<<
+ *         return "Erro: Nenhum caminho encontrado"
+ * 
+*/
+  __pyx_t_5 = (__pyx_v_path == ((PyObject*)Py_None));
+  if (__pyx_t_5) {
+
+    /* "maze_solver_cy.pyx":282
+ * 
+ *     if path is None:
+ *         return "Erro: Nenhum caminho encontrado"             # <<<<<<<<<<<<<<
+ * 
+ *     # Criar resultado visual
+*/
+    __Pyx_XDECREF(__pyx_r);
+    __Pyx_INCREF(__pyx_mstate_global->__pyx_kp_u_Erro_Nenhum_caminho_encontrado);
+    __pyx_r = __pyx_mstate_global->__pyx_kp_u_Erro_Nenhum_caminho_encontrado;
+    goto __pyx_L0;
+
+    /* "maze_solver_cy.pyx":281
+ *     path = find_shortest_path_cython_optimized(int_grid, start_coords, end_coords)
+ * 
+ *     if path is None:             # <<<<<<<<<<<<<<
+ *         return "Erro: Nenhum caminho encontrado"
+ * 
+*/
+  }
+
+  /* "maze_solver_cy.pyx":285
+ * 
+ *     # Criar resultado visual
+ *     lines = maze_text.strip().split('\n')             # <<<<<<<<<<<<<<
+ *     result_lines = [list(line) for line in lines]
+ * 
+*/
+  __pyx_t_6 = __pyx_v_maze_text;
+  __Pyx_INCREF(__pyx_t_6);
+  __pyx_t_4 = 0;
+  {
+    PyObject *__pyx_callargs[2] = {__pyx_t_6, NULL};
+    __pyx_t_1 = __Pyx_PyObject_FastCallMethod(__pyx_mstate_global->__pyx_n_u_strip, __pyx_callargs+__pyx_t_4, (1-__pyx_t_4) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+    __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 285, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+  }
+  __pyx_t_3 = __pyx_t_1;
+  __Pyx_INCREF(__pyx_t_3);
+  __pyx_t_4 = 0;
+  {
+    PyObject *__pyx_callargs[2] = {__pyx_t_3, __pyx_mstate_global->__pyx_kp_u__6};
+    __pyx_t_2 = __Pyx_PyObject_FastCallMethod(__pyx_mstate_global->__pyx_n_u_split, __pyx_callargs+__pyx_t_4, (2-__pyx_t_4) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+    __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 285, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+  }
+  __pyx_v_lines = __pyx_t_2;
+  __pyx_t_2 = 0;
+
+  /* "maze_solver_cy.pyx":286
+ *     # Criar resultado visual
+ *     lines = maze_text.strip().split('\n')
+ *     result_lines = [list(line) for line in lines]             # <<<<<<<<<<<<<<
+ * 
+ *     # Marcar caminho (exceto S e E)
+*/
+  { /* enter inner scope */
+    __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 286, __pyx_L9_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    if (likely(PyList_CheckExact(__pyx_v_lines)) || PyTuple_CheckExact(__pyx_v_lines)) {
+      __pyx_t_1 = __pyx_v_lines; __Pyx_INCREF(__pyx_t_1);
+      __pyx_t_9 = 0;
+      __pyx_t_10 = NULL;
+    } else {
+      __pyx_t_9 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_lines); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 286, __pyx_L9_error)
+      __Pyx_GOTREF(__pyx_t_1);
+      __pyx_t_10 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 286, __pyx_L9_error)
+    }
+    for (;;) {
+      if (likely(!__pyx_t_10)) {
+        if (likely(PyList_CheckExact(__pyx_t_1))) {
+          {
+            Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_1);
+            #if !CYTHON_ASSUME_SAFE_SIZE
+            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 286, __pyx_L9_error)
+            #endif
+            if (__pyx_t_9 >= __pyx_temp) break;
+          }
+          __pyx_t_3 = __Pyx_PyList_GetItemRef(__pyx_t_1, __pyx_t_9);
+          ++__pyx_t_9;
+        } else {
+          {
+            Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_1);
+            #if !CYTHON_ASSUME_SAFE_SIZE
+            if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 286, __pyx_L9_error)
+            #endif
+            if (__pyx_t_9 >= __pyx_temp) break;
+          }
+          #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+          __pyx_t_3 = __Pyx_NewRef(PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_9));
+          #else
+          __pyx_t_3 = __Pyx_PySequence_ITEM(__pyx_t_1, __pyx_t_9);
+          #endif
+          ++__pyx_t_9;
+        }
+        if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 286, __pyx_L9_error)
+      } else {
+        __pyx_t_3 = __pyx_t_10(__pyx_t_1);
+        if (unlikely(!__pyx_t_3)) {
+          PyObject* exc_type = PyErr_Occurred();
+          if (exc_type) {
+            if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 286, __pyx_L9_error)
+            PyErr_Clear();
+          }
+          break;
+        }
+      }
+      __Pyx_GOTREF(__pyx_t_3);
+      __Pyx_XDECREF_SET(__pyx_7genexpr__pyx_v_line, __pyx_t_3);
+      __pyx_t_3 = 0;
+      __pyx_t_3 = PySequence_List(__pyx_7genexpr__pyx_v_line); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 286, __pyx_L9_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      if (unlikely(__Pyx_ListComp_Append(__pyx_t_2, (PyObject*)__pyx_t_3))) __PYX_ERR(0, 286, __pyx_L9_error)
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    }
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    __Pyx_XDECREF(__pyx_7genexpr__pyx_v_line); __pyx_7genexpr__pyx_v_line = 0;
+    goto __pyx_L13_exit_scope;
+    __pyx_L9_error:;
+    __Pyx_XDECREF(__pyx_7genexpr__pyx_v_line); __pyx_7genexpr__pyx_v_line = 0;
+    goto __pyx_L1_error;
+    __pyx_L13_exit_scope:;
+  } /* exit inner scope */
+  __pyx_v_result_lines = ((PyObject*)__pyx_t_2);
+  __pyx_t_2 = 0;
+
+  /* "maze_solver_cy.pyx":289
+ * 
+ *     # Marcar caminho (exceto S e E)
+ *     for r, c in path:             # <<<<<<<<<<<<<<
+ *         if result_lines[r][c] not in ['S', 'E']:
+ *             result_lines[r][c] = ''
+*/
+  if (unlikely(__pyx_v_path == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
+    __PYX_ERR(0, 289, __pyx_L1_error)
+  }
+  __pyx_t_2 = __pyx_v_path; __Pyx_INCREF(__pyx_t_2);
+  __pyx_t_9 = 0;
+  for (;;) {
+    {
+      Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_2);
+      #if !CYTHON_ASSUME_SAFE_SIZE
+      if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 289, __pyx_L1_error)
+      #endif
+      if (__pyx_t_9 >= __pyx_temp) break;
+    }
+    __pyx_t_1 = __Pyx_PyList_GetItemRef(__pyx_t_2, __pyx_t_9);
+    ++__pyx_t_9;
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 289, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    if ((likely(PyTuple_CheckExact(__pyx_t_1))) || (PyList_CheckExact(__pyx_t_1))) {
+      PyObject* sequence = __pyx_t_1;
+      Py_ssize_t size = __Pyx_PySequence_SIZE(sequence);
+      if (unlikely(size != 2)) {
+        if (size > 2) __Pyx_RaiseTooManyValuesError(2);
+        else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
+        __PYX_ERR(0, 289, __pyx_L1_error)
+      }
+      #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+      if (likely(PyTuple_CheckExact(sequence))) {
+        __pyx_t_3 = PyTuple_GET_ITEM(sequence, 0);
+        __Pyx_INCREF(__pyx_t_3);
+        __pyx_t_6 = PyTuple_GET_ITEM(sequence, 1);
+        __Pyx_INCREF(__pyx_t_6);
+      } else {
+        __pyx_t_3 = __Pyx_PyList_GetItemRef(sequence, 0);
+        if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 289, __pyx_L1_error)
+        __Pyx_XGOTREF(__pyx_t_3);
+        __pyx_t_6 = __Pyx_PyList_GetItemRef(sequence, 1);
+        if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 289, __pyx_L1_error)
+        __Pyx_XGOTREF(__pyx_t_6);
+      }
+      #else
+      __pyx_t_3 = __Pyx_PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 289, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __pyx_t_6 = __Pyx_PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 289, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_6);
+      #endif
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    } else {
+      Py_ssize_t index = -1;
+      __pyx_t_11 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 289, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_11);
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      __pyx_t_7 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_11);
+      index = 0; __pyx_t_3 = __pyx_t_7(__pyx_t_11); if (unlikely(!__pyx_t_3)) goto __pyx_L16_unpacking_failed;
+      __Pyx_GOTREF(__pyx_t_3);
+      index = 1; __pyx_t_6 = __pyx_t_7(__pyx_t_11); if (unlikely(!__pyx_t_6)) goto __pyx_L16_unpacking_failed;
+      __Pyx_GOTREF(__pyx_t_6);
+      if (__Pyx_IternextUnpackEndCheck(__pyx_t_7(__pyx_t_11), 2) < 0) __PYX_ERR(0, 289, __pyx_L1_error)
+      __pyx_t_7 = NULL;
+      __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+      goto __pyx_L17_unpacking_done;
+      __pyx_L16_unpacking_failed:;
+      __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+      __pyx_t_7 = NULL;
+      if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
+      __PYX_ERR(0, 289, __pyx_L1_error)
+      __pyx_L17_unpacking_done:;
+    }
+    __Pyx_XDECREF_SET(__pyx_v_r, __pyx_t_3);
+    __pyx_t_3 = 0;
+    __Pyx_XDECREF_SET(__pyx_v_c, __pyx_t_6);
+    __pyx_t_6 = 0;
+
+    /* "maze_solver_cy.pyx":290
+ *     # Marcar caminho (exceto S e E)
+ *     for r, c in path:
+ *         if result_lines[r][c] not in ['S', 'E']:             # <<<<<<<<<<<<<<
+ *             result_lines[r][c] = ''
+ * 
+*/
+    __pyx_t_1 = __Pyx_PyObject_GetItem(__pyx_v_result_lines, __pyx_v_r); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 290, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_t_6 = __Pyx_PyObject_GetItem(__pyx_t_1, __pyx_v_c); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 290, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    __pyx_t_12 = (__Pyx_PyUnicode_Equals(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_S, Py_NE)); if (unlikely((__pyx_t_12 < 0))) __PYX_ERR(0, 290, __pyx_L1_error)
+    if (__pyx_t_12) {
+    } else {
+      __pyx_t_5 = __pyx_t_12;
+      goto __pyx_L19_bool_binop_done;
+    }
+    __pyx_t_12 = (__Pyx_PyUnicode_Equals(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_E, Py_NE)); if (unlikely((__pyx_t_12 < 0))) __PYX_ERR(0, 290, __pyx_L1_error)
+    __pyx_t_5 = __pyx_t_12;
+    __pyx_L19_bool_binop_done:;
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __pyx_t_12 = __pyx_t_5;
+    if (__pyx_t_12) {
+
+      /* "maze_solver_cy.pyx":291
+ *     for r, c in path:
+ *         if result_lines[r][c] not in ['S', 'E']:
+ *             result_lines[r][c] = ''             # <<<<<<<<<<<<<<
+ * 
+ *     return '\n'.join(''.join(line) for line in result_lines)
+*/
+      __pyx_t_6 = __Pyx_PyObject_GetItem(__pyx_v_result_lines, __pyx_v_r); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 291, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_6);
+      if (unlikely((PyObject_SetItem(__pyx_t_6, __pyx_v_c, __pyx_mstate_global->__pyx_kp_u__9) < 0))) __PYX_ERR(0, 291, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+
+      /* "maze_solver_cy.pyx":290
+ *     # Marcar caminho (exceto S e E)
+ *     for r, c in path:
+ *         if result_lines[r][c] not in ['S', 'E']:             # <<<<<<<<<<<<<<
+ *             result_lines[r][c] = ''
+ * 
+*/
+    }
+
+    /* "maze_solver_cy.pyx":289
+ * 
+ *     # Marcar caminho (exceto S e E)
+ *     for r, c in path:             # <<<<<<<<<<<<<<
+ *         if result_lines[r][c] not in ['S', 'E']:
+ *             result_lines[r][c] = ''
+*/
+  }
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "maze_solver_cy.pyx":293
+ *             result_lines[r][c] = ''
+ * 
+ *     return '\n'.join(''.join(line) for line in result_lines)             # <<<<<<<<<<<<<<
+ * 
+ * 
+*/
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_2 = __pyx_pf_14maze_solver_cy_20solve_maze_from_text_genexpr(NULL, __pyx_v_result_lines); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 293, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_6 = __Pyx_Generator_GetInlinedResult(__pyx_t_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 293, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = PyUnicode_Join(__pyx_mstate_global->__pyx_kp_u__6, __pyx_t_6); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 293, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  __pyx_r = __pyx_t_2;
+  __pyx_t_2 = 0;
+  goto __pyx_L0;
+
+  /* "maze_solver_cy.pyx":262
+ * 
+ * 
+ * def solve_maze_from_text(maze_text):             # <<<<<<<<<<<<<<
+ *     """
+ *     Resolve o labirinto a partir do texto e retorna o resultado formatado.
+*/
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_6);
+  __PYX_XCLEAR_MEMVIEW(&__pyx_t_8, 1);
+  __Pyx_XDECREF(__pyx_t_11);
+  __Pyx_AddTraceback("maze_solver_cy.solve_maze_from_text", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_result);
+  __Pyx_XDECREF(__pyx_v_int_grid);
+  __Pyx_XDECREF(__pyx_v_start_coords);
+  __Pyx_XDECREF(__pyx_v_end_coords);
+  __Pyx_XDECREF(__pyx_v_path);
+  __Pyx_XDECREF(__pyx_v_lines);
+  __Pyx_XDECREF(__pyx_v_result_lines);
+  __Pyx_XDECREF(__pyx_v_r);
+  __Pyx_XDECREF(__pyx_v_c);
+  __Pyx_XDECREF(__pyx_7genexpr__pyx_v_line);
+  __Pyx_XDECREF(__pyx_gb_14maze_solver_cy_20solve_maze_from_text_2generator);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "maze_solver_cy.pyx":297
+ * 
+ * # Exemplo de uso e teste de performance
+ * def benchmark_solver(maze_text, iterations=1000):             # <<<<<<<<<<<<<<
+ *     """
+ *     Benchmark da funo otimizada vs verso original
+*/
+
+/* Python wrapper */
+static PyObject *__pyx_pw_14maze_solver_cy_7benchmark_solver(PyObject *__pyx_self, 
+#if CYTHON_METH_FASTCALL
+PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
+#else
+PyObject *__pyx_args, PyObject *__pyx_kwds
+#endif
+); /*proto*/
+PyDoc_STRVAR(__pyx_doc_14maze_solver_cy_6benchmark_solver, "\n    Benchmark da fun\303\247\303\243o otimizada vs vers\303\243o original\n    ");
+static PyMethodDef __pyx_mdef_14maze_solver_cy_7benchmark_solver = {"benchmark_solver", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_14maze_solver_cy_7benchmark_solver, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_14maze_solver_cy_6benchmark_solver};
+static PyObject *__pyx_pw_14maze_solver_cy_7benchmark_solver(PyObject *__pyx_self, 
+#if CYTHON_METH_FASTCALL
+PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
+#else
+PyObject *__pyx_args, PyObject *__pyx_kwds
+#endif
+) {
+  PyObject *__pyx_v_maze_text = 0;
+  PyObject *__pyx_v_iterations = 0;
+  #if !CYTHON_METH_FASTCALL
+  CYTHON_UNUSED Py_ssize_t __pyx_nargs;
+  #endif
+  CYTHON_UNUSED PyObject *const *__pyx_kwvalues;
+  PyObject* values[2] = {0,0};
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("benchmark_solver (wrapper)", 0);
+  #if !CYTHON_METH_FASTCALL
+  #if CYTHON_ASSUME_SAFE_SIZE
+  __pyx_nargs = PyTuple_GET_SIZE(__pyx_args);
+  #else
+  __pyx_nargs = PyTuple_Size(__pyx_args); if (unlikely(__pyx_nargs < 0)) return NULL;
+  #endif
+  #endif
+  __pyx_kwvalues = __Pyx_KwValues_FASTCALL(__pyx_args, __pyx_nargs);
+  {
+    PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_maze_text,&__pyx_mstate_global->__pyx_n_u_iterations,0};
+    const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 297, __pyx_L3_error)
+    if (__pyx_kwds_len > 0) {
+      switch (__pyx_nargs) {
+        case  2:
+        values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 297, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  1:
+        values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 297, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      const Py_ssize_t kwd_pos_args = __pyx_nargs;
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "benchmark_solver", 0) < 0) __PYX_ERR(0, 297, __pyx_L3_error)
+      if (!values[1]) values[1] = __Pyx_NewRef(((PyObject *)((PyObject*)__pyx_mstate_global->__pyx_int_1000)));
+      for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("benchmark_solver", 0, 1, 2, i); __PYX_ERR(0, 297, __pyx_L3_error) }
+      }
+    } else {
+      switch (__pyx_nargs) {
+        case  2:
+        values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 297, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  1:
+        values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 297, __pyx_L3_error)
+        break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      if (!values[1]) values[1] = __Pyx_NewRef(((PyObject *)((PyObject*)__pyx_mstate_global->__pyx_int_1000)));
+    }
+    __pyx_v_maze_text = values[0];
+    __pyx_v_iterations = values[1];
+  }
+  goto __pyx_L6_skip;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("benchmark_solver", 0, 1, 2, __pyx_nargs); __PYX_ERR(0, 297, __pyx_L3_error)
+  __pyx_L6_skip:;
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L3_error:;
+  for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
+    Py_XDECREF(values[__pyx_temp]);
+  }
+  __Pyx_AddTraceback("maze_solver_cy.benchmark_solver", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_14maze_solver_cy_6benchmark_solver(__pyx_self, __pyx_v_maze_text, __pyx_v_iterations);
+
+  /* function exit code */
+  for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
+    Py_XDECREF(values[__pyx_temp]);
+  }
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_14maze_solver_cy_6benchmark_solver(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_maze_text, PyObject *__pyx_v_iterations) {
+  PyObject *__pyx_v_time = NULL;
+  PyObject *__pyx_v_result = NULL;
+  PyObject *__pyx_v_int_grid = NULL;
+  PyObject *__pyx_v_start_coords = NULL;
+  PyObject *__pyx_v_end_coords = NULL;
+  PyObject *__pyx_v_start_time = NULL;
+  CYTHON_UNUSED PyObject *__pyx_v__ = NULL;
+  PyObject *__pyx_v_path = NULL;
+  PyObject *__pyx_v_end_time = NULL;
+  PyObject *__pyx_v_optimized_time = NULL;
+  Py_ssize_t __pyx_v_path_length;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  size_t __pyx_t_4;
+  int __pyx_t_5;
+  PyObject *__pyx_t_6 = NULL;
+  PyObject *(*__pyx_t_7)(PyObject *);
+  Py_ssize_t __pyx_t_8;
+  PyObject *(*__pyx_t_9)(PyObject *);
+  __Pyx_memviewslice __pyx_t_10 = { 0, 0, { 0 }, { 0 }, { 0 } };
+  Py_ssize_t __pyx_t_11;
+  PyObject *__pyx_t_12 = NULL;
+  PyObject *__pyx_t_13 = NULL;
+  PyObject *__pyx_t_14[11];
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("benchmark_solver", 0);
+
+  /* "maze_solver_cy.pyx":301
+ *     Benchmark da funo otimizada vs verso original
+ *     """
+ *     import time             # <<<<<<<<<<<<<<
+ * 
+ *     result = parse_maze_text(maze_text)
+*/
+  __pyx_t_1 = __Pyx_ImportDottedModule(__pyx_mstate_global->__pyx_n_u_time, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 301, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_v_time = __pyx_t_1;
+  __pyx_t_1 = 0;
+
+  /* "maze_solver_cy.pyx":303
+ *     import time
+ * 
+ *     result = parse_maze_text(maze_text)             # <<<<<<<<<<<<<<
+ *     if result is None:
+ *         return "Labirinto invlido"
+*/
+  __pyx_t_2 = NULL;
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_parse_maze_text); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 303, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_4 = 1;
+  #if CYTHON_UNPACK_METHODS
+  if (unlikely(PyMethod_Check(__pyx_t_3))) {
+    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_3);
+    assert(__pyx_t_2);
+    PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_3);
+    __Pyx_INCREF(__pyx_t_2);
+    __Pyx_INCREF(__pyx__function);
+    __Pyx_DECREF_SET(__pyx_t_3, __pyx__function);
+    __pyx_t_4 = 0;
+  }
+  #endif
+  {
+    PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_v_maze_text};
+    __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_3, __pyx_callargs+__pyx_t_4, (2-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+    __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 303, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+  }
+  __pyx_v_result = __pyx_t_1;
+  __pyx_t_1 = 0;
+
+  /* "maze_solver_cy.pyx":304
+ * 
+ *     result = parse_maze_text(maze_text)
+ *     if result is None:             # <<<<<<<<<<<<<<
+ *         return "Labirinto invlido"
+ * 
+*/
+  __pyx_t_5 = (__pyx_v_result == Py_None);
+  if (__pyx_t_5) {
+
+    /* "maze_solver_cy.pyx":305
+ *     result = parse_maze_text(maze_text)
+ *     if result is None:
+ *         return "Labirinto invlido"             # <<<<<<<<<<<<<<
+ * 
+ *     int_grid, start_coords, end_coords = result
+*/
+    __Pyx_XDECREF(__pyx_r);
+    __Pyx_INCREF(__pyx_mstate_global->__pyx_kp_u_Labirinto_invlido);
+    __pyx_r = __pyx_mstate_global->__pyx_kp_u_Labirinto_invlido;
+    goto __pyx_L0;
+
+    /* "maze_solver_cy.pyx":304
+ * 
+ *     result = parse_maze_text(maze_text)
+ *     if result is None:             # <<<<<<<<<<<<<<
+ *         return "Labirinto invlido"
+ * 
+*/
+  }
+
+  /* "maze_solver_cy.pyx":307
+ *         return "Labirinto invlido"
+ * 
+ *     int_grid, start_coords, end_coords = result             # <<<<<<<<<<<<<<
+ * 
+ *     # Teste da verso otimizada
+*/
+  if ((likely(PyTuple_CheckExact(__pyx_v_result))) || (PyList_CheckExact(__pyx_v_result))) {
+    PyObject* sequence = __pyx_v_result;
+    Py_ssize_t size = __Pyx_PySequence_SIZE(sequence);
+    if (unlikely(size != 3)) {
+      if (size > 3) __Pyx_RaiseTooManyValuesError(3);
+      else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
+      __PYX_ERR(0, 307, __pyx_L1_error)
+    }
+    #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+    if (likely(PyTuple_CheckExact(sequence))) {
+      __pyx_t_1 = PyTuple_GET_ITEM(sequence, 0);
+      __Pyx_INCREF(__pyx_t_1);
+      __pyx_t_3 = PyTuple_GET_ITEM(sequence, 1);
+      __Pyx_INCREF(__pyx_t_3);
+      __pyx_t_2 = PyTuple_GET_ITEM(sequence, 2);
+      __Pyx_INCREF(__pyx_t_2);
+    } else {
+      __pyx_t_1 = __Pyx_PyList_GetItemRef(sequence, 0);
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 307, __pyx_L1_error)
+      __Pyx_XGOTREF(__pyx_t_1);
+      __pyx_t_3 = __Pyx_PyList_GetItemRef(sequence, 1);
+      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 307, __pyx_L1_error)
+      __Pyx_XGOTREF(__pyx_t_3);
+      __pyx_t_2 = __Pyx_PyList_GetItemRef(sequence, 2);
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 307, __pyx_L1_error)
+      __Pyx_XGOTREF(__pyx_t_2);
+    }
+    #else
+    __pyx_t_1 = __Pyx_PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 307, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_t_3 = __Pyx_PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 307, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __pyx_t_2 = __Pyx_PySequence_ITEM(sequence, 2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 307, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    #endif
+  } else {
+    Py_ssize_t index = -1;
+    __pyx_t_6 = PyObject_GetIter(__pyx_v_result); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 307, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
+    __pyx_t_7 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_6);
+    index = 0; __pyx_t_1 = __pyx_t_7(__pyx_t_6); if (unlikely(!__pyx_t_1)) goto __pyx_L4_unpacking_failed;
+    __Pyx_GOTREF(__pyx_t_1);
+    index = 1; __pyx_t_3 = __pyx_t_7(__pyx_t_6); if (unlikely(!__pyx_t_3)) goto __pyx_L4_unpacking_failed;
+    __Pyx_GOTREF(__pyx_t_3);
+    index = 2; __pyx_t_2 = __pyx_t_7(__pyx_t_6); if (unlikely(!__pyx_t_2)) goto __pyx_L4_unpacking_failed;
+    __Pyx_GOTREF(__pyx_t_2);
+    if (__Pyx_IternextUnpackEndCheck(__pyx_t_7(__pyx_t_6), 3) < 0) __PYX_ERR(0, 307, __pyx_L1_error)
+    __pyx_t_7 = NULL;
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    goto __pyx_L5_unpacking_done;
+    __pyx_L4_unpacking_failed:;
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __pyx_t_7 = NULL;
+    if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
+    __PYX_ERR(0, 307, __pyx_L1_error)
+    __pyx_L5_unpacking_done:;
+  }
+  __pyx_v_int_grid = __pyx_t_1;
+  __pyx_t_1 = 0;
+  __pyx_v_start_coords = __pyx_t_3;
+  __pyx_t_3 = 0;
+  __pyx_v_end_coords = __pyx_t_2;
+  __pyx_t_2 = 0;
+
+  /* "maze_solver_cy.pyx":310
+ * 
+ *     # Teste da verso otimizada
+ *     start_time = time.time()             # <<<<<<<<<<<<<<
+ *     for _ in range(iterations):
+ *         path = find_shortest_path_cython_optimized(int_grid, start_coords, end_coords)
+*/
+  __pyx_t_3 = __pyx_v_time;
+  __Pyx_INCREF(__pyx_t_3);
+  __pyx_t_4 = 0;
+  {
+    PyObject *__pyx_callargs[2] = {__pyx_t_3, NULL};
+    __pyx_t_2 = __Pyx_PyObject_FastCallMethod(__pyx_mstate_global->__pyx_n_u_time, __pyx_callargs+__pyx_t_4, (1-__pyx_t_4) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+    __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 310, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+  }
+  __pyx_v_start_time = __pyx_t_2;
+  __pyx_t_2 = 0;
+
+  /* "maze_solver_cy.pyx":311
+ *     # Teste da verso otimizada
+ *     start_time = time.time()
+ *     for _ in range(iterations):             # <<<<<<<<<<<<<<
+ *         path = find_shortest_path_cython_optimized(int_grid, start_coords, end_coords)
+ *     end_time = time.time()
+*/
+  __pyx_t_3 = NULL;
+  __Pyx_INCREF(__pyx_builtin_range);
+  __pyx_t_1 = __pyx_builtin_range; 
+  __pyx_t_4 = 1;
+  {
+    PyObject *__pyx_callargs[2] = {__pyx_t_3, __pyx_v_iterations};
+    __pyx_t_2 = __Pyx_PyObject_FastCall(__pyx_t_1, __pyx_callargs+__pyx_t_4, (2-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+    __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 311, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+  }
+  if (likely(PyList_CheckExact(__pyx_t_2)) || PyTuple_CheckExact(__pyx_t_2)) {
+    __pyx_t_1 = __pyx_t_2; __Pyx_INCREF(__pyx_t_1);
+    __pyx_t_8 = 0;
+    __pyx_t_9 = NULL;
+  } else {
+    __pyx_t_8 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 311, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_t_9 = (CYTHON_COMPILING_IN_LIMITED_API) ? PyIter_Next : __Pyx_PyObject_GetIterNextFunc(__pyx_t_1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 311, __pyx_L1_error)
+  }
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  for (;;) {
+    if (likely(!__pyx_t_9)) {
+      if (likely(PyList_CheckExact(__pyx_t_1))) {
+        {
+          Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_1);
+          #if !CYTHON_ASSUME_SAFE_SIZE
+          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 311, __pyx_L1_error)
+          #endif
+          if (__pyx_t_8 >= __pyx_temp) break;
+        }
+        __pyx_t_2 = __Pyx_PyList_GetItemRef(__pyx_t_1, __pyx_t_8);
+        ++__pyx_t_8;
+      } else {
+        {
+          Py_ssize_t __pyx_temp = __Pyx_PyTuple_GET_SIZE(__pyx_t_1);
+          #if !CYTHON_ASSUME_SAFE_SIZE
+          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 311, __pyx_L1_error)
+          #endif
+          if (__pyx_t_8 >= __pyx_temp) break;
+        }
+        #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+        __pyx_t_2 = __Pyx_NewRef(PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_8));
+        #else
+        __pyx_t_2 = __Pyx_PySequence_ITEM(__pyx_t_1, __pyx_t_8);
+        #endif
+        ++__pyx_t_8;
+      }
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 311, __pyx_L1_error)
+    } else {
+      __pyx_t_2 = __pyx_t_9(__pyx_t_1);
+      if (unlikely(!__pyx_t_2)) {
+        PyObject* exc_type = PyErr_Occurred();
+        if (exc_type) {
+          if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) __PYX_ERR(0, 311, __pyx_L1_error)
+          PyErr_Clear();
+        }
+        break;
+      }
+    }
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_XDECREF_SET(__pyx_v__, __pyx_t_2);
+    __pyx_t_2 = 0;
+
+    /* "maze_solver_cy.pyx":312
+ *     start_time = time.time()
+ *     for _ in range(iterations):
+ *         path = find_shortest_path_cython_optimized(int_grid, start_coords, end_coords)             # <<<<<<<<<<<<<<
+ *     end_time = time.time()
+ * 
+*/
+    __pyx_t_10 = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn___pyx_t_5numpy_int32_t(__pyx_v_int_grid, PyBUF_WRITABLE); if (unlikely(!__pyx_t_10.memview)) __PYX_ERR(0, 312, __pyx_L1_error)
+    if (!(likely(PyTuple_CheckExact(__pyx_v_start_coords))||((__pyx_v_start_coords) == Py_None) || __Pyx_RaiseUnexpectedTypeError("tuple", __pyx_v_start_coords))) __PYX_ERR(0, 312, __pyx_L1_error)
+    if (!(likely(PyTuple_CheckExact(__pyx_v_end_coords))||((__pyx_v_end_coords) == Py_None) || __Pyx_RaiseUnexpectedTypeError("tuple", __pyx_v_end_coords))) __PYX_ERR(0, 312, __pyx_L1_error)
+    __pyx_t_2 = __pyx_f_14maze_solver_cy_find_shortest_path_cython_optimized(__pyx_t_10, ((PyObject*)__pyx_v_start_coords), ((PyObject*)__pyx_v_end_coords), 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 312, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __PYX_XCLEAR_MEMVIEW(&__pyx_t_10, 1);
+    __pyx_t_10.memview = NULL; __pyx_t_10.data = NULL;
+    __Pyx_XDECREF_SET(__pyx_v_path, ((PyObject*)__pyx_t_2));
+    __pyx_t_2 = 0;
+
+    /* "maze_solver_cy.pyx":311
+ *     # Teste da verso otimizada
+ *     start_time = time.time()
+ *     for _ in range(iterations):             # <<<<<<<<<<<<<<
+ *         path = find_shortest_path_cython_optimized(int_grid, start_coords, end_coords)
+ *     end_time = time.time()
+*/
+  }
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "maze_solver_cy.pyx":313
+ *     for _ in range(iterations):
+ *         path = find_shortest_path_cython_optimized(int_grid, start_coords, end_coords)
+ *     end_time = time.time()             # <<<<<<<<<<<<<<
+ * 
+ *     optimized_time = end_time - start_time
+*/
+  __pyx_t_2 = __pyx_v_time;
+  __Pyx_INCREF(__pyx_t_2);
+  __pyx_t_4 = 0;
+  {
+    PyObject *__pyx_callargs[2] = {__pyx_t_2, NULL};
+    __pyx_t_1 = __Pyx_PyObject_FastCallMethod(__pyx_mstate_global->__pyx_n_u_time, __pyx_callargs+__pyx_t_4, (1-__pyx_t_4) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+    __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 313, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+  }
+  __pyx_v_end_time = __pyx_t_1;
+  __pyx_t_1 = 0;
+
+  /* "maze_solver_cy.pyx":315
+ *     end_time = time.time()
+ * 
+ *     optimized_time = end_time - start_time             # <<<<<<<<<<<<<<
+ *     path_length = len(path) if path else 0
+ * 
+*/
+  __pyx_t_1 = PyNumber_Subtract(__pyx_v_end_time, __pyx_v_start_time); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 315, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_v_optimized_time = __pyx_t_1;
+  __pyx_t_1 = 0;
+
+  /* "maze_solver_cy.pyx":316
+ * 
+ *     optimized_time = end_time - start_time
+ *     path_length = len(path) if path else 0             # <<<<<<<<<<<<<<
+ * 
+ *     return f"""
+*/
+  if (unlikely(!__pyx_v_path)) { __Pyx_RaiseUnboundLocalError("path"); __PYX_ERR(0, 316, __pyx_L1_error) }
+  __pyx_t_5 = (__pyx_v_path != Py_None)&&(__Pyx_PyList_GET_SIZE(__pyx_v_path) != 0);
+  if (unlikely(((!CYTHON_ASSUME_SAFE_MACROS) && __pyx_t_5 < 0))) __PYX_ERR(0, 316, __pyx_L1_error)
+  if (__pyx_t_5) {
+    if (unlikely(!__pyx_v_path)) { __Pyx_RaiseUnboundLocalError("path"); __PYX_ERR(0, 316, __pyx_L1_error) }
+    if (unlikely(__pyx_v_path == Py_None)) {
+      PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
+      __PYX_ERR(0, 316, __pyx_L1_error)
+    }
+    __pyx_t_11 = __Pyx_PyList_GET_SIZE(__pyx_v_path); if (unlikely(__pyx_t_11 == ((Py_ssize_t)-1))) __PYX_ERR(0, 316, __pyx_L1_error)
+    __pyx_t_8 = __pyx_t_11;
+  } else {
+    __pyx_t_8 = 0;
+  }
+  __pyx_v_path_length = __pyx_t_8;
+
+  /* "maze_solver_cy.pyx":318
+ *     path_length = len(path) if path else 0
+ * 
+ *     return f"""             # <<<<<<<<<<<<<<
+ * Benchmark Results ({iterations} iterations):
+ * - Tempo verso otimizada: {optimized_time:.6f}s
+*/
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = __Pyx_PyObject_FormatSimple(__pyx_v_iterations, __pyx_mstate_global->__pyx_empty_unicode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 318, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __Pyx_PyObject_Format(__pyx_v_optimized_time, __pyx_mstate_global->__pyx_kp_u_6f); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 318, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyNumber_Divide(__pyx_v_optimized_time, __pyx_v_iterations); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 318, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_6 = __Pyx_PyObject_Format(__pyx_t_3, __pyx_mstate_global->__pyx_kp_u_6f); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 318, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_3 = __Pyx_PyUnicode_From_Py_ssize_t(__pyx_v_path_length, 0, ' ', 'd'); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 318, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_12 = __Pyx_PyNumber_Divide(__pyx_v_iterations, __pyx_v_optimized_time); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 318, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_12);
+  __pyx_t_13 = __Pyx_PyObject_Format(__pyx_t_12, __pyx_mstate_global->__pyx_kp_u_0f); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 318, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_13);
+  __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
+  __pyx_t_14[0] = __pyx_mstate_global->__pyx_kp_u_Benchmark_Results;
+  __pyx_t_14[1] = __pyx_t_1;
+  __pyx_t_14[2] = __pyx_mstate_global->__pyx_kp_u_iterations_Tempo_verso_otimizad;
+  __pyx_t_14[3] = __pyx_t_2;
+  __pyx_t_14[4] = __pyx_mstate_global->__pyx_kp_u_s_Tempo_mdio_por_execuo;
+  __pyx_t_14[5] = __pyx_t_6;
+  __pyx_t_14[6] = __pyx_mstate_global->__pyx_kp_u_s_Comprimento_do_caminho;
+  __pyx_t_14[7] = __pyx_t_3;
+  __pyx_t_14[8] = __pyx_mstate_global->__pyx_kp_u_Performance;
+  __pyx_t_14[9] = __pyx_t_13;
+  __pyx_t_14[10] = __pyx_mstate_global->__pyx_kp_u_execues_segundo;
+  __pyx_t_12 = __Pyx_PyUnicode_Join(__pyx_t_14, 11, 20 + __Pyx_PyUnicode_GET_LENGTH(__pyx_t_1) + 40 + __Pyx_PyUnicode_GET_LENGTH(__pyx_t_2) + 30 + __Pyx_PyUnicode_GET_LENGTH(__pyx_t_6) + 28 + __Pyx_PyUnicode_GET_LENGTH(__pyx_t_3) + 16 + __Pyx_PyUnicode_GET_LENGTH(__pyx_t_13) + 19, 255 | __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_1) | __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_2) | __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) | __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_13));
+  if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 318, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_12);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
+  __pyx_r = __pyx_t_12;
+  __pyx_t_12 = 0;
+  goto __pyx_L0;
+
+  /* "maze_solver_cy.pyx":297
+ * 
+ * # Exemplo de uso e teste de performance
+ * def benchmark_solver(maze_text, iterations=1000):             # <<<<<<<<<<<<<<
+ *     """
+ *     Benchmark da funo otimizada vs verso original
+*/
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_6);
+  __PYX_XCLEAR_MEMVIEW(&__pyx_t_10, 1);
+  __Pyx_XDECREF(__pyx_t_12);
+  __Pyx_XDECREF(__pyx_t_13);
+  __Pyx_AddTraceback("maze_solver_cy.benchmark_solver", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_time);
+  __Pyx_XDECREF(__pyx_v_result);
+  __Pyx_XDECREF(__pyx_v_int_grid);
+  __Pyx_XDECREF(__pyx_v_start_coords);
+  __Pyx_XDECREF(__pyx_v_end_coords);
+  __Pyx_XDECREF(__pyx_v_start_time);
+  __Pyx_XDECREF(__pyx_v__);
+  __Pyx_XDECREF(__pyx_v_path);
+  __Pyx_XDECREF(__pyx_v_end_time);
+  __Pyx_XDECREF(__pyx_v_optimized_time);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
 /* #### Code section: module_exttypes ### */
+
+static PyObject *__pyx_tp_new_14maze_solver_cy___pyx_scope_struct__genexpr(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
+  PyObject *o;
+  #if CYTHON_COMPILING_IN_LIMITED_API
+  allocfunc alloc_func = (allocfunc)PyType_GetSlot(t, Py_tp_alloc);
+  o = alloc_func(t, 0);
+  #else
+  #if CYTHON_USE_FREELISTS
+  if (likely((int)(__pyx_mstate_global->__pyx_freecount_14maze_solver_cy___pyx_scope_struct__genexpr > 0) & (int)(t->tp_basicsize == sizeof(struct __pyx_obj_14maze_solver_cy___pyx_scope_struct__genexpr)))) {
+    o = (PyObject*)__pyx_mstate_global->__pyx_freelist_14maze_solver_cy___pyx_scope_struct__genexpr[--__pyx_mstate_global->__pyx_freecount_14maze_solver_cy___pyx_scope_struct__genexpr];
+    memset(o, 0, sizeof(struct __pyx_obj_14maze_solver_cy___pyx_scope_struct__genexpr));
+    (void) PyObject_INIT(o, t);
+    PyObject_GC_Track(o);
+  } else
+  #endif
+  {
+    o = (*t->tp_alloc)(t, 0);
+    if (unlikely(!o)) return 0;
+  }
+  #endif
+  return o;
+}
+
+static void __pyx_tp_dealloc_14maze_solver_cy___pyx_scope_struct__genexpr(PyObject *o) {
+  struct __pyx_obj_14maze_solver_cy___pyx_scope_struct__genexpr *p = (struct __pyx_obj_14maze_solver_cy___pyx_scope_struct__genexpr *)o;
+  #if CYTHON_USE_TP_FINALIZE
+  if (unlikely((PY_VERSION_HEX >= 0x03080000 || __Pyx_PyType_HasFeature(Py_TYPE(o), Py_TPFLAGS_HAVE_FINALIZE)) && __Pyx_PyObject_GetSlot(o, tp_finalize, destructor)) && !__Pyx_PyObject_GC_IsFinalized(o)) {
+    if (__Pyx_PyObject_GetSlot(o, tp_dealloc, destructor) == __pyx_tp_dealloc_14maze_solver_cy___pyx_scope_struct__genexpr) {
+      if (PyObject_CallFinalizerFromDealloc(o)) return;
+    }
+  }
+  #endif
+  PyObject_GC_UnTrack(o);
+  Py_CLEAR(p->__pyx_genexpr_arg_0);
+  Py_CLEAR(p->__pyx_v_line);
+  #if CYTHON_USE_FREELISTS
+  if (((int)(__pyx_mstate_global->__pyx_freecount_14maze_solver_cy___pyx_scope_struct__genexpr < 8) & (int)(Py_TYPE(o)->tp_basicsize == sizeof(struct __pyx_obj_14maze_solver_cy___pyx_scope_struct__genexpr)))) {
+    __pyx_mstate_global->__pyx_freelist_14maze_solver_cy___pyx_scope_struct__genexpr[__pyx_mstate_global->__pyx_freecount_14maze_solver_cy___pyx_scope_struct__genexpr++] = ((struct __pyx_obj_14maze_solver_cy___pyx_scope_struct__genexpr *)o);
+  } else
+  #endif
+  {
+    #if CYTHON_USE_TYPE_SLOTS
+    (*Py_TYPE(o)->tp_free)(o);
+    #else
+    {
+      freefunc tp_free = (freefunc)PyType_GetSlot(Py_TYPE(o), Py_tp_free);
+      if (tp_free) tp_free(o);
+    }
+    #endif
+  }
+}
+
+static int __pyx_tp_traverse_14maze_solver_cy___pyx_scope_struct__genexpr(PyObject *o, visitproc v, void *a) {
+  int e;
+  struct __pyx_obj_14maze_solver_cy___pyx_scope_struct__genexpr *p = (struct __pyx_obj_14maze_solver_cy___pyx_scope_struct__genexpr *)o;
+  {
+    e = __Pyx_call_type_traverse(o, 1, v, a);
+    if (e) return e;
+  }
+  if (p->__pyx_genexpr_arg_0) {
+    e = (*v)(p->__pyx_genexpr_arg_0, a); if (e) return e;
+  }
+  if (p->__pyx_v_line) {
+    e = (*v)(p->__pyx_v_line, a); if (e) return e;
+  }
+  return 0;
+}
+#if CYTHON_USE_TYPE_SPECS
+static PyType_Slot __pyx_type_14maze_solver_cy___pyx_scope_struct__genexpr_slots[] = {
+  {Py_tp_dealloc, (void *)__pyx_tp_dealloc_14maze_solver_cy___pyx_scope_struct__genexpr},
+  {Py_tp_traverse, (void *)__pyx_tp_traverse_14maze_solver_cy___pyx_scope_struct__genexpr},
+  {Py_tp_new, (void *)__pyx_tp_new_14maze_solver_cy___pyx_scope_struct__genexpr},
+  {0, 0},
+};
+static PyType_Spec __pyx_type_14maze_solver_cy___pyx_scope_struct__genexpr_spec = {
+  "maze_solver_cy.__pyx_scope_struct__genexpr",
+  sizeof(struct __pyx_obj_14maze_solver_cy___pyx_scope_struct__genexpr),
+  0,
+  Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_HAVE_GC|Py_TPFLAGS_HAVE_FINALIZE,
+  __pyx_type_14maze_solver_cy___pyx_scope_struct__genexpr_slots,
+};
+#else
+
+static PyTypeObject __pyx_type_14maze_solver_cy___pyx_scope_struct__genexpr = {
+  PyVarObject_HEAD_INIT(0, 0)
+  "maze_solver_cy.""__pyx_scope_struct__genexpr", /*tp_name*/
+  sizeof(struct __pyx_obj_14maze_solver_cy___pyx_scope_struct__genexpr), /*tp_basicsize*/
+  0, /*tp_itemsize*/
+  __pyx_tp_dealloc_14maze_solver_cy___pyx_scope_struct__genexpr, /*tp_dealloc*/
+  #if PY_VERSION_HEX < 0x030800b4
+  0, /*tp_print*/
+  #endif
+  #if PY_VERSION_HEX >= 0x030800b4
+  0, /*tp_vectorcall_offset*/
+  #endif
+  0, /*tp_getattr*/
+  0, /*tp_setattr*/
+  0, /*tp_as_async*/
+  0, /*tp_repr*/
+  0, /*tp_as_number*/
+  0, /*tp_as_sequence*/
+  0, /*tp_as_mapping*/
+  0, /*tp_hash*/
+  0, /*tp_call*/
+  0, /*tp_str*/
+  0, /*tp_getattro*/
+  0, /*tp_setattro*/
+  0, /*tp_as_buffer*/
+  Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_HAVE_GC|Py_TPFLAGS_HAVE_FINALIZE, /*tp_flags*/
+  0, /*tp_doc*/
+  __pyx_tp_traverse_14maze_solver_cy___pyx_scope_struct__genexpr, /*tp_traverse*/
+  0, /*tp_clear*/
+  0, /*tp_richcompare*/
+  0, /*tp_weaklistoffset*/
+  0, /*tp_iter*/
+  0, /*tp_iternext*/
+  0, /*tp_methods*/
+  0, /*tp_members*/
+  0, /*tp_getset*/
+  0, /*tp_base*/
+  0, /*tp_dict*/
+  0, /*tp_descr_get*/
+  0, /*tp_descr_set*/
+  #if !CYTHON_USE_TYPE_SPECS
+  0, /*tp_dictoffset*/
+  #endif
+  0, /*tp_init*/
+  0, /*tp_alloc*/
+  __pyx_tp_new_14maze_solver_cy___pyx_scope_struct__genexpr, /*tp_new*/
+  0, /*tp_free*/
+  0, /*tp_is_gc*/
+  0, /*tp_bases*/
+  0, /*tp_mro*/
+  0, /*tp_cache*/
+  0, /*tp_subclasses*/
+  0, /*tp_weaklist*/
+  0, /*tp_del*/
+  0, /*tp_version_tag*/
+  #if CYTHON_USE_TP_FINALIZE
+  0, /*tp_finalize*/
+  #else
+  NULL, /*tp_finalize*/
+  #endif
+  #if PY_VERSION_HEX >= 0x030800b1 && (!CYTHON_COMPILING_IN_PYPY || PYPY_VERSION_NUM >= 0x07030800)
+  0, /*tp_vectorcall*/
+  #endif
+  #if __PYX_NEED_TP_PRINT_SLOT == 1
+  0, /*tp_print*/
+  #endif
+  #if PY_VERSION_HEX >= 0x030C0000
+  0, /*tp_watched*/
+  #endif
+  #if PY_VERSION_HEX >= 0x030d00A4
+  0, /*tp_versions_used*/
+  #endif
+  #if CYTHON_COMPILING_IN_PYPY && PY_VERSION_HEX >= 0x03090000 && PY_VERSION_HEX < 0x030a0000
+  0, /*tp_pypy_flags*/
+  #endif
+};
+#endif
 static struct __pyx_vtabstruct_array __pyx_vtable_array;
 
 static PyObject *__pyx_tp_new_array(PyTypeObject *t, PyObject *a, PyObject *k) {
@@ -21094,6 +24285,22 @@ static int __Pyx_modinit_type_init_code(__pyx_mstatetype *__pyx_mstate) {
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__Pyx_modinit_type_init_code", 0);
   /*--- Type init code ---*/
+  #if CYTHON_USE_TYPE_SPECS
+  __pyx_mstate->__pyx_ptype_14maze_solver_cy___pyx_scope_struct__genexpr = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_14maze_solver_cy___pyx_scope_struct__genexpr_spec, NULL); if (unlikely(!__pyx_mstate->__pyx_ptype_14maze_solver_cy___pyx_scope_struct__genexpr)) __PYX_ERR(0, 293, __pyx_L1_error)
+  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_14maze_solver_cy___pyx_scope_struct__genexpr_spec, __pyx_mstate->__pyx_ptype_14maze_solver_cy___pyx_scope_struct__genexpr) < 0) __PYX_ERR(0, 293, __pyx_L1_error)
+  #else
+  __pyx_mstate->__pyx_ptype_14maze_solver_cy___pyx_scope_struct__genexpr = &__pyx_type_14maze_solver_cy___pyx_scope_struct__genexpr;
+  #endif
+  #if !CYTHON_COMPILING_IN_LIMITED_API
+  #endif
+  #if !CYTHON_USE_TYPE_SPECS
+  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_14maze_solver_cy___pyx_scope_struct__genexpr) < 0) __PYX_ERR(0, 293, __pyx_L1_error)
+  #endif
+  #if !CYTHON_COMPILING_IN_LIMITED_API
+  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_mstate->__pyx_ptype_14maze_solver_cy___pyx_scope_struct__genexpr->tp_dictoffset && __pyx_mstate->__pyx_ptype_14maze_solver_cy___pyx_scope_struct__genexpr->tp_getattro == PyObject_GenericGetAttr)) {
+    __pyx_mstate->__pyx_ptype_14maze_solver_cy___pyx_scope_struct__genexpr->tp_getattro = PyObject_GenericGetAttr;
+  }
+  #endif
   __pyx_vtabptr_array = &__pyx_vtable_array;
   __pyx_vtable_array.get_memview = (PyObject *(*)(struct __pyx_array_obj *))__pyx_array_get_memview;
   #if CYTHON_USE_TYPE_SPECS
@@ -22219,40 +25426,65 @@ __Pyx_RefNannySetupContext("PyInit_maze_solver_cy", 0);
   if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_pyx_unpickle_Enum, __pyx_t_5) < 0) __PYX_ERR(1, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "maze_solver_cy.pyx":9
- * # cython: initializedcheck=False
+  /* "maze_solver_cy.pyx":11
+ * # cython: embedsignature=False
  * 
- * import collections             # <<<<<<<<<<<<<<
- * import numpy as np
- * cimport numpy as cnp
-*/
-  __pyx_t_5 = __Pyx_ImportDottedModule(__pyx_mstate_global->__pyx_n_u_collections, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 9, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_collections, __pyx_t_5) < 0) __PYX_ERR(0, 9, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-
-  /* "maze_solver_cy.pyx":10
- * 
- * import collections
  * import numpy as np             # <<<<<<<<<<<<<<
  * cimport numpy as cnp
- * 
+ * from libc.stdlib cimport malloc, free
 */
-  __pyx_t_5 = __Pyx_ImportDottedModule(__pyx_mstate_global->__pyx_n_u_numpy, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 10, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_ImportDottedModule(__pyx_mstate_global->__pyx_n_u_numpy, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 11, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_np, __pyx_t_5) < 0) __PYX_ERR(0, 10, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_np, __pyx_t_5) < 0) __PYX_ERR(0, 11, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "maze_solver_cy.pyx":22
- * # se S e E so apenas coordenadas e o grid os marca como PATH_CELL.
+  /* "maze_solver_cy.pyx":77
+ * DEF DC_RIGHT = 1
  * 
- * cpdef list find_shortest_path_cython(cnp.int32_t[:, ::1] int_grid, tuple start_coords, tuple end_coords):             # <<<<<<<<<<<<<<
+ * cpdef list find_shortest_path_cython_optimized(cnp.int32_t[:, ::1] int_grid, tuple start_coords, tuple end_coords):             # <<<<<<<<<<<<<<
  *     """
- *     Encontra o caminho mais curto no labirinto (grid de inteiros) usando BFS
+ *     Verso otimizada do BFS para encontrar o caminho mais curto no labirinto.
 */
-  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_14maze_solver_cy_1find_shortest_path_cython, 0, __pyx_mstate_global->__pyx_n_u_find_shortest_path_cython, NULL, __pyx_mstate_global->__pyx_n_u_maze_solver_cy, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[0])); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 22, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_14maze_solver_cy_1find_shortest_path_cython_optimized, 0, __pyx_mstate_global->__pyx_n_u_find_shortest_path_cython_optimi, NULL, __pyx_mstate_global->__pyx_n_u_maze_solver_cy, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[1])); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 77, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_find_shortest_path_cython, __pyx_t_5) < 0) __PYX_ERR(0, 22, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_find_shortest_path_cython_optimi, __pyx_t_5) < 0) __PYX_ERR(0, 77, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+
+  /* "maze_solver_cy.pyx":213
+ * 
+ * 
+ * def parse_maze_text(maze_text):             # <<<<<<<<<<<<<<
+ *     """
+ *     Converte texto do labirinto para formato de grid inteiro.
+*/
+  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_14maze_solver_cy_3parse_maze_text, 0, __pyx_mstate_global->__pyx_n_u_parse_maze_text, NULL, __pyx_mstate_global->__pyx_n_u_maze_solver_cy, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[2])); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 213, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_parse_maze_text, __pyx_t_5) < 0) __PYX_ERR(0, 213, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+
+  /* "maze_solver_cy.pyx":262
+ * 
+ * 
+ * def solve_maze_from_text(maze_text):             # <<<<<<<<<<<<<<
+ *     """
+ *     Resolve o labirinto a partir do texto e retorna o resultado formatado.
+*/
+  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_14maze_solver_cy_5solve_maze_from_text, 0, __pyx_mstate_global->__pyx_n_u_solve_maze_from_text, NULL, __pyx_mstate_global->__pyx_n_u_maze_solver_cy, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[3])); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 262, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_solve_maze_from_text, __pyx_t_5) < 0) __PYX_ERR(0, 262, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+
+  /* "maze_solver_cy.pyx":297
+ * 
+ * # Exemplo de uso e teste de performance
+ * def benchmark_solver(maze_text, iterations=1000):             # <<<<<<<<<<<<<<
+ *     """
+ *     Benchmark da funo otimizada vs verso original
+*/
+  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_14maze_solver_cy_7benchmark_solver, 0, __pyx_mstate_global->__pyx_n_u_benchmark_solver, NULL, __pyx_mstate_global->__pyx_n_u_maze_solver_cy, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[4])); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 297, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_5, __pyx_mstate_global->__pyx_tuple[2]);
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_benchmark_solver, __pyx_t_5) < 0) __PYX_ERR(0, 297, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
   /* "maze_solver_cy.pyx":1
@@ -22326,9 +25558,12 @@ typedef struct {
 static const char * const __pyx_string_tab_encodings[] = { 0 };
 static const __Pyx_StringTabEntry __pyx_string_tab[] = {
   {__pyx_k_, sizeof(__pyx_k_), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_ */
+  {__pyx_k_0f, sizeof(__pyx_k_0f), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_0f */
+  {__pyx_k_6f, sizeof(__pyx_k_6f), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_6f */
   {__pyx_k_ASCII, sizeof(__pyx_k_ASCII), 0, 1, 1}, /* PyObject cname: __pyx_n_u_ASCII */
   {__pyx_k_All_dimensions_preceding_dimensi, sizeof(__pyx_k_All_dimensions_preceding_dimensi), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_All_dimensions_preceding_dimensi */
   {__pyx_k_AssertionError, sizeof(__pyx_k_AssertionError), 0, 1, 1}, /* PyObject cname: __pyx_n_u_AssertionError */
+  {__pyx_k_Benchmark_Results, sizeof(__pyx_k_Benchmark_Results), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_Benchmark_Results */
   {__pyx_k_Buffer_view_does_not_expose_stri, sizeof(__pyx_k_Buffer_view_does_not_expose_stri), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_Buffer_view_does_not_expose_stri */
   {__pyx_k_Can_only_create_a_buffer_that_is, sizeof(__pyx_k_Can_only_create_a_buffer_that_is), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_Can_only_create_a_buffer_that_is */
   {__pyx_k_Cannot_assign_to_read_only_memor, sizeof(__pyx_k_Cannot_assign_to_read_only_memor), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_Cannot_assign_to_read_only_memor */
@@ -22336,8 +25571,11 @@ static const __Pyx_StringTabEntry __pyx_string_tab[] = {
   {__pyx_k_Cannot_index_with_type, sizeof(__pyx_k_Cannot_index_with_type), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_Cannot_index_with_type */
   {__pyx_k_Cannot_transpose_memoryview_with, sizeof(__pyx_k_Cannot_transpose_memoryview_with), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_Cannot_transpose_memoryview_with */
   {__pyx_k_Dimension_d_is_not_direct, sizeof(__pyx_k_Dimension_d_is_not_direct), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_Dimension_d_is_not_direct */
+  {__pyx_k_E, sizeof(__pyx_k_E), 0, 1, 1}, /* PyObject cname: __pyx_n_u_E */
   {__pyx_k_Ellipsis, sizeof(__pyx_k_Ellipsis), 0, 1, 1}, /* PyObject cname: __pyx_n_u_Ellipsis */
   {__pyx_k_Empty_shape_tuple_for_cython_arr, sizeof(__pyx_k_Empty_shape_tuple_for_cython_arr), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_Empty_shape_tuple_for_cython_arr */
+  {__pyx_k_Erro_Labirinto_invlido_sem_S_ou, sizeof(__pyx_k_Erro_Labirinto_invlido_sem_S_ou), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_Erro_Labirinto_invlido_sem_S_ou */
+  {__pyx_k_Erro_Nenhum_caminho_encontrado, sizeof(__pyx_k_Erro_Nenhum_caminho_encontrado), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_Erro_Nenhum_caminho_encontrado */
   {__pyx_k_ImportError, sizeof(__pyx_k_ImportError), 0, 1, 1}, /* PyObject cname: __pyx_n_u_ImportError */
   {__pyx_k_Incompatible_checksums_0x_x_vs_0, sizeof(__pyx_k_Incompatible_checksums_0x_x_vs_0), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_Incompatible_checksums_0x_x_vs_0 */
   {__pyx_k_IndexError, sizeof(__pyx_k_IndexError), 0, 1, 1}, /* PyObject cname: __pyx_n_u_IndexError */
@@ -22345,42 +25583,51 @@ static const __Pyx_StringTabEntry __pyx_string_tab[] = {
   {__pyx_k_Indirect_dimensions_not_supporte, sizeof(__pyx_k_Indirect_dimensions_not_supporte), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_Indirect_dimensions_not_supporte */
   {__pyx_k_Invalid_mode_expected_c_or_fortr, sizeof(__pyx_k_Invalid_mode_expected_c_or_fortr), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_Invalid_mode_expected_c_or_fortr */
   {__pyx_k_Invalid_shape_in_axis, sizeof(__pyx_k_Invalid_shape_in_axis), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_Invalid_shape_in_axis */
+  {__pyx_k_Labirinto_invlido, sizeof(__pyx_k_Labirinto_invlido), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_Labirinto_invlido */
   {__pyx_k_MemoryError, sizeof(__pyx_k_MemoryError), 0, 1, 1}, /* PyObject cname: __pyx_n_u_MemoryError */
   {__pyx_k_MemoryView_of, sizeof(__pyx_k_MemoryView_of), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_MemoryView_of */
   {__pyx_k_Note_that_Cython_is_deliberately, sizeof(__pyx_k_Note_that_Cython_is_deliberately), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_Note_that_Cython_is_deliberately */
   {__pyx_k_O, sizeof(__pyx_k_O), 0, 0, 1}, /* PyObject cname: __pyx_n_b_O */
   {__pyx_k_Out_of_bounds_on_buffer_access_a, sizeof(__pyx_k_Out_of_bounds_on_buffer_access_a), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_Out_of_bounds_on_buffer_access_a */
+  {__pyx_k_Performance, sizeof(__pyx_k_Performance), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_Performance */
   {__pyx_k_PickleError, sizeof(__pyx_k_PickleError), 0, 1, 1}, /* PyObject cname: __pyx_n_u_PickleError */
+  {__pyx_k_S, sizeof(__pyx_k_S), 0, 1, 1}, /* PyObject cname: __pyx_n_u_S */
   {__pyx_k_Sequence, sizeof(__pyx_k_Sequence), 0, 1, 1}, /* PyObject cname: __pyx_n_u_Sequence */
   {__pyx_k_Step_may_not_be_zero_axis_d, sizeof(__pyx_k_Step_may_not_be_zero_axis_d), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_Step_may_not_be_zero_axis_d */
   {__pyx_k_TypeError, sizeof(__pyx_k_TypeError), 0, 1, 1}, /* PyObject cname: __pyx_n_u_TypeError */
   {__pyx_k_Unable_to_convert_item_to_object, sizeof(__pyx_k_Unable_to_convert_item_to_object), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_Unable_to_convert_item_to_object */
   {__pyx_k_ValueError, sizeof(__pyx_k_ValueError), 0, 1, 1}, /* PyObject cname: __pyx_n_u_ValueError */
   {__pyx_k_View_MemoryView, sizeof(__pyx_k_View_MemoryView), 0, 1, 1}, /* PyObject cname: __pyx_n_u_View_MemoryView */
+  {__pyx_k__10, sizeof(__pyx_k__10), 0, 1, 0}, /* PyObject cname: __pyx_kp_u__10 */
+  {__pyx_k__11, sizeof(__pyx_k__11), 0, 1, 0}, /* PyObject cname: __pyx_kp_u__11 */
+  {__pyx_k__12, sizeof(__pyx_k__12), 0, 1, 1}, /* PyObject cname: __pyx_n_u__12 */
   {__pyx_k__2, sizeof(__pyx_k__2), 0, 1, 0}, /* PyObject cname: __pyx_kp_u__2 */
   {__pyx_k__3, sizeof(__pyx_k__3), 0, 1, 0}, /* PyObject cname: __pyx_kp_u__3 */
   {__pyx_k__4, sizeof(__pyx_k__4), 0, 1, 0}, /* PyObject cname: __pyx_kp_u__4 */
   {__pyx_k__5, sizeof(__pyx_k__5), 0, 1, 0}, /* PyObject cname: __pyx_kp_u__5 */
   {__pyx_k__6, sizeof(__pyx_k__6), 0, 1, 0}, /* PyObject cname: __pyx_kp_u__6 */
+  {__pyx_k__7, sizeof(__pyx_k__7), 0, 1, 0}, /* PyObject cname: __pyx_kp_u__7 */
+  {__pyx_k__8, sizeof(__pyx_k__8), 0, 1, 0}, /* PyObject cname: __pyx_kp_u__8 */
+  {__pyx_k__9, sizeof(__pyx_k__9), 0, 1, 0}, /* PyObject cname: __pyx_kp_u__9 */
   {__pyx_k_abc, sizeof(__pyx_k_abc), 0, 1, 1}, /* PyObject cname: __pyx_n_u_abc */
   {__pyx_k_add_note, sizeof(__pyx_k_add_note), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_add_note */
   {__pyx_k_allocate_buffer, sizeof(__pyx_k_allocate_buffer), 0, 1, 1}, /* PyObject cname: __pyx_n_u_allocate_buffer */
   {__pyx_k_and, sizeof(__pyx_k_and), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_and */
-  {__pyx_k_append, sizeof(__pyx_k_append), 0, 1, 1}, /* PyObject cname: __pyx_n_u_append */
-  {__pyx_k_appendleft, sizeof(__pyx_k_appendleft), 0, 1, 1}, /* PyObject cname: __pyx_n_u_appendleft */
   {__pyx_k_asyncio_coroutines, sizeof(__pyx_k_asyncio_coroutines), 0, 1, 1}, /* PyObject cname: __pyx_n_u_asyncio_coroutines */
   {__pyx_k_at_0x, sizeof(__pyx_k_at_0x), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_at_0x */
   {__pyx_k_base, sizeof(__pyx_k_base), 0, 1, 1}, /* PyObject cname: __pyx_n_u_base */
+  {__pyx_k_benchmark_solver, sizeof(__pyx_k_benchmark_solver), 0, 1, 1}, /* PyObject cname: __pyx_n_u_benchmark_solver */
   {__pyx_k_c, sizeof(__pyx_k_c), 0, 1, 1}, /* PyObject cname: __pyx_n_u_c */
+  {__pyx_k_char, sizeof(__pyx_k_char), 0, 1, 1}, /* PyObject cname: __pyx_n_u_char */
   {__pyx_k_class, sizeof(__pyx_k_class), 0, 1, 1}, /* PyObject cname: __pyx_n_u_class */
   {__pyx_k_class_getitem, sizeof(__pyx_k_class_getitem), 0, 1, 1}, /* PyObject cname: __pyx_n_u_class_getitem */
   {__pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 1, 1}, /* PyObject cname: __pyx_n_u_cline_in_traceback */
-  {__pyx_k_collections, sizeof(__pyx_k_collections), 0, 1, 1}, /* PyObject cname: __pyx_n_u_collections */
+  {__pyx_k_close, sizeof(__pyx_k_close), 0, 1, 1}, /* PyObject cname: __pyx_n_u_close */
   {__pyx_k_collections_abc, sizeof(__pyx_k_collections_abc), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_collections_abc */
+  {__pyx_k_cols, sizeof(__pyx_k_cols), 0, 1, 1}, /* PyObject cname: __pyx_n_u_cols */
   {__pyx_k_contiguous_and_direct, sizeof(__pyx_k_contiguous_and_direct), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_contiguous_and_direct */
   {__pyx_k_contiguous_and_indirect, sizeof(__pyx_k_contiguous_and_indirect), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_contiguous_and_indirect */
   {__pyx_k_count, sizeof(__pyx_k_count), 0, 1, 1}, /* PyObject cname: __pyx_n_u_count */
-  {__pyx_k_deque, sizeof(__pyx_k_deque), 0, 1, 1}, /* PyObject cname: __pyx_n_u_deque */
   {__pyx_k_dict, sizeof(__pyx_k_dict), 0, 1, 1}, /* PyObject cname: __pyx_n_u_dict */
   {__pyx_k_disable, sizeof(__pyx_k_disable), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_disable */
   {__pyx_k_dtype, sizeof(__pyx_k_dtype), 0, 1, 1}, /* PyObject cname: __pyx_n_u_dtype */
@@ -22388,15 +25635,18 @@ static const __Pyx_StringTabEntry __pyx_string_tab[] = {
   {__pyx_k_enable, sizeof(__pyx_k_enable), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_enable */
   {__pyx_k_encode, sizeof(__pyx_k_encode), 0, 1, 1}, /* PyObject cname: __pyx_n_u_encode */
   {__pyx_k_end_coords, sizeof(__pyx_k_end_coords), 0, 1, 1}, /* PyObject cname: __pyx_n_u_end_coords */
+  {__pyx_k_end_time, sizeof(__pyx_k_end_time), 0, 1, 1}, /* PyObject cname: __pyx_n_u_end_time */
   {__pyx_k_enumerate, sizeof(__pyx_k_enumerate), 0, 1, 1}, /* PyObject cname: __pyx_n_u_enumerate */
   {__pyx_k_error, sizeof(__pyx_k_error), 0, 1, 1}, /* PyObject cname: __pyx_n_u_error */
-  {__pyx_k_find_shortest_path_cython, sizeof(__pyx_k_find_shortest_path_cython), 0, 1, 1}, /* PyObject cname: __pyx_n_u_find_shortest_path_cython */
+  {__pyx_k_execues_segundo, sizeof(__pyx_k_execues_segundo), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_execues_segundo */
+  {__pyx_k_find_shortest_path_cython_optimi, sizeof(__pyx_k_find_shortest_path_cython_optimi), 0, 1, 1}, /* PyObject cname: __pyx_n_u_find_shortest_path_cython_optimi */
   {__pyx_k_flags, sizeof(__pyx_k_flags), 0, 1, 1}, /* PyObject cname: __pyx_n_u_flags */
   {__pyx_k_format, sizeof(__pyx_k_format), 0, 1, 1}, /* PyObject cname: __pyx_n_u_format */
   {__pyx_k_fortran, sizeof(__pyx_k_fortran), 0, 1, 1}, /* PyObject cname: __pyx_n_u_fortran */
   {__pyx_k_full, sizeof(__pyx_k_full), 0, 1, 1}, /* PyObject cname: __pyx_n_u_full */
   {__pyx_k_func, sizeof(__pyx_k_func), 0, 1, 1}, /* PyObject cname: __pyx_n_u_func */
   {__pyx_k_gc, sizeof(__pyx_k_gc), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_gc */
+  {__pyx_k_genexpr, sizeof(__pyx_k_genexpr), 0, 1, 1}, /* PyObject cname: __pyx_n_u_genexpr */
   {__pyx_k_getstate, sizeof(__pyx_k_getstate), 0, 1, 1}, /* PyObject cname: __pyx_n_u_getstate */
   {__pyx_k_got, sizeof(__pyx_k_got), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_got */
   {__pyx_k_got_differing_extents_in_dimensi, sizeof(__pyx_k_got_differing_extents_in_dimensi), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_got_differing_extents_in_dimensi */
@@ -22410,9 +25660,14 @@ static const __Pyx_StringTabEntry __pyx_string_tab[] = {
   {__pyx_k_isenabled, sizeof(__pyx_k_isenabled), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_isenabled */
   {__pyx_k_itemsize, sizeof(__pyx_k_itemsize), 0, 1, 1}, /* PyObject cname: __pyx_n_u_itemsize */
   {__pyx_k_itemsize_0_for_cython_array, sizeof(__pyx_k_itemsize_0_for_cython_array), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_itemsize_0_for_cython_array */
+  {__pyx_k_iterations, sizeof(__pyx_k_iterations), 0, 1, 1}, /* PyObject cname: __pyx_n_u_iterations */
+  {__pyx_k_iterations_Tempo_verso_otimizad, sizeof(__pyx_k_iterations_Tempo_verso_otimizad), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_iterations_Tempo_verso_otimizad */
+  {__pyx_k_line, sizeof(__pyx_k_line), 0, 1, 1}, /* PyObject cname: __pyx_n_u_line */
+  {__pyx_k_lines, sizeof(__pyx_k_lines), 0, 1, 1}, /* PyObject cname: __pyx_n_u_lines */
   {__pyx_k_main, sizeof(__pyx_k_main), 0, 1, 1}, /* PyObject cname: __pyx_n_u_main */
   {__pyx_k_maze_solver_cy, sizeof(__pyx_k_maze_solver_cy), 0, 1, 1}, /* PyObject cname: __pyx_n_u_maze_solver_cy */
   {__pyx_k_maze_solver_cy_pyx, sizeof(__pyx_k_maze_solver_cy_pyx), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_maze_solver_cy_pyx */
+  {__pyx_k_maze_text, sizeof(__pyx_k_maze_text), 0, 1, 1}, /* PyObject cname: __pyx_n_u_maze_text */
   {__pyx_k_memview, sizeof(__pyx_k_memview), 0, 1, 1}, /* PyObject cname: __pyx_n_u_memview */
   {__pyx_k_mode, sizeof(__pyx_k_mode), 0, 1, 1}, /* PyObject cname: __pyx_n_u_mode */
   {__pyx_k_module, sizeof(__pyx_k_module), 0, 1, 1}, /* PyObject cname: __pyx_n_u_module */
@@ -22420,6 +25675,7 @@ static const __Pyx_StringTabEntry __pyx_string_tab[] = {
   {__pyx_k_name_2, sizeof(__pyx_k_name_2), 0, 1, 1}, /* PyObject cname: __pyx_n_u_name_2 */
   {__pyx_k_ndim, sizeof(__pyx_k_ndim), 0, 1, 1}, /* PyObject cname: __pyx_n_u_ndim */
   {__pyx_k_new, sizeof(__pyx_k_new), 0, 1, 1}, /* PyObject cname: __pyx_n_u_new */
+  {__pyx_k_next, sizeof(__pyx_k_next), 0, 1, 1}, /* PyObject cname: __pyx_n_u_next */
   {__pyx_k_no_default___reduce___due_to_non, sizeof(__pyx_k_no_default___reduce___due_to_non), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_no_default___reduce___due_to_non */
   {__pyx_k_np, sizeof(__pyx_k_np), 0, 1, 1}, /* PyObject cname: __pyx_n_u_np */
   {__pyx_k_numpy, sizeof(__pyx_k_numpy), 0, 1, 1}, /* PyObject cname: __pyx_n_u_numpy */
@@ -22427,41 +25683,59 @@ static const __Pyx_StringTabEntry __pyx_string_tab[] = {
   {__pyx_k_numpy__core_umath_failed_to_impo, sizeof(__pyx_k_numpy__core_umath_failed_to_impo), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_numpy__core_umath_failed_to_impo */
   {__pyx_k_obj, sizeof(__pyx_k_obj), 0, 1, 1}, /* PyObject cname: __pyx_n_u_obj */
   {__pyx_k_object, sizeof(__pyx_k_object), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_object */
+  {__pyx_k_optimized_time, sizeof(__pyx_k_optimized_time), 0, 1, 1}, /* PyObject cname: __pyx_n_u_optimized_time */
   {__pyx_k_pack, sizeof(__pyx_k_pack), 0, 1, 1}, /* PyObject cname: __pyx_n_u_pack */
+  {__pyx_k_parse_maze_text, sizeof(__pyx_k_parse_maze_text), 0, 1, 1}, /* PyObject cname: __pyx_n_u_parse_maze_text */
+  {__pyx_k_path, sizeof(__pyx_k_path), 0, 1, 1}, /* PyObject cname: __pyx_n_u_path */
+  {__pyx_k_path_length, sizeof(__pyx_k_path_length), 0, 1, 1}, /* PyObject cname: __pyx_n_u_path_length */
   {__pyx_k_pickle, sizeof(__pyx_k_pickle), 0, 1, 1}, /* PyObject cname: __pyx_n_u_pickle */
   {__pyx_k_pop, sizeof(__pyx_k_pop), 0, 1, 1}, /* PyObject cname: __pyx_n_u_pop */
-  {__pyx_k_popleft, sizeof(__pyx_k_popleft), 0, 1, 1}, /* PyObject cname: __pyx_n_u_popleft */
   {__pyx_k_pyx_checksum, sizeof(__pyx_k_pyx_checksum), 0, 1, 1}, /* PyObject cname: __pyx_n_u_pyx_checksum */
   {__pyx_k_pyx_state, sizeof(__pyx_k_pyx_state), 0, 1, 1}, /* PyObject cname: __pyx_n_u_pyx_state */
   {__pyx_k_pyx_type, sizeof(__pyx_k_pyx_type), 0, 1, 1}, /* PyObject cname: __pyx_n_u_pyx_type */
   {__pyx_k_pyx_unpickle_Enum, sizeof(__pyx_k_pyx_unpickle_Enum), 0, 1, 1}, /* PyObject cname: __pyx_n_u_pyx_unpickle_Enum */
   {__pyx_k_pyx_vtable, sizeof(__pyx_k_pyx_vtable), 0, 1, 1}, /* PyObject cname: __pyx_n_u_pyx_vtable */
   {__pyx_k_qualname, sizeof(__pyx_k_qualname), 0, 1, 1}, /* PyObject cname: __pyx_n_u_qualname */
+  {__pyx_k_r, sizeof(__pyx_k_r), 0, 1, 1}, /* PyObject cname: __pyx_n_u_r */
   {__pyx_k_range, sizeof(__pyx_k_range), 0, 1, 1}, /* PyObject cname: __pyx_n_u_range */
   {__pyx_k_reduce, sizeof(__pyx_k_reduce), 0, 1, 1}, /* PyObject cname: __pyx_n_u_reduce */
   {__pyx_k_reduce_cython, sizeof(__pyx_k_reduce_cython), 0, 1, 1}, /* PyObject cname: __pyx_n_u_reduce_cython */
   {__pyx_k_reduce_ex, sizeof(__pyx_k_reduce_ex), 0, 1, 1}, /* PyObject cname: __pyx_n_u_reduce_ex */
   {__pyx_k_register, sizeof(__pyx_k_register), 0, 1, 1}, /* PyObject cname: __pyx_n_u_register */
+  {__pyx_k_result, sizeof(__pyx_k_result), 0, 1, 1}, /* PyObject cname: __pyx_n_u_result */
+  {__pyx_k_result_lines, sizeof(__pyx_k_result_lines), 0, 1, 1}, /* PyObject cname: __pyx_n_u_result_lines */
+  {__pyx_k_rows, sizeof(__pyx_k_rows), 0, 1, 1}, /* PyObject cname: __pyx_n_u_rows */
+  {__pyx_k_s_Comprimento_do_caminho, sizeof(__pyx_k_s_Comprimento_do_caminho), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_s_Comprimento_do_caminho */
+  {__pyx_k_s_Tempo_mdio_por_execuo, sizeof(__pyx_k_s_Tempo_mdio_por_execuo), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_s_Tempo_mdio_por_execuo */
+  {__pyx_k_send, sizeof(__pyx_k_send), 0, 1, 1}, /* PyObject cname: __pyx_n_u_send */
   {__pyx_k_set_name, sizeof(__pyx_k_set_name), 0, 1, 1}, /* PyObject cname: __pyx_n_u_set_name */
   {__pyx_k_setstate, sizeof(__pyx_k_setstate), 0, 1, 1}, /* PyObject cname: __pyx_n_u_setstate */
   {__pyx_k_setstate_cython, sizeof(__pyx_k_setstate_cython), 0, 1, 1}, /* PyObject cname: __pyx_n_u_setstate_cython */
   {__pyx_k_shape, sizeof(__pyx_k_shape), 0, 1, 1}, /* PyObject cname: __pyx_n_u_shape */
   {__pyx_k_size, sizeof(__pyx_k_size), 0, 1, 1}, /* PyObject cname: __pyx_n_u_size */
+  {__pyx_k_solve_maze_from_text, sizeof(__pyx_k_solve_maze_from_text), 0, 1, 1}, /* PyObject cname: __pyx_n_u_solve_maze_from_text */
+  {__pyx_k_solve_maze_from_text_locals_gene, sizeof(__pyx_k_solve_maze_from_text_locals_gene), 0, 1, 1}, /* PyObject cname: __pyx_n_u_solve_maze_from_text_locals_gene */
   {__pyx_k_spec, sizeof(__pyx_k_spec), 0, 1, 1}, /* PyObject cname: __pyx_n_u_spec */
+  {__pyx_k_split, sizeof(__pyx_k_split), 0, 1, 1}, /* PyObject cname: __pyx_n_u_split */
   {__pyx_k_start, sizeof(__pyx_k_start), 0, 1, 1}, /* PyObject cname: __pyx_n_u_start */
   {__pyx_k_start_coords, sizeof(__pyx_k_start_coords), 0, 1, 1}, /* PyObject cname: __pyx_n_u_start_coords */
+  {__pyx_k_start_time, sizeof(__pyx_k_start_time), 0, 1, 1}, /* PyObject cname: __pyx_n_u_start_time */
   {__pyx_k_step, sizeof(__pyx_k_step), 0, 1, 1}, /* PyObject cname: __pyx_n_u_step */
   {__pyx_k_stop, sizeof(__pyx_k_stop), 0, 1, 1}, /* PyObject cname: __pyx_n_u_stop */
   {__pyx_k_strided_and_direct, sizeof(__pyx_k_strided_and_direct), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_strided_and_direct */
   {__pyx_k_strided_and_direct_or_indirect, sizeof(__pyx_k_strided_and_direct_or_indirect), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_strided_and_direct_or_indirect */
   {__pyx_k_strided_and_indirect, sizeof(__pyx_k_strided_and_indirect), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_strided_and_indirect */
+  {__pyx_k_strip, sizeof(__pyx_k_strip), 0, 1, 1}, /* PyObject cname: __pyx_n_u_strip */
   {__pyx_k_struct, sizeof(__pyx_k_struct), 0, 1, 1}, /* PyObject cname: __pyx_n_u_struct */
   {__pyx_k_test, sizeof(__pyx_k_test), 0, 1, 1}, /* PyObject cname: __pyx_n_u_test */
+  {__pyx_k_throw, sizeof(__pyx_k_throw), 0, 1, 1}, /* PyObject cname: __pyx_n_u_throw */
+  {__pyx_k_time, sizeof(__pyx_k_time), 0, 1, 1}, /* PyObject cname: __pyx_n_u_time */
   {__pyx_k_uint8, sizeof(__pyx_k_uint8), 0, 1, 1}, /* PyObject cname: __pyx_n_u_uint8 */
   {__pyx_k_unable_to_allocate_array_data, sizeof(__pyx_k_unable_to_allocate_array_data), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_unable_to_allocate_array_data */
   {__pyx_k_unable_to_allocate_shape_and_str, sizeof(__pyx_k_unable_to_allocate_shape_and_str), 0, 1, 0}, /* PyObject cname: __pyx_kp_u_unable_to_allocate_shape_and_str */
   {__pyx_k_unpack, sizeof(__pyx_k_unpack), 0, 1, 1}, /* PyObject cname: __pyx_n_u_unpack */
   {__pyx_k_update, sizeof(__pyx_k_update), 0, 1, 1}, /* PyObject cname: __pyx_n_u_update */
+  {__pyx_k_value, sizeof(__pyx_k_value), 0, 1, 1}, /* PyObject cname: __pyx_n_u_value */
   {__pyx_k_x, sizeof(__pyx_k_x), 0, 1, 1}, /* PyObject cname: __pyx_n_u_x */
   {__pyx_k_zeros, sizeof(__pyx_k_zeros), 0, 1, 1}, /* PyObject cname: __pyx_n_u_zeros */
   {0, 0, 0, 0, 0}
@@ -22473,7 +25747,7 @@ static int __Pyx_InitStrings(__Pyx_StringTabEntry const *t, PyObject **target, c
 
 static int __Pyx_InitCachedBuiltins(__pyx_mstatetype *__pyx_mstate) {
   CYTHON_UNUSED_VAR(__pyx_mstate);
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_mstate->__pyx_n_u_range); if (!__pyx_builtin_range) __PYX_ERR(0, 73, __pyx_L1_error)
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_mstate->__pyx_n_u_range); if (!__pyx_builtin_range) __PYX_ERR(0, 240, __pyx_L1_error)
   __pyx_builtin___import__ = __Pyx_GetBuiltinName(__pyx_mstate->__pyx_n_u_import); if (!__pyx_builtin___import__) __PYX_ERR(1, 101, __pyx_L1_error)
   __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_mstate->__pyx_n_u_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(1, 139, __pyx_L1_error)
   __pyx_builtin_MemoryError = __Pyx_GetBuiltinName(__pyx_mstate->__pyx_n_u_MemoryError); if (!__pyx_builtin_MemoryError) __PYX_ERR(1, 154, __pyx_L1_error)
@@ -22530,6 +25804,17 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
   __pyx_mstate_global->__pyx_tuple[1] = PyTuple_Pack(3, __pyx_mstate_global->__pyx_int_136983863, __pyx_mstate_global->__pyx_int_112105877, __pyx_mstate_global->__pyx_int_184977713); if (unlikely(!__pyx_mstate_global->__pyx_tuple[1])) __PYX_ERR(1, 4, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[1]);
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[1]);
+
+  /* "maze_solver_cy.pyx":297
+ * 
+ * # Exemplo de uso e teste de performance
+ * def benchmark_solver(maze_text, iterations=1000):             # <<<<<<<<<<<<<<
+ *     """
+ *     Benchmark da funo otimizada vs verso original
+*/
+  __pyx_mstate_global->__pyx_tuple[2] = PyTuple_Pack(1, ((PyObject*)__pyx_mstate_global->__pyx_int_1000)); if (unlikely(!__pyx_mstate_global->__pyx_tuple[2])) __PYX_ERR(0, 297, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[2]);
+  __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[2]);
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -22545,6 +25830,7 @@ static int __Pyx_InitConstants(__pyx_mstatetype *__pyx_mstate) {
   if (__Pyx_InitStrings(__pyx_string_tab, __pyx_mstate->__pyx_string_tab, __pyx_string_tab_encodings) < 0) __PYX_ERR(0, 1, __pyx_L1_error);
   __pyx_mstate->__pyx_int_0 = PyLong_FromLong(0); if (unlikely(!__pyx_mstate->__pyx_int_0)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_mstate->__pyx_int_1 = PyLong_FromLong(1); if (unlikely(!__pyx_mstate->__pyx_int_1)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_mstate->__pyx_int_1000 = PyLong_FromLong(1000); if (unlikely(!__pyx_mstate->__pyx_int_1000)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_mstate->__pyx_int_112105877 = PyLong_FromLong(112105877L); if (unlikely(!__pyx_mstate->__pyx_int_112105877)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_mstate->__pyx_int_136983863 = PyLong_FromLong(136983863L); if (unlikely(!__pyx_mstate->__pyx_int_136983863)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_mstate->__pyx_int_184977713 = PyLong_FromLong(184977713L); if (unlikely(!__pyx_mstate->__pyx_int_184977713)) __PYX_ERR(0, 1, __pyx_L1_error)
@@ -22559,10 +25845,10 @@ static int __Pyx_InitConstants(__pyx_mstatetype *__pyx_mstate) {
             unsigned int argcount : 2;
             unsigned int num_posonly_args : 1;
             unsigned int num_kwonly_args : 1;
-            unsigned int nlocals : 2;
+            unsigned int nlocals : 4;
             unsigned int flags : 10;
-            unsigned int first_line : 5;
-            unsigned int line_table_length : 14;
+            unsigned int first_line : 9;
+            unsigned int line_table_length : 15;
         } __Pyx_PyCode_New_function_description;
 /* NewCodeObj.proto */
 static PyObject* __Pyx_PyCode_New(
@@ -22579,9 +25865,29 @@ static int __Pyx_CreateCodeObjects(__pyx_mstatetype *__pyx_mstate) {
   PyObject* tuple_dedup_map = PyDict_New();
   if (unlikely(!tuple_dedup_map)) return -1;
   {
-    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 22, 624};
+    const __Pyx_PyCode_New_function_description descr = {0, 0, 0, 1, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS|CO_GENERATOR), 293, 2};
+    PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_line};
+    __pyx_mstate_global->__pyx_codeobj_tab[0] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_maze_solver_cy_pyx, __pyx_mstate->__pyx_n_u_genexpr, __pyx_k_A, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[0])) goto bad;
+  }
+  {
+    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 77, 1040};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_int_grid, __pyx_mstate->__pyx_n_u_start_coords, __pyx_mstate->__pyx_n_u_end_coords};
-    __pyx_mstate_global->__pyx_codeobj_tab[0] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_maze_solver_cy_pyx, __pyx_mstate->__pyx_n_u_find_shortest_path_cython, __pyx_k_HF_1_HF_1_AQ_AQ_j_j_KvQ_1_r_r_w, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[0])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[1] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_maze_solver_cy_pyx, __pyx_mstate->__pyx_n_u_find_shortest_path_cython_optimi, __pyx_k_HF_1_HF_1_AQ_AQ_j_j_Cxs_s_Bc_E, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[1])) goto bad;
+  }
+  {
+    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 11, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 213, 288};
+    PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_maze_text, __pyx_mstate->__pyx_n_u_lines, __pyx_mstate->__pyx_n_u_rows, __pyx_mstate->__pyx_n_u_cols, __pyx_mstate->__pyx_n_u_line, __pyx_mstate->__pyx_n_u_int_grid, __pyx_mstate->__pyx_n_u_start_coords, __pyx_mstate->__pyx_n_u_end_coords, __pyx_mstate->__pyx_n_u_r, __pyx_mstate->__pyx_n_u_c, __pyx_mstate->__pyx_n_u_char};
+    __pyx_mstate_global->__pyx_codeobj_tab[2] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_maze_solver_cy_pyx, __pyx_mstate->__pyx_n_u_parse_maze_text, __pyx_k_IV2V1A_t1_q_3aq_3auAWKq_3avS_1, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[2])) goto bad;
+  }
+  {
+    const __Pyx_PyCode_New_function_description descr = {1, 0, 0, 13, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 262, 154};
+    PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_maze_text, __pyx_mstate->__pyx_n_u_result, __pyx_mstate->__pyx_n_u_int_grid, __pyx_mstate->__pyx_n_u_start_coords, __pyx_mstate->__pyx_n_u_end_coords, __pyx_mstate->__pyx_n_u_path, __pyx_mstate->__pyx_n_u_lines, __pyx_mstate->__pyx_n_u_result_lines, __pyx_mstate->__pyx_n_u_r, __pyx_mstate->__pyx_n_u_c, __pyx_mstate->__pyx_n_u_line, __pyx_mstate->__pyx_n_u_genexpr, __pyx_mstate->__pyx_n_u_genexpr};
+    __pyx_mstate_global->__pyx_codeobj_tab[3] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_maze_solver_cy_pyx, __pyx_mstate->__pyx_n_u_solve_maze_from_text, __pyx_k_AQ_wc_q_nM_az_q_uCq_q_IV2V1A_1, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[3])) goto bad;
+  }
+  {
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 13, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 297, 176};
+    PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_maze_text, __pyx_mstate->__pyx_n_u_iterations, __pyx_mstate->__pyx_n_u_time, __pyx_mstate->__pyx_n_u_result, __pyx_mstate->__pyx_n_u_int_grid, __pyx_mstate->__pyx_n_u_start_coords, __pyx_mstate->__pyx_n_u_end_coords, __pyx_mstate->__pyx_n_u_start_time, __pyx_mstate->__pyx_n_u__12, __pyx_mstate->__pyx_n_u_path, __pyx_mstate->__pyx_n_u_end_time, __pyx_mstate->__pyx_n_u_optimized_time, __pyx_mstate->__pyx_n_u_path_length};
+    __pyx_mstate_global->__pyx_codeobj_tab[4] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_maze_solver_cy_pyx, __pyx_mstate->__pyx_n_u_benchmark_solver, __pyx_k_AQ_wc_q_nM_U_U_1_2_1_t5_Yb_Qiz, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[4])) goto bad;
   }
   Py_DECREF(tuple_dedup_map);
   return 0;
@@ -25418,143 +28724,6 @@ static CYTHON_INLINE int __Pyx_HasAttr(PyObject *o, PyObject *n) {
 }
 #endif
 
-/* PyObjectCall2Args */
-static CYTHON_INLINE PyObject* __Pyx_PyObject_Call2Args(PyObject* function, PyObject* arg1, PyObject* arg2) {
-    PyObject *args[3] = {NULL, arg1, arg2};
-    return __Pyx_PyObject_FastCall(function, args+1, 2 | __Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET);
-}
-
-/* PyObjectGetMethod */
-static int __Pyx_PyObject_GetMethod(PyObject *obj, PyObject *name, PyObject **method) {
-    PyObject *attr;
-#if CYTHON_UNPACK_METHODS && CYTHON_COMPILING_IN_CPYTHON && CYTHON_USE_PYTYPE_LOOKUP
-    __Pyx_TypeName type_name;
-    PyTypeObject *tp = Py_TYPE(obj);
-    PyObject *descr;
-    descrgetfunc f = NULL;
-    PyObject **dictptr, *dict;
-    int meth_found = 0;
-    assert (*method == NULL);
-    if (unlikely(tp->tp_getattro != PyObject_GenericGetAttr)) {
-        attr = __Pyx_PyObject_GetAttrStr(obj, name);
-        goto try_unpack;
-    }
-    if (unlikely(tp->tp_dict == NULL) && unlikely(PyType_Ready(tp) < 0)) {
-        return 0;
-    }
-    descr = _PyType_Lookup(tp, name);
-    if (likely(descr != NULL)) {
-        Py_INCREF(descr);
-#if defined(Py_TPFLAGS_METHOD_DESCRIPTOR) && Py_TPFLAGS_METHOD_DESCRIPTOR
-        if (__Pyx_PyType_HasFeature(Py_TYPE(descr), Py_TPFLAGS_METHOD_DESCRIPTOR))
-#else
-        #ifdef __Pyx_CyFunction_USED
-        if (likely(PyFunction_Check(descr) || __Pyx_IS_TYPE(descr, &PyMethodDescr_Type) || __Pyx_CyFunction_Check(descr)))
-        #else
-        if (likely(PyFunction_Check(descr) || __Pyx_IS_TYPE(descr, &PyMethodDescr_Type)))
-        #endif
-#endif
-        {
-            meth_found = 1;
-        } else {
-            f = Py_TYPE(descr)->tp_descr_get;
-            if (f != NULL && PyDescr_IsData(descr)) {
-                attr = f(descr, obj, (PyObject *)Py_TYPE(obj));
-                Py_DECREF(descr);
-                goto try_unpack;
-            }
-        }
-    }
-    dictptr = _PyObject_GetDictPtr(obj);
-    if (dictptr != NULL && (dict = *dictptr) != NULL) {
-        Py_INCREF(dict);
-        attr = __Pyx_PyDict_GetItemStr(dict, name);
-        if (attr != NULL) {
-            Py_INCREF(attr);
-            Py_DECREF(dict);
-            Py_XDECREF(descr);
-            goto try_unpack;
-        }
-        Py_DECREF(dict);
-    }
-    if (meth_found) {
-        *method = descr;
-        return 1;
-    }
-    if (f != NULL) {
-        attr = f(descr, obj, (PyObject *)Py_TYPE(obj));
-        Py_DECREF(descr);
-        goto try_unpack;
-    }
-    if (likely(descr != NULL)) {
-        *method = descr;
-        return 0;
-    }
-    type_name = __Pyx_PyType_GetFullyQualifiedName(tp);
-    PyErr_Format(PyExc_AttributeError,
-                 "'" __Pyx_FMT_TYPENAME "' object has no attribute '%U'",
-                 type_name, name);
-    __Pyx_DECREF_TypeName(type_name);
-    return 0;
-#else
-    attr = __Pyx_PyObject_GetAttrStr(obj, name);
-    goto try_unpack;
-#endif
-try_unpack:
-#if CYTHON_UNPACK_METHODS
-    if (likely(attr) && PyMethod_Check(attr) && likely(PyMethod_GET_SELF(attr) == obj)) {
-        PyObject *function = PyMethod_GET_FUNCTION(attr);
-        Py_INCREF(function);
-        Py_DECREF(attr);
-        *method = function;
-        return 1;
-    }
-#endif
-    *method = attr;
-    return 0;
-}
-
-/* PyObjectCallMethod1 */
-#if !(CYTHON_VECTORCALL && __PYX_LIMITED_VERSION_HEX >= 0x030C0000)
-static PyObject* __Pyx__PyObject_CallMethod1(PyObject* method, PyObject* arg) {
-    PyObject *result = __Pyx_PyObject_CallOneArg(method, arg);
-    Py_DECREF(method);
-    return result;
-}
-#endif
-static PyObject* __Pyx_PyObject_CallMethod1(PyObject* obj, PyObject* method_name, PyObject* arg) {
-#if CYTHON_VECTORCALL && __PYX_LIMITED_VERSION_HEX >= 0x030C0000
-    PyObject *args[2] = {obj, arg};
-    (void) __Pyx_PyObject_GetMethod;
-    (void) __Pyx_PyObject_CallOneArg;
-    (void) __Pyx_PyObject_Call2Args;
-    return PyObject_VectorcallMethod(method_name, args, 2 | PY_VECTORCALL_ARGUMENTS_OFFSET, NULL);
-#else
-    PyObject *method = NULL, *result;
-    int is_method = __Pyx_PyObject_GetMethod(obj, method_name, &method);
-    if (likely(is_method)) {
-        result = __Pyx_PyObject_Call2Args(method, obj, arg);
-        Py_DECREF(method);
-        return result;
-    }
-    if (unlikely(!method)) return NULL;
-    return __Pyx__PyObject_CallMethod1(method, arg);
-#endif
-}
-
-/* append */
-static CYTHON_INLINE int __Pyx_PyObject_Append(PyObject* L, PyObject* x) {
-    if (likely(PyList_CheckExact(L))) {
-        if (unlikely(__Pyx_PyList_Append(L, x) < 0)) return -1;
-    } else {
-        PyObject* retval = __Pyx_PyObject_CallMethod1(L, __pyx_mstate_global->__pyx_n_u_append, x);
-        if (unlikely(!retval))
-            return -1;
-        Py_DECREF(retval);
-    }
-    return 0;
-}
-
 /* PyObjectVectorCallKwBuilder */
 #if CYTHON_VECTORCALL
 static int __Pyx_VectorcallBuilder_AddArg(PyObject *key, PyObject *value, PyObject *builder, PyObject **args, int n) {
@@ -25586,6 +28755,70 @@ CYTHON_UNUSED static int __Pyx_VectorcallBuilder_AddArg_Check(PyObject *key, PyO
     return PyDict_SetItem(builder, key, value);
 }
 #endif
+
+/* ErrOccurredWithGIL */
+static CYTHON_INLINE int __Pyx_ErrOccurredWithGIL(void) {
+  int err;
+  PyGILState_STATE _save = PyGILState_Ensure();
+  err = !!PyErr_Occurred();
+  PyGILState_Release(_save);
+  return err;
+}
+
+/* pep479 */
+static void __Pyx_Generator_Replace_StopIteration(int in_async_gen) {
+    PyObject *exc, *val, *tb, *cur_exc, *new_exc;
+    __Pyx_PyThreadState_declare
+    int is_async_stopiteration = 0;
+    CYTHON_MAYBE_UNUSED_VAR(in_async_gen);
+    __Pyx_PyThreadState_assign
+    cur_exc = __Pyx_PyErr_CurrentExceptionType();
+    if (likely(!__Pyx_PyErr_GivenExceptionMatches(cur_exc, PyExc_StopIteration))) {
+        if (in_async_gen && unlikely(__Pyx_PyErr_GivenExceptionMatches(cur_exc, PyExc_StopAsyncIteration))) {
+            is_async_stopiteration = 1;
+        } else {
+            return;
+        }
+    }
+    __Pyx_GetException(&exc, &val, &tb);
+    Py_XDECREF(exc);
+    Py_XDECREF(tb);
+    new_exc = PyObject_CallFunction(PyExc_RuntimeError, "s",
+        is_async_stopiteration ? "async generator raised StopAsyncIteration" :
+        in_async_gen ? "async generator raised StopIteration" :
+        "generator raised StopIteration");
+    if (!new_exc) {
+        Py_XDECREF(val);
+        return;
+    }
+    PyException_SetCause(new_exc, val); // steals ref to val
+    PyErr_SetObject(PyExc_RuntimeError, new_exc);
+}
+
+/* IterFinish */
+static CYTHON_INLINE int __Pyx_IterFinish(void) {
+    PyObject* exc_type;
+    __Pyx_PyThreadState_declare
+    __Pyx_PyThreadState_assign
+    exc_type = __Pyx_PyErr_CurrentExceptionType();
+    if (unlikely(exc_type)) {
+        if (unlikely(!__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration)))
+            return -1;
+        __Pyx_PyErr_Clear();
+        return 0;
+    }
+    return 0;
+}
+
+/* UnpackItemEndCheck */
+static int __Pyx_IternextUnpackEndCheck(PyObject *retval, Py_ssize_t expected) {
+    if (unlikely(retval)) {
+        Py_DECREF(retval);
+        __Pyx_RaiseTooManyValuesError(expected);
+        return -1;
+    }
+    return __Pyx_IterFinish();
+}
 
 /* CallTypeTraverse */
 #if !CYTHON_USE_TYPE_SPECS || (!CYTHON_COMPILING_IN_LIMITED_API && PY_VERSION_HEX < 0x03090000)
@@ -25681,6 +28914,96 @@ static int __Pyx_fix_up_extension_type_from_spec(PyType_Spec *spec, PyTypeObject
 static CYTHON_INLINE PyObject* __Pyx_PyObject_CallNoArg(PyObject *func) {
     PyObject *arg[2] = {NULL, NULL};
     return __Pyx_PyObject_FastCall(func, arg + 1, 0 | __Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET);
+}
+
+/* PyObjectGetMethod */
+static int __Pyx_PyObject_GetMethod(PyObject *obj, PyObject *name, PyObject **method) {
+    PyObject *attr;
+#if CYTHON_UNPACK_METHODS && CYTHON_COMPILING_IN_CPYTHON && CYTHON_USE_PYTYPE_LOOKUP
+    __Pyx_TypeName type_name;
+    PyTypeObject *tp = Py_TYPE(obj);
+    PyObject *descr;
+    descrgetfunc f = NULL;
+    PyObject **dictptr, *dict;
+    int meth_found = 0;
+    assert (*method == NULL);
+    if (unlikely(tp->tp_getattro != PyObject_GenericGetAttr)) {
+        attr = __Pyx_PyObject_GetAttrStr(obj, name);
+        goto try_unpack;
+    }
+    if (unlikely(tp->tp_dict == NULL) && unlikely(PyType_Ready(tp) < 0)) {
+        return 0;
+    }
+    descr = _PyType_Lookup(tp, name);
+    if (likely(descr != NULL)) {
+        Py_INCREF(descr);
+#if defined(Py_TPFLAGS_METHOD_DESCRIPTOR) && Py_TPFLAGS_METHOD_DESCRIPTOR
+        if (__Pyx_PyType_HasFeature(Py_TYPE(descr), Py_TPFLAGS_METHOD_DESCRIPTOR))
+#else
+        #ifdef __Pyx_CyFunction_USED
+        if (likely(PyFunction_Check(descr) || __Pyx_IS_TYPE(descr, &PyMethodDescr_Type) || __Pyx_CyFunction_Check(descr)))
+        #else
+        if (likely(PyFunction_Check(descr) || __Pyx_IS_TYPE(descr, &PyMethodDescr_Type)))
+        #endif
+#endif
+        {
+            meth_found = 1;
+        } else {
+            f = Py_TYPE(descr)->tp_descr_get;
+            if (f != NULL && PyDescr_IsData(descr)) {
+                attr = f(descr, obj, (PyObject *)Py_TYPE(obj));
+                Py_DECREF(descr);
+                goto try_unpack;
+            }
+        }
+    }
+    dictptr = _PyObject_GetDictPtr(obj);
+    if (dictptr != NULL && (dict = *dictptr) != NULL) {
+        Py_INCREF(dict);
+        attr = __Pyx_PyDict_GetItemStr(dict, name);
+        if (attr != NULL) {
+            Py_INCREF(attr);
+            Py_DECREF(dict);
+            Py_XDECREF(descr);
+            goto try_unpack;
+        }
+        Py_DECREF(dict);
+    }
+    if (meth_found) {
+        *method = descr;
+        return 1;
+    }
+    if (f != NULL) {
+        attr = f(descr, obj, (PyObject *)Py_TYPE(obj));
+        Py_DECREF(descr);
+        goto try_unpack;
+    }
+    if (likely(descr != NULL)) {
+        *method = descr;
+        return 0;
+    }
+    type_name = __Pyx_PyType_GetFullyQualifiedName(tp);
+    PyErr_Format(PyExc_AttributeError,
+                 "'" __Pyx_FMT_TYPENAME "' object has no attribute '%U'",
+                 type_name, name);
+    __Pyx_DECREF_TypeName(type_name);
+    return 0;
+#else
+    attr = __Pyx_PyObject_GetAttrStr(obj, name);
+    goto try_unpack;
+#endif
+try_unpack:
+#if CYTHON_UNPACK_METHODS
+    if (likely(attr) && PyMethod_Check(attr) && likely(PyMethod_GET_SELF(attr) == obj)) {
+        PyObject *function = PyMethod_GET_FUNCTION(attr);
+        Py_INCREF(function);
+        Py_DECREF(attr);
+        *method = function;
+        return 1;
+    }
+#endif
+    *method = attr;
+    return 0;
 }
 
 /* PyObjectCallMethod0 */
@@ -30636,11 +33959,1153 @@ __Pyx_PyType_GetFullyQualifiedName(PyTypeObject* tp)
         result = name;
         name = NULL;
     } else {
-        result = __Pyx_NewRef(__pyx_mstate_global->__pyx_kp_u__6);
+        result = __Pyx_NewRef(__pyx_mstate_global->__pyx_kp_u__11);
     }
     goto done;
 }
 #endif
+
+/* IterNextPlain */
+  #if CYTHON_COMPILING_IN_LIMITED_API && __PYX_LIMITED_VERSION_HEX < 0x030A0000
+static PyObject *__Pyx_GetBuiltinNext_LimitedAPI(void) {
+    if (unlikely(!__pyx_mstate_global->__Pyx_GetBuiltinNext_LimitedAPI_cache))
+        __pyx_mstate_global->__Pyx_GetBuiltinNext_LimitedAPI_cache = __Pyx_GetBuiltinName(__pyx_mstate_global->__pyx_n_u_next);
+    return __pyx_mstate_global->__Pyx_GetBuiltinNext_LimitedAPI_cache;
+}
+#endif
+static CYTHON_INLINE PyObject *__Pyx_PyIter_Next_Plain(PyObject *iterator) {
+#if CYTHON_COMPILING_IN_LIMITED_API && __PYX_LIMITED_VERSION_HEX < 0x030A0000
+    PyObject *result;
+    PyObject *next = __Pyx_GetBuiltinNext_LimitedAPI();
+    if (unlikely(!next)) return NULL;
+    result = PyObject_CallFunctionObjArgs(next, iterator, NULL);
+    return result;
+#else
+    (void)__Pyx_GetBuiltinName; // only for early limited API
+    iternextfunc iternext = __Pyx_PyObject_GetIterNextFunc(iterator);
+    assert(iternext);
+    return iternext(iterator);
+#endif
+}
+
+/* PyObjectCall2Args */
+  static CYTHON_INLINE PyObject* __Pyx_PyObject_Call2Args(PyObject* function, PyObject* arg1, PyObject* arg2) {
+    PyObject *args[3] = {NULL, arg1, arg2};
+    return __Pyx_PyObject_FastCall(function, args+1, 2 | __Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET);
+}
+
+/* PyObjectCallMethod1 */
+  #if !(CYTHON_VECTORCALL && __PYX_LIMITED_VERSION_HEX >= 0x030C0000)
+static PyObject* __Pyx__PyObject_CallMethod1(PyObject* method, PyObject* arg) {
+    PyObject *result = __Pyx_PyObject_CallOneArg(method, arg);
+    Py_DECREF(method);
+    return result;
+}
+#endif
+static PyObject* __Pyx_PyObject_CallMethod1(PyObject* obj, PyObject* method_name, PyObject* arg) {
+#if CYTHON_VECTORCALL && __PYX_LIMITED_VERSION_HEX >= 0x030C0000
+    PyObject *args[2] = {obj, arg};
+    (void) __Pyx_PyObject_GetMethod;
+    (void) __Pyx_PyObject_CallOneArg;
+    (void) __Pyx_PyObject_Call2Args;
+    return PyObject_VectorcallMethod(method_name, args, 2 | PY_VECTORCALL_ARGUMENTS_OFFSET, NULL);
+#else
+    PyObject *method = NULL, *result;
+    int is_method = __Pyx_PyObject_GetMethod(obj, method_name, &method);
+    if (likely(is_method)) {
+        result = __Pyx_PyObject_Call2Args(method, obj, arg);
+        Py_DECREF(method);
+        return result;
+    }
+    if (unlikely(!method)) return NULL;
+    return __Pyx__PyObject_CallMethod1(method, arg);
+#endif
+}
+
+/* ReturnWithStopIteration */
+  static void __Pyx__ReturnWithStopIteration(PyObject* value, int async);
+static CYTHON_INLINE void __Pyx_ReturnWithStopIteration(PyObject* value, int async, int iternext) {
+    if (value == Py_None) {
+        if (async || !iternext)
+            PyErr_SetNone(async ? PyExc_StopAsyncIteration : PyExc_StopIteration);
+        return;
+    }
+    __Pyx__ReturnWithStopIteration(value, async);
+}
+static void __Pyx__ReturnWithStopIteration(PyObject* value, int async) {
+#if CYTHON_COMPILING_IN_CPYTHON
+    __Pyx_PyThreadState_declare
+#endif
+    PyObject *exc;
+    PyObject *exc_type = async ? PyExc_StopAsyncIteration : PyExc_StopIteration;
+#if CYTHON_COMPILING_IN_CPYTHON
+    if ((PY_VERSION_HEX >= (0x030C00A6)) || unlikely(PyTuple_Check(value) || PyExceptionInstance_Check(value))) {
+        if (PY_VERSION_HEX >= (0x030e00A1)) {
+            exc = __Pyx_PyObject_CallOneArg(exc_type, value);
+        } else {
+            PyObject *args_tuple = PyTuple_New(1);
+            if (unlikely(!args_tuple)) return;
+            Py_INCREF(value);
+            PyTuple_SET_ITEM(args_tuple, 0, value);
+            exc = PyObject_Call(exc_type, args_tuple, NULL);
+            Py_DECREF(args_tuple);
+        }
+        if (unlikely(!exc)) return;
+    } else {
+        Py_INCREF(value);
+        exc = value;
+    }
+    #if CYTHON_FAST_THREAD_STATE
+    __Pyx_PyThreadState_assign
+    #if CYTHON_USE_EXC_INFO_STACK
+    if (!__pyx_tstate->exc_info->exc_value)
+    #else
+    if (!__pyx_tstate->exc_type)
+    #endif
+    {
+        Py_INCREF(exc_type);
+        __Pyx_ErrRestore(exc_type, exc, NULL);
+        return;
+    }
+    #endif
+#else
+    exc = __Pyx_PyObject_CallOneArg(exc_type, value);
+    if (unlikely(!exc)) return;
+#endif
+    PyErr_SetObject(exc_type, exc);
+    Py_DECREF(exc);
+}
+
+/* CoroutineBase */
+  #if !CYTHON_COMPILING_IN_LIMITED_API
+#include <frameobject.h>
+#if PY_VERSION_HEX >= 0x030b00a6 && !defined(PYPY_VERSION)
+  #ifndef Py_BUILD_CORE
+    #define Py_BUILD_CORE 1
+  #endif
+  #include "internal/pycore_frame.h"
+#endif
+#endif // CYTHON_COMPILING_IN_LIMITED_API
+static CYTHON_INLINE void
+__Pyx_Coroutine_Undelegate(__pyx_CoroutineObject *gen) {
+#if CYTHON_USE_AM_SEND
+    gen->yieldfrom_am_send = NULL;
+#endif
+    Py_CLEAR(gen->yieldfrom);
+}
+static int __Pyx_PyGen__FetchStopIterationValue(PyThreadState *__pyx_tstate, PyObject **pvalue) {
+    PyObject *et, *ev, *tb;
+    PyObject *value = NULL;
+    CYTHON_UNUSED_VAR(__pyx_tstate);
+    __Pyx_ErrFetch(&et, &ev, &tb);
+    if (!et) {
+        Py_XDECREF(tb);
+        Py_XDECREF(ev);
+        Py_INCREF(Py_None);
+        *pvalue = Py_None;
+        return 0;
+    }
+    if (likely(et == PyExc_StopIteration)) {
+        if (!ev) {
+            Py_INCREF(Py_None);
+            value = Py_None;
+        }
+        else if (likely(__Pyx_IS_TYPE(ev, (PyTypeObject*)PyExc_StopIteration))) {
+            #if CYTHON_COMPILING_IN_LIMITED_API || CYTHON_COMPILING_IN_GRAAL
+            value = PyObject_GetAttr(ev, __pyx_mstate_global->__pyx_n_u_value);
+            if (unlikely(!value)) goto limited_api_failure;
+            #else
+            value = ((PyStopIterationObject *)ev)->value;
+            Py_INCREF(value);
+            #endif
+            Py_DECREF(ev);
+        }
+        else if (unlikely(PyTuple_Check(ev))) {
+            Py_ssize_t tuple_size = __Pyx_PyTuple_GET_SIZE(ev);
+            #if !CYTHON_ASSUME_SAFE_SIZE
+            if (unlikely(tuple_size < 0)) {
+                Py_XDECREF(tb);
+                Py_DECREF(ev);
+                Py_DECREF(et);
+                return -1;
+            }
+            #endif
+            if (tuple_size >= 1) {
+#if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+                value = PyTuple_GET_ITEM(ev, 0);
+                Py_INCREF(value);
+#elif CYTHON_ASSUME_SAFE_MACROS
+                value = PySequence_ITEM(ev, 0);
+#else
+                value = PySequence_GetItem(ev, 0);
+                if (!value) goto limited_api_failure;
+#endif
+            } else {
+                Py_INCREF(Py_None);
+                value = Py_None;
+            }
+            Py_DECREF(ev);
+        }
+        else if (!__Pyx_TypeCheck(ev, (PyTypeObject*)PyExc_StopIteration)) {
+            value = ev;
+        }
+        if (likely(value)) {
+            Py_XDECREF(tb);
+            Py_DECREF(et);
+            *pvalue = value;
+            return 0;
+        }
+    } else if (!__Pyx_PyErr_GivenExceptionMatches(et, PyExc_StopIteration)) {
+        __Pyx_ErrRestore(et, ev, tb);
+        return -1;
+    }
+    PyErr_NormalizeException(&et, &ev, &tb);
+    if (unlikely(!PyObject_TypeCheck(ev, (PyTypeObject*)PyExc_StopIteration))) {
+        __Pyx_ErrRestore(et, ev, tb);
+        return -1;
+    }
+    Py_XDECREF(tb);
+    Py_DECREF(et);
+#if CYTHON_COMPILING_IN_LIMITED_API
+    value = PyObject_GetAttr(ev, __pyx_mstate_global->__pyx_n_u_value);
+#else
+    value = ((PyStopIterationObject *)ev)->value;
+    Py_INCREF(value);
+#endif
+    Py_DECREF(ev);
+#if CYTHON_COMPILING_IN_LIMITED_API
+    if (unlikely(!value)) return -1;
+#endif
+    *pvalue = value;
+    return 0;
+#if CYTHON_COMPILING_IN_LIMITED_API || CYTHON_COMPILING_IN_GRAAL || !CYTHON_ASSUME_SAFE_MACROS
+  limited_api_failure:
+    Py_XDECREF(et);
+    Py_XDECREF(tb);
+    Py_XDECREF(ev);
+    return -1;
+#endif
+}
+static CYTHON_INLINE
+__Pyx_PySendResult __Pyx_Coroutine_status_from_result(PyObject **retval) {
+    if (*retval) {
+        return PYGEN_NEXT;
+    } else if (likely(__Pyx_PyGen__FetchStopIterationValue(__Pyx_PyThreadState_Current, retval) == 0)) {
+        return PYGEN_RETURN;
+    } else {
+        return PYGEN_ERROR;
+    }
+}
+static CYTHON_INLINE
+void __Pyx_Coroutine_ExceptionClear(__Pyx_ExcInfoStruct *exc_state) {
+#if PY_VERSION_HEX >= 0x030B00a4
+    Py_CLEAR(exc_state->exc_value);
+#else
+    PyObject *t, *v, *tb;
+    t = exc_state->exc_type;
+    v = exc_state->exc_value;
+    tb = exc_state->exc_traceback;
+    exc_state->exc_type = NULL;
+    exc_state->exc_value = NULL;
+    exc_state->exc_traceback = NULL;
+    Py_XDECREF(t);
+    Py_XDECREF(v);
+    Py_XDECREF(tb);
+#endif
+}
+#define __Pyx_Coroutine_AlreadyRunningError(gen)  (__Pyx__Coroutine_AlreadyRunningError(gen), (PyObject*)NULL)
+static void __Pyx__Coroutine_AlreadyRunningError(__pyx_CoroutineObject *gen) {
+    const char *msg;
+    CYTHON_MAYBE_UNUSED_VAR(gen);
+    if ((0)) {
+    #ifdef __Pyx_Coroutine_USED
+    } else if (__Pyx_Coroutine_Check((PyObject*)gen)) {
+        msg = "coroutine already executing";
+    #endif
+    #ifdef __Pyx_AsyncGen_USED
+    } else if (__Pyx_AsyncGen_CheckExact((PyObject*)gen)) {
+        msg = "async generator already executing";
+    #endif
+    } else {
+        msg = "generator already executing";
+    }
+    PyErr_SetString(PyExc_ValueError, msg);
+}
+static void __Pyx_Coroutine_AlreadyTerminatedError(PyObject *gen, PyObject *value, int closing) {
+    CYTHON_MAYBE_UNUSED_VAR(gen);
+    CYTHON_MAYBE_UNUSED_VAR(closing);
+    #ifdef __Pyx_Coroutine_USED
+    if (!closing && __Pyx_Coroutine_Check(gen)) {
+        PyErr_SetString(PyExc_RuntimeError, "cannot reuse already awaited coroutine");
+    } else
+    #endif
+    if (value) {
+        #ifdef __Pyx_AsyncGen_USED
+        if (__Pyx_AsyncGen_CheckExact(gen))
+            PyErr_SetNone(PyExc_StopAsyncIteration);
+        else
+        #endif
+        PyErr_SetNone(PyExc_StopIteration);
+    }
+}
+static
+__Pyx_PySendResult __Pyx_Coroutine_SendEx(__pyx_CoroutineObject *self, PyObject *value, PyObject **result, int closing) {
+    __Pyx_PyThreadState_declare
+    PyThreadState *tstate;
+    __Pyx_ExcInfoStruct *exc_state;
+    PyObject *retval;
+    assert(__Pyx_Coroutine_get_is_running(self));  // Callers should ensure is_running
+    if (unlikely(self->resume_label == -1)) {
+        __Pyx_Coroutine_AlreadyTerminatedError((PyObject*)self, value, closing);
+        return PYGEN_ERROR;
+    }
+#if CYTHON_FAST_THREAD_STATE
+    __Pyx_PyThreadState_assign
+    tstate = __pyx_tstate;
+#else
+    tstate = __Pyx_PyThreadState_Current;
+#endif
+    exc_state = &self->gi_exc_state;
+    if (exc_state->exc_value) {
+        #if CYTHON_COMPILING_IN_LIMITED_API || CYTHON_COMPILING_IN_PYPY
+        #else
+        PyObject *exc_tb;
+        #if PY_VERSION_HEX >= 0x030B00a4 && !CYTHON_COMPILING_IN_CPYTHON
+        exc_tb = PyException_GetTraceback(exc_state->exc_value);
+        #elif PY_VERSION_HEX >= 0x030B00a4
+        exc_tb = ((PyBaseExceptionObject*) exc_state->exc_value)->traceback;
+        #else
+        exc_tb = exc_state->exc_traceback;
+        #endif
+        if (exc_tb) {
+            PyTracebackObject *tb = (PyTracebackObject *) exc_tb;
+            PyFrameObject *f = tb->tb_frame;
+            assert(f->f_back == NULL);
+            #if PY_VERSION_HEX >= 0x030B00A1
+            f->f_back = PyThreadState_GetFrame(tstate);
+            #else
+            Py_XINCREF(tstate->frame);
+            f->f_back = tstate->frame;
+            #endif
+            #if PY_VERSION_HEX >= 0x030B00a4 && !CYTHON_COMPILING_IN_CPYTHON
+            Py_DECREF(exc_tb);
+            #endif
+        }
+        #endif
+    }
+#if CYTHON_USE_EXC_INFO_STACK
+    exc_state->previous_item = tstate->exc_info;
+    tstate->exc_info = exc_state;
+#else
+    if (exc_state->exc_type) {
+        __Pyx_ExceptionSwap(&exc_state->exc_type, &exc_state->exc_value, &exc_state->exc_traceback);
+    } else {
+        __Pyx_Coroutine_ExceptionClear(exc_state);
+        __Pyx_ExceptionSave(&exc_state->exc_type, &exc_state->exc_value, &exc_state->exc_traceback);
+    }
+#endif
+    retval = self->body(self, tstate, value);
+#if CYTHON_USE_EXC_INFO_STACK
+    exc_state = &self->gi_exc_state;
+    tstate->exc_info = exc_state->previous_item;
+    exc_state->previous_item = NULL;
+    __Pyx_Coroutine_ResetFrameBackpointer(exc_state);
+#endif
+    *result = retval;
+    if (self->resume_label == -1) {
+        return likely(retval) ? PYGEN_RETURN : PYGEN_ERROR;
+    }
+    return PYGEN_NEXT;
+}
+static CYTHON_INLINE void __Pyx_Coroutine_ResetFrameBackpointer(__Pyx_ExcInfoStruct *exc_state) {
+#if CYTHON_COMPILING_IN_PYPY || CYTHON_COMPILING_IN_LIMITED_API
+    CYTHON_UNUSED_VAR(exc_state);
+#else
+    PyObject *exc_tb;
+    #if PY_VERSION_HEX >= 0x030B00a4
+    if (!exc_state->exc_value) return;
+    exc_tb = PyException_GetTraceback(exc_state->exc_value);
+    #else
+    exc_tb = exc_state->exc_traceback;
+    #endif
+    if (likely(exc_tb)) {
+        PyTracebackObject *tb = (PyTracebackObject *) exc_tb;
+        PyFrameObject *f = tb->tb_frame;
+        Py_CLEAR(f->f_back);
+        #if PY_VERSION_HEX >= 0x030B00a4
+        Py_DECREF(exc_tb);
+        #endif
+    }
+#endif
+}
+#define __Pyx_Coroutine_MethodReturnFromResult(gen, result, retval, iternext)\
+    ((result) == PYGEN_NEXT ? (retval) : __Pyx__Coroutine_MethodReturnFromResult(gen, result, retval, iternext))
+static PyObject *
+__Pyx__Coroutine_MethodReturnFromResult(PyObject* gen, __Pyx_PySendResult result, PyObject *retval, int iternext) {
+    CYTHON_MAYBE_UNUSED_VAR(gen);
+    if (likely(result == PYGEN_RETURN)) {
+        int is_async = 0;
+        #ifdef __Pyx_AsyncGen_USED
+        is_async = __Pyx_AsyncGen_CheckExact(gen);
+        #endif
+        __Pyx_ReturnWithStopIteration(retval, is_async, iternext);
+        Py_XDECREF(retval);
+    }
+    return NULL;
+}
+#if CYTHON_COMPILING_IN_CPYTHON
+static CYTHON_INLINE
+PyObject *__Pyx_PyGen_Send(PyGenObject *gen, PyObject *arg) {
+#if PY_VERSION_HEX <= 0x030A00A1
+    return _PyGen_Send(gen, arg);
+#else
+    PyObject *result;
+    if (PyIter_Send((PyObject*)gen, arg ? arg : Py_None, &result) == PYGEN_RETURN) {
+        if (PyAsyncGen_CheckExact(gen)) {
+            assert(result == Py_None);
+            PyErr_SetNone(PyExc_StopAsyncIteration);
+        }
+        else if (result == Py_None) {
+            PyErr_SetNone(PyExc_StopIteration);
+        }
+        else {
+#if PY_VERSION_HEX < 0x030d00A1
+            _PyGen_SetStopIterationValue(result);
+#else
+            if (!PyTuple_Check(result) && !PyExceptionInstance_Check(result)) {
+                PyErr_SetObject(PyExc_StopIteration, result);
+            } else {
+                PyObject *exc = __Pyx_PyObject_CallOneArg(PyExc_StopIteration, result);
+                if (likely(exc != NULL)) {
+                    PyErr_SetObject(PyExc_StopIteration, exc);
+                    Py_DECREF(exc);
+                }
+            }
+#endif
+        }
+        Py_DECREF(result);
+        result = NULL;
+    }
+    return result;
+#endif
+}
+#endif
+static CYTHON_INLINE __Pyx_PySendResult
+__Pyx_Coroutine_FinishDelegation(__pyx_CoroutineObject *gen, PyObject** retval) {
+    __Pyx_PySendResult result;
+    PyObject *val = NULL;
+    assert(__Pyx_Coroutine_get_is_running(gen));
+    __Pyx_Coroutine_Undelegate(gen);
+    __Pyx_PyGen__FetchStopIterationValue(__Pyx_PyThreadState_Current, &val);
+    result = __Pyx_Coroutine_SendEx(gen, val, retval, 0);
+    Py_XDECREF(val);
+    return result;
+}
+#if CYTHON_USE_AM_SEND
+static __Pyx_PySendResult
+__Pyx_Coroutine_SendToDelegate(__pyx_CoroutineObject *gen, __Pyx_pyiter_sendfunc gen_am_send, PyObject *value, PyObject **retval) {
+    PyObject *ret = NULL;
+    __Pyx_PySendResult delegate_result, result;
+    assert(__Pyx_Coroutine_get_is_running(gen));
+    delegate_result = gen_am_send(gen->yieldfrom, value, &ret);
+    if (delegate_result == PYGEN_NEXT) {
+        assert (ret != NULL);
+        *retval = ret;
+        return PYGEN_NEXT;
+    }
+    assert (delegate_result != PYGEN_ERROR || ret == NULL);
+    __Pyx_Coroutine_Undelegate(gen);
+    result = __Pyx_Coroutine_SendEx(gen, ret, retval, 0);
+    Py_XDECREF(ret);
+    return result;
+}
+#endif
+static PyObject *__Pyx_Coroutine_Send(PyObject *self, PyObject *value) {
+    PyObject *retval = NULL;
+    __Pyx_PySendResult result = __Pyx_Coroutine_AmSend(self, value, &retval);
+    return __Pyx_Coroutine_MethodReturnFromResult(self, result, retval, 0);
+}
+static __Pyx_PySendResult
+__Pyx_Coroutine_AmSend(PyObject *self, PyObject *value, PyObject **retval) {
+    __Pyx_PySendResult result;
+    __pyx_CoroutineObject *gen = (__pyx_CoroutineObject*) self;
+    if (unlikely(__Pyx_Coroutine_test_and_set_is_running(gen))) {
+        *retval = __Pyx_Coroutine_AlreadyRunningError(gen);
+        return PYGEN_ERROR;
+    }
+    #if CYTHON_USE_AM_SEND
+    if (gen->yieldfrom_am_send) {
+        result = __Pyx_Coroutine_SendToDelegate(gen, gen->yieldfrom_am_send, value, retval);
+    } else
+    #endif
+    if (gen->yieldfrom) {
+        PyObject *yf = gen->yieldfrom;
+        PyObject *ret;
+      #if !CYTHON_USE_AM_SEND
+        #ifdef __Pyx_Generator_USED
+        if (__Pyx_Generator_CheckExact(yf)) {
+            ret = __Pyx_Coroutine_Send(yf, value);
+        } else
+        #endif
+        #ifdef __Pyx_Coroutine_USED
+        if (__Pyx_Coroutine_Check(yf)) {
+            ret = __Pyx_Coroutine_Send(yf, value);
+        } else
+        #endif
+        #ifdef __Pyx_AsyncGen_USED
+        if (__pyx_PyAsyncGenASend_CheckExact(yf)) {
+            ret = __Pyx_async_gen_asend_send(yf, value);
+        } else
+        #endif
+        #if CYTHON_COMPILING_IN_CPYTHON
+        if (PyGen_CheckExact(yf)) {
+            ret = __Pyx_PyGen_Send((PyGenObject*)yf, value == Py_None ? NULL : value);
+        } else
+        if (PyCoro_CheckExact(yf)) {
+            ret = __Pyx_PyGen_Send((PyGenObject*)yf, value == Py_None ? NULL : value);
+        } else
+        #endif
+      #endif
+        {
+            #if !CYTHON_COMPILING_IN_LIMITED_API || __PYX_LIMITED_VERSION_HEX >= 0x03080000
+            if (value == Py_None && PyIter_Check(yf))
+                ret = __Pyx_PyIter_Next_Plain(yf);
+            else
+            #endif
+                ret = __Pyx_PyObject_CallMethod1(yf, __pyx_mstate_global->__pyx_n_u_send, value);
+        }
+        if (likely(ret)) {
+            __Pyx_Coroutine_unset_is_running(gen);
+            *retval = ret;
+            return PYGEN_NEXT;
+        }
+        result = __Pyx_Coroutine_FinishDelegation(gen, retval);
+    } else {
+        result = __Pyx_Coroutine_SendEx(gen, value, retval, 0);
+    }
+    __Pyx_Coroutine_unset_is_running(gen);
+    return result;
+}
+static int __Pyx_Coroutine_CloseIter(__pyx_CoroutineObject *gen, PyObject *yf) {
+    __Pyx_PySendResult result;
+    PyObject *retval = NULL;
+    CYTHON_UNUSED_VAR(gen);
+    assert(__Pyx_Coroutine_get_is_running(gen));
+    #ifdef __Pyx_Generator_USED
+    if (__Pyx_Generator_CheckExact(yf)) {
+        result = __Pyx_Coroutine_Close(yf, &retval);
+    } else
+    #endif
+    #ifdef __Pyx_Coroutine_USED
+    if (__Pyx_Coroutine_Check(yf)) {
+        result = __Pyx_Coroutine_Close(yf, &retval);
+    } else
+    if (__Pyx_CoroutineAwait_CheckExact(yf)) {
+        result = __Pyx_CoroutineAwait_Close((__pyx_CoroutineAwaitObject*)yf);
+    } else
+    #endif
+    #ifdef __Pyx_AsyncGen_USED
+    if (__pyx_PyAsyncGenASend_CheckExact(yf)) {
+        retval = __Pyx_async_gen_asend_close(yf, NULL);
+        result = PYGEN_RETURN;
+    } else
+    if (__pyx_PyAsyncGenAThrow_CheckExact(yf)) {
+        retval = __Pyx_async_gen_athrow_close(yf, NULL);
+        result = PYGEN_RETURN;
+    } else
+    #endif
+    {
+        PyObject *meth;
+        result = PYGEN_RETURN;
+        meth = __Pyx_PyObject_GetAttrStrNoError(yf, __pyx_mstate_global->__pyx_n_u_close);
+        if (unlikely(!meth)) {
+            if (unlikely(PyErr_Occurred())) {
+                PyErr_WriteUnraisable(yf);
+            }
+        } else {
+            retval = __Pyx_PyObject_CallNoArg(meth);
+            Py_DECREF(meth);
+            if (unlikely(!retval)) {
+                result = PYGEN_ERROR;
+            }
+        }
+    }
+    Py_XDECREF(retval);
+    return result == PYGEN_ERROR ? -1 : 0;
+}
+static PyObject *__Pyx_Generator_Next(PyObject *self) {
+    __Pyx_PySendResult result;
+    PyObject *retval = NULL;
+    __pyx_CoroutineObject *gen = (__pyx_CoroutineObject*) self;
+    if (unlikely(__Pyx_Coroutine_test_and_set_is_running(gen))) {
+        return __Pyx_Coroutine_AlreadyRunningError(gen);
+    }
+    #if CYTHON_USE_AM_SEND
+    if (gen->yieldfrom_am_send) {
+        result = __Pyx_Coroutine_SendToDelegate(gen, gen->yieldfrom_am_send, Py_None, &retval);
+    } else
+    #endif
+    if (gen->yieldfrom) {
+        PyObject *yf = gen->yieldfrom;
+        PyObject *ret;
+        #ifdef __Pyx_Generator_USED
+        if (__Pyx_Generator_CheckExact(yf)) {
+            ret = __Pyx_Generator_Next(yf);
+        } else
+        #endif
+        #ifdef __Pyx_Coroutine_USED
+        if (__Pyx_Coroutine_CheckExact(yf)) {
+            ret = __Pyx_Coroutine_Send(yf, Py_None);
+        } else
+        #endif
+        #if CYTHON_COMPILING_IN_CPYTHON && (PY_VERSION_HEX < 0x030A00A3 || !CYTHON_USE_AM_SEND)
+        if (PyGen_CheckExact(yf)) {
+            ret = __Pyx_PyGen_Send((PyGenObject*)yf, NULL);
+        } else
+        #endif
+            ret = __Pyx_PyIter_Next_Plain(yf);
+        if (likely(ret)) {
+            __Pyx_Coroutine_unset_is_running(gen);
+            return ret;
+        }
+        result = __Pyx_Coroutine_FinishDelegation(gen, &retval);
+    } else {
+        result = __Pyx_Coroutine_SendEx(gen, Py_None, &retval, 0);
+    }
+    __Pyx_Coroutine_unset_is_running(gen);
+    return __Pyx_Coroutine_MethodReturnFromResult(self, result, retval, 1);
+}
+static PyObject *__Pyx_Coroutine_Close_Method(PyObject *self, PyObject *arg) {
+    PyObject *retval = NULL;
+    __Pyx_PySendResult result;
+    CYTHON_UNUSED_VAR(arg);
+    result = __Pyx_Coroutine_Close(self, &retval);
+    if (unlikely(result == PYGEN_ERROR))
+        return NULL;
+    Py_XDECREF(retval);
+    Py_RETURN_NONE;
+}
+static __Pyx_PySendResult
+__Pyx_Coroutine_Close(PyObject *self, PyObject **retval) {
+    __pyx_CoroutineObject *gen = (__pyx_CoroutineObject *) self;
+    __Pyx_PySendResult result;
+    PyObject *yf;
+    int err = 0;
+    if (unlikely(__Pyx_Coroutine_test_and_set_is_running(gen))) {
+        *retval = __Pyx_Coroutine_AlreadyRunningError(gen);
+        return PYGEN_ERROR;
+    }
+    yf = gen->yieldfrom;
+    if (yf) {
+        Py_INCREF(yf);
+        err = __Pyx_Coroutine_CloseIter(gen, yf);
+        __Pyx_Coroutine_Undelegate(gen);
+        Py_DECREF(yf);
+    }
+    if (err == 0)
+        PyErr_SetNone(PyExc_GeneratorExit);
+    result = __Pyx_Coroutine_SendEx(gen, NULL, retval, 1);
+    if (result == PYGEN_ERROR) {
+        __Pyx_PyThreadState_declare
+        __Pyx_PyThreadState_assign
+        __Pyx_Coroutine_unset_is_running(gen);
+        if (!__Pyx_PyErr_Occurred()) {
+            return PYGEN_RETURN;
+        } else if (likely(__Pyx_PyErr_ExceptionMatches2(PyExc_GeneratorExit, PyExc_StopIteration))) {
+            __Pyx_PyErr_Clear();
+            return PYGEN_RETURN;
+        }
+        return PYGEN_ERROR;
+    } else if (likely(result == PYGEN_RETURN && *retval == Py_None)) {
+        __Pyx_Coroutine_unset_is_running(gen);
+        return PYGEN_RETURN;
+    } else {
+        const char *msg;
+        Py_DECREF(*retval);
+        *retval = NULL;
+        if ((0)) {
+        #ifdef __Pyx_Coroutine_USED
+        } else if (__Pyx_Coroutine_Check(self)) {
+            msg = "coroutine ignored GeneratorExit";
+        #endif
+        #ifdef __Pyx_AsyncGen_USED
+        } else if (__Pyx_AsyncGen_CheckExact(self)) {
+            msg = "async generator ignored GeneratorExit";
+        #endif
+        } else {
+            msg = "generator ignored GeneratorExit";
+        }
+        PyErr_SetString(PyExc_RuntimeError, msg);
+        __Pyx_Coroutine_unset_is_running(gen);
+        return PYGEN_ERROR;
+    }
+}
+static PyObject *__Pyx__Coroutine_Throw(PyObject *self, PyObject *typ, PyObject *val, PyObject *tb,
+                                        PyObject *args, int close_on_genexit) {
+    __pyx_CoroutineObject *gen = (__pyx_CoroutineObject *) self;
+    PyObject *yf;
+    if (unlikely(__Pyx_Coroutine_test_and_set_is_running(gen)))
+        return __Pyx_Coroutine_AlreadyRunningError(gen);
+    yf = gen->yieldfrom;
+    if (yf) {
+        __Pyx_PySendResult result;
+        PyObject *ret;
+        Py_INCREF(yf);
+        if (__Pyx_PyErr_GivenExceptionMatches(typ, PyExc_GeneratorExit) && close_on_genexit) {
+            int err = __Pyx_Coroutine_CloseIter(gen, yf);
+            Py_DECREF(yf);
+            __Pyx_Coroutine_Undelegate(gen);
+            if (err < 0)
+                goto propagate_exception;
+            goto throw_here;
+        }
+        if (0
+        #ifdef __Pyx_Generator_USED
+            || __Pyx_Generator_CheckExact(yf)
+        #endif
+        #ifdef __Pyx_Coroutine_USED
+            || __Pyx_Coroutine_Check(yf)
+        #endif
+            ) {
+            ret = __Pyx__Coroutine_Throw(yf, typ, val, tb, args, close_on_genexit);
+        #ifdef __Pyx_Coroutine_USED
+        } else if (__Pyx_CoroutineAwait_CheckExact(yf)) {
+            ret = __Pyx__Coroutine_Throw(((__pyx_CoroutineAwaitObject*)yf)->coroutine, typ, val, tb, args, close_on_genexit);
+        #endif
+        } else {
+            PyObject *meth = __Pyx_PyObject_GetAttrStrNoError(yf, __pyx_mstate_global->__pyx_n_u_throw);
+            if (unlikely(!meth)) {
+                Py_DECREF(yf);
+                if (unlikely(PyErr_Occurred())) {
+                    __Pyx_Coroutine_unset_is_running(gen);
+                    return NULL;
+                }
+                __Pyx_Coroutine_Undelegate(gen);
+                goto throw_here;
+            }
+            if (likely(args)) {
+                ret = __Pyx_PyObject_Call(meth, args, NULL);
+            } else {
+                PyObject *cargs[4] = {NULL, typ, val, tb};
+                ret = __Pyx_PyObject_FastCall(meth, cargs+1, 3 | __Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET);
+            }
+            Py_DECREF(meth);
+        }
+        Py_DECREF(yf);
+        if (ret) {
+            __Pyx_Coroutine_unset_is_running(gen);
+            return ret;
+        }
+        result = __Pyx_Coroutine_FinishDelegation(gen, &ret);
+        __Pyx_Coroutine_unset_is_running(gen);
+        return __Pyx_Coroutine_MethodReturnFromResult(self, result, ret, 0);
+    }
+throw_here:
+    __Pyx_Raise(typ, val, tb, NULL);
+propagate_exception:
+    {
+        PyObject *retval = NULL;
+        __Pyx_PySendResult result = __Pyx_Coroutine_SendEx(gen, NULL, &retval, 0);
+        __Pyx_Coroutine_unset_is_running(gen);
+        return __Pyx_Coroutine_MethodReturnFromResult(self, result, retval, 0);
+    }
+}
+static PyObject *__Pyx_Coroutine_Throw(PyObject *self, PyObject *args) {
+    PyObject *typ;
+    PyObject *val = NULL;
+    PyObject *tb = NULL;
+    if (unlikely(!PyArg_UnpackTuple(args, "throw", 1, 3, &typ, &val, &tb)))
+        return NULL;
+    return __Pyx__Coroutine_Throw(self, typ, val, tb, args, 1);
+}
+static CYTHON_INLINE int __Pyx_Coroutine_traverse_excstate(__Pyx_ExcInfoStruct *exc_state, visitproc visit, void *arg) {
+#if PY_VERSION_HEX >= 0x030B00a4
+    Py_VISIT(exc_state->exc_value);
+#else
+    Py_VISIT(exc_state->exc_type);
+    Py_VISIT(exc_state->exc_value);
+    Py_VISIT(exc_state->exc_traceback);
+#endif
+    return 0;
+}
+static int __Pyx_Coroutine_traverse(__pyx_CoroutineObject *gen, visitproc visit, void *arg) {
+    {
+        int e = __Pyx_call_type_traverse((PyObject*)gen, 1, visit, arg);
+        if (e) return e;
+    }
+    Py_VISIT(gen->closure);
+    Py_VISIT(gen->classobj);
+    Py_VISIT(gen->yieldfrom);
+    return __Pyx_Coroutine_traverse_excstate(&gen->gi_exc_state, visit, arg);
+}
+static int __Pyx_Coroutine_clear(PyObject *self) {
+    __pyx_CoroutineObject *gen = (__pyx_CoroutineObject *) self;
+    Py_CLEAR(gen->closure);
+    Py_CLEAR(gen->classobj);
+    __Pyx_Coroutine_Undelegate(gen);
+    __Pyx_Coroutine_ExceptionClear(&gen->gi_exc_state);
+#ifdef __Pyx_AsyncGen_USED
+    if (__Pyx_AsyncGen_CheckExact(self)) {
+        Py_CLEAR(((__pyx_PyAsyncGenObject*)gen)->ag_finalizer);
+    }
+#endif
+    Py_CLEAR(gen->gi_code);
+    Py_CLEAR(gen->gi_frame);
+    Py_CLEAR(gen->gi_name);
+    Py_CLEAR(gen->gi_qualname);
+    Py_CLEAR(gen->gi_modulename);
+    return 0;
+}
+static void __Pyx_Coroutine_dealloc(PyObject *self) {
+    __pyx_CoroutineObject *gen = (__pyx_CoroutineObject *) self;
+    PyObject_GC_UnTrack(gen);
+    if (gen->gi_weakreflist != NULL)
+        PyObject_ClearWeakRefs(self);
+    if (gen->resume_label >= 0) {
+        PyObject_GC_Track(self);
+#if CYTHON_USE_TP_FINALIZE
+        if (unlikely(PyObject_CallFinalizerFromDealloc(self)))
+#else
+        {
+            destructor del = __Pyx_PyObject_GetSlot(gen, tp_del, destructor);
+            if (del) del(self);
+        }
+        if (unlikely(Py_REFCNT(self) > 0))
+#endif
+        {
+            return;
+        }
+        PyObject_GC_UnTrack(self);
+    }
+#ifdef __Pyx_AsyncGen_USED
+    if (__Pyx_AsyncGen_CheckExact(self)) {
+        /* We have to handle this case for asynchronous generators
+           right here, because this code has to be between UNTRACK
+           and GC_Del. */
+        Py_CLEAR(((__pyx_PyAsyncGenObject*)self)->ag_finalizer);
+    }
+#endif
+    __Pyx_Coroutine_clear(self);
+    __Pyx_PyHeapTypeObject_GC_Del(gen);
+}
+#if CYTHON_USE_TP_FINALIZE
+static void __Pyx_Coroutine_del(PyObject *self) {
+    PyObject *error_type, *error_value, *error_traceback;
+    __pyx_CoroutineObject *gen = (__pyx_CoroutineObject *) self;
+    __Pyx_PyThreadState_declare
+    if (gen->resume_label < 0) {
+        return;
+    }
+    __Pyx_PyThreadState_assign
+    __Pyx_ErrFetch(&error_type, &error_value, &error_traceback);
+#ifdef __Pyx_AsyncGen_USED
+    if (__Pyx_AsyncGen_CheckExact(self)) {
+        __pyx_PyAsyncGenObject *agen = (__pyx_PyAsyncGenObject*)self;
+        PyObject *finalizer = agen->ag_finalizer;
+        if (finalizer && !agen->ag_closed) {
+            PyObject *res = __Pyx_PyObject_CallOneArg(finalizer, self);
+            if (unlikely(!res)) {
+                PyErr_WriteUnraisable(self);
+            } else {
+                Py_DECREF(res);
+            }
+            __Pyx_ErrRestore(error_type, error_value, error_traceback);
+            return;
+        }
+    }
+#endif
+    if (unlikely(gen->resume_label == 0 && !error_value)) {
+#ifdef __Pyx_Coroutine_USED
+#ifdef __Pyx_Generator_USED
+    if (!__Pyx_Generator_CheckExact(self))
+#endif
+        {
+        PyObject_GC_UnTrack(self);
+        if (unlikely(PyErr_WarnFormat(PyExc_RuntimeWarning, 1, "coroutine '%.50S' was never awaited", gen->gi_qualname) < 0))
+            PyErr_WriteUnraisable(self);
+        PyObject_GC_Track(self);
+        }
+#endif
+    } else {
+        PyObject *retval = NULL;
+        __Pyx_PySendResult result = __Pyx_Coroutine_Close(self, &retval);
+        if (result == PYGEN_ERROR) {
+            PyErr_WriteUnraisable(self);
+        } else {
+            Py_XDECREF(retval);
+        }
+    }
+    __Pyx_ErrRestore(error_type, error_value, error_traceback);
+}
+#endif
+static PyObject *
+__Pyx_Coroutine_get_name(__pyx_CoroutineObject *self, void *context)
+{
+    PyObject *name = self->gi_name;
+    CYTHON_UNUSED_VAR(context);
+    if (unlikely(!name)) name = Py_None;
+    Py_INCREF(name);
+    return name;
+}
+static int
+__Pyx_Coroutine_set_name(__pyx_CoroutineObject *self, PyObject *value, void *context)
+{
+    CYTHON_UNUSED_VAR(context);
+    if (unlikely(value == NULL || !PyUnicode_Check(value))) {
+        PyErr_SetString(PyExc_TypeError,
+                        "__name__ must be set to a string object");
+        return -1;
+    }
+    Py_INCREF(value);
+    __Pyx_Py_XDECREF_SET(self->gi_name, value);
+    return 0;
+}
+static PyObject *
+__Pyx_Coroutine_get_qualname(__pyx_CoroutineObject *self, void *context)
+{
+    PyObject *name = self->gi_qualname;
+    CYTHON_UNUSED_VAR(context);
+    if (unlikely(!name)) name = Py_None;
+    Py_INCREF(name);
+    return name;
+}
+static int
+__Pyx_Coroutine_set_qualname(__pyx_CoroutineObject *self, PyObject *value, void *context)
+{
+    CYTHON_UNUSED_VAR(context);
+    if (unlikely(value == NULL || !PyUnicode_Check(value))) {
+        PyErr_SetString(PyExc_TypeError,
+                        "__qualname__ must be set to a string object");
+        return -1;
+    }
+    Py_INCREF(value);
+    __Pyx_Py_XDECREF_SET(self->gi_qualname, value);
+    return 0;
+}
+static PyObject *
+__Pyx__Coroutine_get_frame(__pyx_CoroutineObject *self)
+{
+#if !CYTHON_COMPILING_IN_LIMITED_API
+    PyObject *frame;
+    #if PY_VERSION_HEX >= 0x030d0000
+    Py_BEGIN_CRITICAL_SECTION(self);
+    #endif
+    frame = self->gi_frame;
+    if (!frame) {
+        if (unlikely(!self->gi_code)) {
+            Py_RETURN_NONE;
+        }
+        PyObject *globals = PyDict_New();
+        if (unlikely(!globals)) return NULL;
+        frame = (PyObject *) PyFrame_New(
+            PyThreadState_Get(),            /*PyThreadState *tstate,*/
+            (PyCodeObject*) self->gi_code,  /*PyCodeObject *code,*/
+            globals,                        /*PyObject *globals,*/
+            0                               /*PyObject *locals*/
+        );
+        Py_DECREF(globals);
+        if (unlikely(!frame))
+            return NULL;
+        if (unlikely(self->gi_frame)) {
+            Py_DECREF(frame);
+            frame = self->gi_frame;
+        } else {
+            self->gi_frame = frame;
+        }
+    }
+    Py_INCREF(frame);
+    #if PY_VERSION_HEX >= 0x030d0000
+    Py_END_CRITICAL_SECTION();
+    #endif
+    return frame;
+#else
+    CYTHON_UNUSED_VAR(self);
+    Py_RETURN_NONE;
+#endif
+}
+static PyObject *
+__Pyx_Coroutine_get_frame(__pyx_CoroutineObject *self, void *context) {
+    CYTHON_UNUSED_VAR(context);
+    PyObject *frame = self->gi_frame;
+    if (frame)
+        return __Pyx_NewRef(frame);
+    return __Pyx__Coroutine_get_frame(self);
+}
+static __pyx_CoroutineObject *__Pyx__Coroutine_New(
+            PyTypeObject* type, __pyx_coroutine_body_t body, PyObject *code, PyObject *closure,
+            PyObject *name, PyObject *qualname, PyObject *module_name) {
+    __pyx_CoroutineObject *gen = PyObject_GC_New(__pyx_CoroutineObject, type);
+    if (unlikely(!gen))
+        return NULL;
+    return __Pyx__Coroutine_NewInit(gen, body, code, closure, name, qualname, module_name);
+}
+static __pyx_CoroutineObject *__Pyx__Coroutine_NewInit(
+            __pyx_CoroutineObject *gen, __pyx_coroutine_body_t body, PyObject *code, PyObject *closure,
+            PyObject *name, PyObject *qualname, PyObject *module_name) {
+    gen->body = body;
+    gen->closure = closure;
+    Py_XINCREF(closure);
+    gen->is_running = 0;
+    gen->resume_label = 0;
+    gen->classobj = NULL;
+    gen->yieldfrom = NULL;
+    gen->yieldfrom_am_send = NULL;
+    #if PY_VERSION_HEX >= 0x030B00a4 && !CYTHON_COMPILING_IN_LIMITED_API
+    gen->gi_exc_state.exc_value = NULL;
+    #else
+    gen->gi_exc_state.exc_type = NULL;
+    gen->gi_exc_state.exc_value = NULL;
+    gen->gi_exc_state.exc_traceback = NULL;
+    #endif
+#if CYTHON_USE_EXC_INFO_STACK
+    gen->gi_exc_state.previous_item = NULL;
+#endif
+    gen->gi_weakreflist = NULL;
+    Py_XINCREF(qualname);
+    gen->gi_qualname = qualname;
+    Py_XINCREF(name);
+    gen->gi_name = name;
+    Py_XINCREF(module_name);
+    gen->gi_modulename = module_name;
+    Py_XINCREF(code);
+    gen->gi_code = code;
+    gen->gi_frame = NULL;
+    PyObject_GC_Track(gen);
+    return gen;
+}
+static char __Pyx_Coroutine_test_and_set_is_running(__pyx_CoroutineObject *gen) {
+    char result;
+    #if PY_VERSION_HEX >= 0x030d0000 && !CYTHON_COMPILING_IN_LIMITED_API
+    Py_BEGIN_CRITICAL_SECTION(gen);
+    #endif
+    result = gen->is_running;
+    gen->is_running = 1;
+    #if PY_VERSION_HEX >= 0x030d0000 && !CYTHON_COMPILING_IN_LIMITED_API
+    Py_END_CRITICAL_SECTION();
+    #endif
+    return result;
+}
+static void __Pyx_Coroutine_unset_is_running(__pyx_CoroutineObject *gen) {
+    #if PY_VERSION_HEX >= 0x030d0000 && !CYTHON_COMPILING_IN_LIMITED_API
+    Py_BEGIN_CRITICAL_SECTION(gen);
+    #endif
+    assert(gen->is_running);
+    gen->is_running = 0;
+    #if PY_VERSION_HEX >= 0x030d0000 && !CYTHON_COMPILING_IN_LIMITED_API
+    Py_END_CRITICAL_SECTION();
+    #endif
+}
+static char __Pyx_Coroutine_get_is_running(__pyx_CoroutineObject *gen) {
+    char result;
+    #if PY_VERSION_HEX >= 0x030d0000 && !CYTHON_COMPILING_IN_LIMITED_API
+    Py_BEGIN_CRITICAL_SECTION(gen);
+    #endif
+    result = gen->is_running;
+    #if PY_VERSION_HEX >= 0x030d0000 && !CYTHON_COMPILING_IN_LIMITED_API
+    Py_END_CRITICAL_SECTION();
+    #endif
+    return result;
+}
+static PyObject *__Pyx_Coroutine_get_is_running_getter(PyObject *gen, void *closure) {
+    CYTHON_UNUSED_VAR(closure);
+    char result = __Pyx_Coroutine_get_is_running((__pyx_CoroutineObject*)gen);
+    if (result) Py_RETURN_TRUE;
+    else Py_RETURN_FALSE;
+}
+#if __PYX_HAS_PY_AM_SEND == 2
+static void __Pyx_SetBackportTypeAmSend(PyTypeObject *type, __Pyx_PyAsyncMethodsStruct *static_amsend_methods, __Pyx_pyiter_sendfunc am_send) {
+    Py_ssize_t ptr_offset = (char*)(type->tp_as_async) - (char*)type;
+    if (ptr_offset < 0 || ptr_offset > type->tp_basicsize) {
+        return;
+    }
+    memcpy((void*)static_amsend_methods, (void*)(type->tp_as_async), sizeof(*type->tp_as_async));
+    static_amsend_methods->am_send = am_send;
+    type->tp_as_async = __Pyx_SlotTpAsAsync(static_amsend_methods);
+}
+#endif
+
+/* Generator */
+  static PyMethodDef __pyx_Generator_methods[] = {
+    {"send", (PyCFunction) __Pyx_Coroutine_Send, METH_O,
+     PyDoc_STR("send(arg) -> send 'arg' into generator,\nreturn next yielded value or raise StopIteration.")},
+    {"throw", (PyCFunction) __Pyx_Coroutine_Throw, METH_VARARGS,
+     PyDoc_STR("throw(typ[,val[,tb]]) -> raise exception in generator,\nreturn next yielded value or raise StopIteration.")},
+    {"close", (PyCFunction) __Pyx_Coroutine_Close_Method, METH_NOARGS,
+     PyDoc_STR("close() -> raise GeneratorExit inside generator.")},
+    {0, 0, 0, 0}
+};
+static PyMemberDef __pyx_Generator_memberlist[] = {
+    {"gi_yieldfrom", T_OBJECT, offsetof(__pyx_CoroutineObject, yieldfrom), READONLY,
+     PyDoc_STR("object being iterated by 'yield from', or None")},
+    {"gi_code", T_OBJECT, offsetof(__pyx_CoroutineObject, gi_code), READONLY, NULL},
+    {"__module__", T_OBJECT, offsetof(__pyx_CoroutineObject, gi_modulename), 0, 0},
+    {"__weaklistoffset__", T_PYSSIZET, offsetof(__pyx_CoroutineObject, gi_weakreflist), READONLY, 0},
+    {0, 0, 0, 0, 0}
+};
+static PyGetSetDef __pyx_Generator_getsets[] = {
+    {"__name__", (getter)__Pyx_Coroutine_get_name, (setter)__Pyx_Coroutine_set_name,
+     PyDoc_STR("name of the generator"), 0},
+    {"__qualname__", (getter)__Pyx_Coroutine_get_qualname, (setter)__Pyx_Coroutine_set_qualname,
+     PyDoc_STR("qualified name of the generator"), 0},
+    {"gi_frame", (getter)__Pyx_Coroutine_get_frame, NULL,
+     PyDoc_STR("Frame of the generator"), 0},
+    {"gi_running", __Pyx_Coroutine_get_is_running_getter, NULL, NULL, NULL},
+    {0, 0, 0, 0, 0}
+};
+static PyType_Slot __pyx_GeneratorType_slots[] = {
+    {Py_tp_dealloc, (void *)__Pyx_Coroutine_dealloc},
+    {Py_tp_traverse, (void *)__Pyx_Coroutine_traverse},
+    {Py_tp_iter, (void *)PyObject_SelfIter},
+    {Py_tp_iternext, (void *)__Pyx_Generator_Next},
+    {Py_tp_methods, (void *)__pyx_Generator_methods},
+    {Py_tp_members, (void *)__pyx_Generator_memberlist},
+    {Py_tp_getset, (void *)__pyx_Generator_getsets},
+    {Py_tp_getattro, (void *) PyObject_GenericGetAttr},
+#if CYTHON_USE_TP_FINALIZE
+    {Py_tp_finalize, (void *)__Pyx_Coroutine_del},
+#endif
+#if __PYX_HAS_PY_AM_SEND == 1
+    {Py_am_send, (void *)__Pyx_Coroutine_AmSend},
+#endif
+    {0, 0},
+};
+static PyType_Spec __pyx_GeneratorType_spec = {
+    __PYX_TYPE_MODULE_PREFIX "generator",
+    sizeof(__pyx_CoroutineObject),
+    0,
+#if PY_VERSION_HEX >= 0x030A0000
+    Py_TPFLAGS_IMMUTABLETYPE |
+#endif
+    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HAVE_GC | Py_TPFLAGS_HAVE_FINALIZE | __Pyx_TPFLAGS_HAVE_AM_SEND,
+    __pyx_GeneratorType_slots
+};
+#if __PYX_HAS_PY_AM_SEND == 2
+static __Pyx_PyAsyncMethodsStruct __pyx_Generator_as_async;
+#endif
+static int __pyx_Generator_init(PyObject *module) {
+    __pyx_mstatetype *mstate = __Pyx_PyModule_GetState(module);
+    mstate->__pyx_GeneratorType = __Pyx_FetchCommonTypeFromSpec(module, &__pyx_GeneratorType_spec, NULL);
+    if (unlikely(!mstate->__pyx_GeneratorType)) {
+        return -1;
+    }
+#if __PYX_HAS_PY_AM_SEND == 2
+    __Pyx_SetBackportTypeAmSend(mstate->__pyx_GeneratorType, &__pyx_Generator_as_async, &__Pyx_Coroutine_AmSend);
+#endif
+    return 0;
+}
+static PyObject *__Pyx_Generator_GetInlinedResult(PyObject *self) {
+    __pyx_CoroutineObject *gen = (__pyx_CoroutineObject*) self;
+    PyObject *retval = NULL;
+    if (unlikely(__Pyx_Coroutine_test_and_set_is_running(gen))) {
+        return __Pyx_Coroutine_AlreadyRunningError(gen);
+    }
+    __Pyx_PySendResult result = __Pyx_Coroutine_SendEx(gen, Py_None, &retval, 0);
+    __Pyx_Coroutine_unset_is_running(gen);
+    (void) result;
+    assert (result == PYGEN_RETURN || result == PYGEN_ERROR);
+    assert ((result == PYGEN_RETURN && retval != NULL) || (result == PYGEN_ERROR && retval == NULL));
+    return retval;
+}
 
 /* GetRuntimeVersion */
   static unsigned long __Pyx_get_runtime_version(void) {

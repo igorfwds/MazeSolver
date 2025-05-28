@@ -5,24 +5,85 @@
 # cython: cdivision=True
 # cython: nonecheck=False
 # cython: initializedcheck=False
+# cython: profile=False
+# cython: embedsignature=False
 
-import collections
 import numpy as np
 cimport numpy as cnp
+from libc.stdlib cimport malloc, free
+from libc.string cimport memset
 
 ctypedef cnp.int32_t grid_cell_type_t
 ctypedef cnp.uint8_t visited_cell_type_t
-ctypedef cnp.int32_t coord_type_t # Para os arrays de predecessores
+ctypedef cnp.int32_t coord_type_t
+ctypedef cnp.uint32_t queue_index_t
 
 DEF PATH_CELL = 0
 DEF WALL_CELL = 1
-# START_CELL e END_CELL não são usados diretamente no int_grid do BFS
-# se S e E são apenas coordenadas e o grid os marca como PATH_CELL.
 
-cpdef list find_shortest_path_cython(cnp.int32_t[:, ::1] int_grid, tuple start_coords, tuple end_coords):
+# Estrutura para queue circular otimizada
+cdef struct CircularQueue:
+    coord_type_t* data_r
+    coord_type_t* data_c
+    queue_index_t head
+    queue_index_t tail
+    queue_index_t size
+    queue_index_t capacity
+
+cdef inline void init_queue(CircularQueue* q, queue_index_t capacity) nogil:
+    """Inicializa a queue circular com capacidade especificada"""
+    q.data_r = <coord_type_t*>malloc(capacity * sizeof(coord_type_t))
+    q.data_c = <coord_type_t*>malloc(capacity * sizeof(coord_type_t))
+    q.head = 0
+    q.tail = 0
+    q.size = 0
+    q.capacity = capacity
+
+cdef inline void free_queue(CircularQueue* q) nogil:
+    """Libera a memória da queue"""
+    if q.data_r != NULL:
+        free(q.data_r)
+    if q.data_c != NULL:
+        free(q.data_c)
+
+cdef inline bint is_queue_empty(CircularQueue* q) nogil:
+    """Verifica se a queue está vazia"""
+    return q.size == 0
+
+cdef inline void enqueue(CircularQueue* q, coord_type_t r, coord_type_t c) nogil:
+    """Adiciona elemento na queue (assume que há espaço)"""
+    q.data_r[q.tail] = r
+    q.data_c[q.tail] = c
+    q.tail = (q.tail + 1) % q.capacity
+    q.size += 1
+
+cdef inline void dequeue(CircularQueue* q, coord_type_t* r, coord_type_t* c) nogil:
+    """Remove elemento da queue (assume que não está vazia)"""
+    r[0] = q.data_r[q.head]
+    c[0] = q.data_c[q.head]
+    q.head = (q.head + 1) % q.capacity
+    q.size -= 1
+
+# Direções pré-compiladas como constantes
+DEF DR_UP = -1
+DEF DC_UP = 0
+DEF DR_DOWN = 1
+DEF DC_DOWN = 0
+DEF DR_LEFT = 0
+DEF DC_LEFT = -1
+DEF DR_RIGHT = 0
+DEF DC_RIGHT = 1
+
+cpdef list find_shortest_path_cython_optimized(cnp.int32_t[:, ::1] int_grid, tuple start_coords, tuple end_coords):
     """
-    Encontra o caminho mais curto no labirinto (grid de inteiros) usando BFS
-    otimizado com rastreamento de predecessores para labirintos grandes.
+    Versão otimizada do BFS para encontrar o caminho mais curto no labirinto.
+    
+    Otimizações implementadas:
+    - Queue circular customizada em C para eliminar overhead do Python
+    - Eliminação de alocações desnecessárias
+    - Uso de nogil para paralelismo potencial
+    - Estruturas de dados mais eficientes
+    - Eliminação de checagens redundantes
     """
     cdef int rows = int_grid.shape[0]
     cdef int cols = int_grid.shape[1]
@@ -32,86 +93,232 @@ cpdef list find_shortest_path_cython(cnp.int32_t[:, ::1] int_grid, tuple start_c
     cdef coord_type_t end_r = end_coords[0]
     cdef coord_type_t end_c = end_coords[1]
 
-    # Fila para o BFS: armazena apenas tuplas (linha, coluna)
-    queue = collections.deque()
-    queue.append((start_r, start_c))
-    
-    # Array 'visited'
-    visited_np_array = np.zeros((rows, cols), dtype=np.uint8) # np.bool_ é uint8
-    visited_np_array[start_r, start_c] = 1 # Marca o início como visitado
+    # Validação rápida das coordenadas
+    if (start_r < 0 or start_r >= rows or start_c < 0 or start_c >= cols or
+        end_r < 0 or end_r >= rows or end_c < 0 or end_c >= cols):
+        return None
+
+    if int_grid[start_r, start_c] == WALL_CELL or int_grid[end_r, end_c] == WALL_CELL:
+        return None
+
+    # Caso especial: início igual ao fim
+    if start_r == end_r and start_c == end_c:
+        return [(start_r, start_c)]
+
+    # Inicializar estruturas de dados
+    cdef queue_index_t max_queue_size = rows * cols
+    cdef CircularQueue queue
+    init_queue(&queue, max_queue_size)
+
+    # Arrays visitados e predecessores
+    visited_np_array = np.zeros((rows, cols), dtype=np.uint8)
     cdef visited_cell_type_t[:, ::1] visited = visited_np_array
 
-    # Arrays para armazenar predecessores (um para linhas, outro para colunas)
-    # Inicializados com -1 para indicar que não há predecessor atribuído.
-    # Usar np.full para inicialização clara.
     pred_r_np = np.full((rows, cols), -1, dtype=np.int32)
     pred_c_np = np.full((rows, cols), -1, dtype=np.int32)
     cdef coord_type_t[:, ::1] pred_r = pred_r_np
     cdef coord_type_t[:, ::1] pred_c = pred_c_np
 
-    # Direções: Cima, Baixo, Esquerda, Direita
-    cdef int directions[4][2]
-    directions[0][0] = -1; directions[0][1] = 0  # Cima
-    directions[1][0] = 1;  directions[1][1] = 0  # Baixo
-    directions[2][0] = 0;  directions[2][1] = -1 # Esquerda
-    directions[3][0] = 0;  directions[3][1] = 1  # Direita
-    
-    cdef coord_type_t r, c, nr, nc # Tipagem para coordenadas
-    cdef tuple current_pos_tuple
-    cdef int i # Contador de direções
-    cdef bint path_found = False # Flag Cython booleana
+    # Inicializar BFS
+    enqueue(&queue, start_r, start_c)
+    visited[start_r, start_c] = 1
 
-    while queue:
-        current_pos_tuple = queue.popleft()
-        r = current_pos_tuple[0]
-        c = current_pos_tuple[1]
-        
-        if r == end_r and c == end_c:
-            path_found = True
-            break # Destino alcançado
+    cdef coord_type_t r, c, nr, nc
+    cdef bint path_found = False
 
-        for i in range(4):
-            dr = directions[i][0]
-            dc = directions[i][1]
+    # BFS principal com nogil para máxima performance
+    with nogil:
+        while not is_queue_empty(&queue):
+            dequeue(&queue, &r, &c)
             
-            nr = r + dr
-            nc = c + dc
-            
-            if 0 <= nr < rows and 0 <= nc < cols: # Checagem de limites
-                if int_grid[nr, nc] != WALL_CELL and not visited[nr, nc]:
-                    visited[nr, nc] = 1 # Marca como visitado
-                    pred_r[nr, nc] = r  # Armazena predecessor
-                    pred_c[nr, nc] = c
-                    queue.append((nr, nc))
-                    
+            # Verificar se chegamos ao destino
+            if r == end_r and c == end_c:
+                path_found = True
+                break
+
+            # Explorar direções (desenrolado para performance)
+            # Direção UP
+            nr = r + DR_UP
+            nc = c + DC_UP
+            if (nr >= 0 and nr < rows and nc >= 0 and nc < cols and
+                int_grid[nr, nc] != WALL_CELL and not visited[nr, nc]):
+                visited[nr, nc] = 1
+                pred_r[nr, nc] = r
+                pred_c[nr, nc] = c
+                enqueue(&queue, nr, nc)
+
+            # Direção DOWN
+            nr = r + DR_DOWN
+            nc = c + DC_DOWN
+            if (nr >= 0 and nr < rows and nc >= 0 and nc < cols and
+                int_grid[nr, nc] != WALL_CELL and not visited[nr, nc]):
+                visited[nr, nc] = 1
+                pred_r[nr, nc] = r
+                pred_c[nr, nc] = c
+                enqueue(&queue, nr, nc)
+
+            # Direção LEFT
+            nr = r + DR_LEFT
+            nc = c + DC_LEFT
+            if (nr >= 0 and nr < rows and nc >= 0 and nc < cols and
+                int_grid[nr, nc] != WALL_CELL and not visited[nr, nc]):
+                visited[nr, nc] = 1
+                pred_r[nr, nc] = r
+                pred_c[nr, nc] = c
+                enqueue(&queue, nr, nc)
+
+            # Direção RIGHT
+            nr = r + DR_RIGHT
+            nc = c + DC_RIGHT
+            if (nr >= 0 and nr < rows and nc >= 0 and nc < cols and
+                int_grid[nr, nc] != WALL_CELL and not visited[nr, nc]):
+                visited[nr, nc] = 1
+                pred_r[nr, nc] = r
+                pred_c[nr, nc] = c
+                enqueue(&queue, nr, nc)
+
+    # Liberar memória da queue
+    free_queue(&queue)
+
     if not path_found:
-        return None # Nenhum caminho encontrado
+        return None
 
-    # Reconstruir o caminho de trás para frente usando predecessores
-    # Usar collections.deque para appendleft eficiente
-    path_deque = collections.deque()
+    # Reconstruir caminho otimizado
+    cdef list path = []
     cdef coord_type_t curr_r = end_r
     cdef coord_type_t curr_c = end_c
     cdef coord_type_t prev_r, prev_c
 
-    # Loop enquanto não chegamos ao início (que não tem predecessor marcado ou é -1)
-    # ou se a célula atual não tem predecessor (indicando erro ou início)
+    # Construir caminho de trás para frente
     while True:
-        path_deque.appendleft((curr_r, curr_c))
+        path.append((curr_r, curr_c))
+        
         if curr_r == start_r and curr_c == start_c:
-            break # Chegamos ao início
+            break
 
         prev_r = pred_r[curr_r, curr_c]
         prev_c = pred_c[curr_r, curr_c]
 
-        if prev_r == -1 and prev_c == -1: 
-            # Se chegamos aqui e não é o start_node, algo está errado (caminho quebrado)
-            # Isso não deveria acontecer se 'S' é alcançável e a lógica está correta.
-            # Para um 'S' válido, o loop quebraria na condição anterior.
-            # Retornar None indica que a reconstrução falhou, embora o BFS tenha encontrado 'E'.
-            return None 
+        if prev_r == -1 and prev_c == -1:
+            return None  # Erro na reconstrução
 
         curr_r = prev_r
         curr_c = prev_c
-            
-    return list(path_deque) # Converte o deque para uma lista Python
+
+    # Reverter o caminho para ordem correta
+    path.reverse()
+    return path
+
+
+def parse_maze_text(maze_text):
+    """
+    Converte texto do labirinto para formato de grid inteiro.
+    
+    Args:
+        maze_text: string com o labirinto, linhas separadas por \n
+        
+    Returns:
+        tuple: (int_grid, start_coords, end_coords) ou None se inválido
+    """
+    lines = maze_text.strip().split('\n')
+    if not lines:
+        return None
+    
+    rows = len(lines)
+    cols = len(lines[0]) if lines else 0
+    
+    # Verificar se todas as linhas têm o mesmo tamanho
+    for line in lines:
+        if len(line) != cols:
+            return None
+    
+    # Criar grid e encontrar S e E
+    int_grid = np.zeros((rows, cols), dtype=np.int32)
+    start_coords = None
+    end_coords = None
+    
+    for r in range(rows):
+        for c in range(cols):
+            char = lines[r][c]
+            if char == '#':
+                int_grid[r, c] = WALL_CELL
+            elif char == ' ' or char == '·':
+                int_grid[r, c] = PATH_CELL
+            elif char == 'S':
+                int_grid[r, c] = PATH_CELL
+                start_coords = (r, c)
+            elif char == 'E':
+                int_grid[r, c] = PATH_CELL
+                end_coords = (r, c)
+            else:
+                int_grid[r, c] = PATH_CELL  # Assume qualquer outro char como caminho
+    
+    if start_coords is None or end_coords is None:
+        return None
+    
+    return int_grid, start_coords, end_coords
+
+
+def solve_maze_from_text(maze_text):
+    """
+    Resolve o labirinto a partir do texto e retorna o resultado formatado.
+    
+    Args:
+        maze_text: string com o labirinto
+        
+    Returns:
+        string: labirinto com caminho marcado ou mensagem de erro
+    """
+    result = parse_maze_text(maze_text)
+    if result is None:
+        return "Erro: Labirinto inválido (sem S ou E)"
+    
+    int_grid, start_coords, end_coords = result
+    
+    # Encontrar caminho
+    path = find_shortest_path_cython_optimized(int_grid, start_coords, end_coords)
+    
+    if path is None:
+        return "Erro: Nenhum caminho encontrado"
+    
+    # Criar resultado visual
+    lines = maze_text.strip().split('\n')
+    result_lines = [list(line) for line in lines]
+    
+    # Marcar caminho (exceto S e E)
+    for r, c in path:
+        if result_lines[r][c] not in ['S', 'E']:
+            result_lines[r][c] = '·'
+    
+    return '\n'.join(''.join(line) for line in result_lines)
+
+
+# Exemplo de uso e teste de performance
+def benchmark_solver(maze_text, iterations=1000):
+    """
+    Benchmark da função otimizada vs versão original
+    """
+    import time
+    
+    result = parse_maze_text(maze_text)
+    if result is None:
+        return "Labirinto inválido"
+    
+    int_grid, start_coords, end_coords = result
+    
+    # Teste da versão otimizada
+    start_time = time.time()
+    for _ in range(iterations):
+        path = find_shortest_path_cython_optimized(int_grid, start_coords, end_coords)
+    end_time = time.time()
+    
+    optimized_time = end_time - start_time
+    path_length = len(path) if path else 0
+    
+    return f"""
+Benchmark Results ({iterations} iterations):
+- Tempo versão otimizada: {optimized_time:.6f}s
+- Tempo médio por execução: {optimized_time/iterations:.6f}s
+- Comprimento do caminho: {path_length}
+- Performance: {iterations/optimized_time:.0f} execuções/segundo
+"""

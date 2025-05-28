@@ -92,7 +92,7 @@ def solve_maze(labyrinth: str) -> float:
             int_grid_np = np.ascontiguousarray(int_grid_np, dtype=np.int32)
 
         # 2. Resolva usando Cython (esta é a parte principal da "resolução")
-        path = maze_solver_cy.find_shortest_path_cython(int_grid_np, start_coords, end_coords)
+        path = maze_solver_cy.find_shortest_path_cython_optimized(int_grid_np, start_coords, end_coords)
         
         # Finaliza a contagem de tempo APÓS a parte principal da resolução
         overall_end_time = time.perf_counter()
@@ -445,7 +445,7 @@ if maze_content_str is not None: # Verifica se a leitura do arquivo foi bem suce
     returned_time_ms = solve_maze(maze_content_str) # Chama a nova função de interface
     print(f"-> Chamada a solve_maze para o labirinto concluída.")
     print(f"   Tempo retornado: {returned_time_ms:.4f} ms.")
-    print(f"   Arquivo de auditoria gerado: 'output.txt' (verifique seu conteúdo).")
+    print(f"   Arquivo gerado: 'output_capivaras.txt' (verifique seu conteúdo).")
 else:
     # read_maze_from_file já imprimiu uma mensagem de erro
     print(f"   Não foi possível ler ou processar o labirinto. Pulando.")
